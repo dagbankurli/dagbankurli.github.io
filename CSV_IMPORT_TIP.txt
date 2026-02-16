@@ -1,0 +1,7 @@
+To keep Dagbani characters (ŋ, ɛ, ɔ, ɣ, ʒ) when using Excel:
+
+1. In Excel: File > Save As
+2. Choose: "CSV UTF-8 (Comma delimited) (*.csv)"
+   - NOT "CSV (Comma delimited)" - that loses ŋ and other special chars on Windows
+
+3. Then run: python excel_to_app_import.py your_file.csv

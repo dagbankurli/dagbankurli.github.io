@@ -1,0 +1,20 @@
+# Large extracted text
+extracted_text.txt
+
+# PDF sources (keep in local only)
+*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

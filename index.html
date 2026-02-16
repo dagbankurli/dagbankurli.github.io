@@ -1,0 +1,2682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dagbani Korli - Community Lexicon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Outfit', sans-serif;
+        }
+        .recording-pulse {
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .bounce-in {
+            animation: bounceIn 0.5s ease-out;
+        }
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full slide-in">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Welcome to Dagbani Korli</h2>
+            
+            <div id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Username or Email</label>
+                    <input 
+                        type="text" 
+                        id="login-username" 
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="Enter your username"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                    <input 
+                        type="password" 
+                        id="login-password" 
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="Enter your password"
+                    >
+                </div>
+                <button 
+                    onclick="handleLogin()" 
+                    class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg"
+                >
+                    Sign In
+                </button>
+                <p class="text-center text-sm text-gray-600">
+                    Don't have an account? 
+                    <button onclick="showRegisterForm()" class="text-amber-600 font-semibold hover:underline">Sign Up</button>
+                </p>
+                <button 
+                    onclick="skipLogin()" 
+                    class="w-full text-sm text-gray-500 hover:text-gray-700"
+                >
+                    Continue as Guest
+                </button>
+            </div>
+
+            <div id="register-form" class="hidden space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                    <input 
+                        type="text" 
+                        id="register-username" 
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="Choose a username"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                    <input 
+                        type="email" 
+                        id="register-email" 
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="your@email.com"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                    <input 
+                        type="password" 
+                        id="register-password" 
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="Create a password"
+                    >
+                </div>
+                <button 
+                    onclick="handleRegister()" 
+                    class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg"
+                >
+                    Create Account
+                </button>
+                <p class="text-center text-sm text-gray-600">
+                    Already have an account? 
+                    <button onclick="showLoginForm()" class="text-amber-600 font-semibold hover:underline">Sign In</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg sticky top-0 z-40" id="main-nav" style="display: none;">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-xl font-bold">Dagbani Korli</h1>
+                    <span id="user-badge" class="text-sm bg-amber-700 px-3 py-1 rounded-full hidden"></span>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="showView('dictionary')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" data-view="dictionary">
+                        Dictionary
+                    </button>
+                    <button onclick="showView('browse')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" data-view="browse">
+                        Browse A-Z
+                    </button>
+                    <button onclick="showView('learn')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" data-view="learn">
+                        Learn
+                    </button>
+                    <button onclick="showView('favorites')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm relative" data-view="favorites">
+                        Favorites
+                        <span id="favorites-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button onclick="showView('contribute')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" data-view="contribute">
+                        Contribute
+                    </button>
+                    <button onclick="showView('review')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm relative" data-view="review">
+                        Review
+                        <span id="pending-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button onclick="showView('donate')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" data-view="donate">
+                        Donate
+                    </button>
+                    <button onclick="showView('settings')" class="nav-btn px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" data-view="settings">
+                        Settings
+                    </button>
+                    <button onclick="handleLogout()" class="px-3 py-1 rounded-lg hover:bg-amber-700 transition text-sm" id="logout-btn" style="display: none;">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dictionary View -->
+    <div id="dictionary-view" class="view container mx-auto px-4 py-6" style="display: none;">
+        <!-- Word of the Day -->
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-6 mb-6 text-white slide-in">
+            <h2 class="text-xl font-semibold mb-2">📚 Word of the Day</h2>
+            <div id="word-of-the-day" class="text-2xl font-bold">
+                <p class="text-3xl" id="wotd-dagbani">-</p>
+                <p class="text-lg opacity-90" id="wotd-english">-</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Digital Dictionary</h2>
+            
+            <!-- Search Bar -->
+            <div class="flex gap-2 mb-4">
+                <div class="flex-1 relative">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search Dagbani or English..." 
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-lg"
+                        onkeyup="handleSearch(event)"
+                        oninput="showSearchSuggestions()"
+                    >
+                    <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 bg-white border-2 border-amber-300 rounded-lg mt-1 shadow-xl z-10 max-h-60 overflow-y-auto"></div>
+                </div>
+                <select id="search-direction" class="px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                    <option value="both">Both Directions</option>
+                    <option value="dag-en" selected>Dagbani → English</option>
+                    <option value="en-dag">English → Dagbani</option>
+                </select>
+            </div>
+
+            <!-- Advanced Filters -->
+            <div class="mb-4 space-y-3">
+                <div>
+                    <label class="text-sm font-semibold text-gray-600 mb-2 block">Dialect:</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="filterDialect('all')" class="dialect-filter px-4 py-2 rounded-lg bg-amber-100 border-2 border-amber-400 text-amber-800 font-semibold" data-dialect="all">
+                            All
+                        </button>
+                        <button onclick="filterDialect('standard')" class="dialect-filter px-4 py-2 rounded-lg bg-gray-100 border-2 border-gray-300 text-gray-700" data-dialect="standard">
+                            Standard
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4 items-center">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="filter-audio" onchange="applyFilters()" class="w-4 h-4">
+                        <span class="text-sm text-gray-700">Has Audio</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="filter-verified" checked onchange="applyFilters()" class="w-4 h-4">
+                        <span class="text-sm text-gray-700">Verified Only</span>
+                    </label>
+                    <select id="filter-category" onchange="applyFilters()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-sm">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Search History -->
+            <div id="search-history-section" class="mb-4 hidden">
+                <label class="text-sm font-semibold text-gray-600 mb-2 block">Recent Searches:</label>
+                <div id="search-history" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div id="search-results" class="space-y-4">
+            <!-- Results will be dynamically inserted here -->
+        </div>
+
+        <!-- No Results Message -->
+        <div id="no-results" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
+            <p class="text-gray-500 text-lg mb-4">No results found. Try a different search term.</p>
+            <p class="text-gray-600 text-sm">Know a word? <button onclick="showView('contribute')" class="text-amber-600 font-semibold hover:underline">Contribute it</button></p>
+        </div>
+    </div>
+
+    <!-- Browse A-Z View -->
+    <div id="browse-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Browse Full Dictionary A-Z</h2>
+            
+            <!-- Sort Options -->
+            <div class="mb-6 flex flex-wrap gap-4 items-center">
+                <label class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-gray-700">Sort by:</span>
+                    <select id="browse-sort" onchange="renderBrowseDictionary()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                        <option value="dagbani" selected>Dagbani (A-Z)</option>
+                        <option value="english">English (A-Z)</option>
+                    </select>
+                </label>
+                <label class="flex items-center gap-2">
+                    <select id="browse-dialect-filter" onchange="renderBrowseDictionary()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                        <option value="all">All Dialects</option>
+                        <option value="standard">Standard</option>
+                    </select>
+                </label>
+                <div class="text-sm text-gray-600">
+                    Total Words: <span id="browse-total-count" class="font-bold text-amber-600">0</span>
+                </div>
+                <label class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-gray-700">View:</span>
+                    <select id="browse-view-mode" onchange="renderBrowseDictionary()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                        <option value="grid">Cards</option>
+                        <option value="list">List (Table)</option>
+                    </select>
+                </label>
+            </div>
+
+            <!-- Alphabet Navigation -->
+            <div class="mb-6">
+                <label class="text-sm font-semibold text-gray-600 mb-2 block">Jump to Letter:</label>
+                <div id="alphabet-nav" class="flex flex-wrap gap-2">
+                    <!-- Alphabet buttons will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- List View: Sticky header (title + search) - persistent, not re-rendered -->
+        <div id="browse-list-header" class="hidden sticky top-0 z-20 -mx-4 px-4 py-6 pb-4 mb-6 bg-amber-50/95 backdrop-blur-sm border-b border-amber-100/50">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Dagbani–English Dictionary</h1>
+                    <p class="text-gray-500 mt-1">Browse entries alphabetically</p>
+                </div>
+                <input type="search" id="browse-list-search" placeholder="Search Dagbani or English…"
+                    oninput="debouncedBrowseSearch()"
+                    class="w-full sm:w-80 sm:flex-shrink-0 px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 bg-white/90">
+            </div>
+        </div>
+
+        <!-- Dictionary Content -->
+        <div id="browse-content" class="space-y-6">
+            <!-- Words grouped by letter will be displayed here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="browse-empty" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
+            <p class="text-gray-500 text-lg">No words found. Start contributing to build the dictionary!</p>
+        </div>
+    </div>
+
+    <!-- Learn View -->
+    <div id="learn-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Learn</h2>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="showLearnSection('practice')" class="learn-section-btn px-4 py-2 rounded-lg border-2 transition text-sm font-semibold bg-amber-100 border-amber-400 text-amber-800" data-section="practice">Practice</button>
+                <button onclick="showLearnSection('names')" class="learn-section-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-section="names">Names</button>
+                <button onclick="showLearnSection('history')" class="learn-section-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-section="history">History</button>
+                <button onclick="showLearnSection('idioms')" class="learn-section-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-section="idioms">Idioms</button>
+                <button onclick="showLearnSection('short-stories')" class="learn-section-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-section="short-stories">Short Stories</button>
+                <button onclick="showLearnSection('media')" class="learn-section-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-section="media">Media</button>
+            </div>
+        </div>
+
+        <!-- Practice (with sub-sections) -->
+        <div id="learn-practice" class="learn-section-content">
+            <div class="mb-4">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="showPracticeMode('numbers')" class="practice-mode-btn px-3 py-1.5 rounded-lg border-2 text-sm font-semibold bg-amber-100 border-amber-400 text-amber-800" data-mode="numbers">Numbers</button>
+                    <button onclick="showPracticeMode('words')" class="practice-mode-btn px-3 py-1.5 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-mode="words">Words</button>
+                    <button onclick="showPracticeMode('random')" class="practice-mode-btn px-3 py-1.5 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-mode="random">Random</button>
+                    <button onclick="showPracticeMode('select')" class="practice-mode-btn px-3 py-1.5 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-mode="select">Select Words</button>
+                </div>
+            </div>
+
+            <!-- Numbers Practice -->
+            <div id="practice-numbers" class="practice-mode-content">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Practice Numbers</h3>
+                    <p class="text-gray-600 mb-4">Learn Dagbani numbers. Choose the range and direction.</p>
+                    <div class="space-y-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Range</label>
+                            <select id="numbers-range" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                                <option value="10">1–10</option>
+                                <option value="20">1–20</option>
+                                <option value="50">1–50</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Direction</label>
+                            <select id="numbers-direction" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                                <option value="dag-en">Dagbani → English (e.g. yini → one)</option>
+                                <option value="en-dag">English → Dagbani (e.g. one → yini)</option>
+                            </select>
+                        </div>
+                        <button onclick="startNumbersQuiz()" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">
+                            Start
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Words Practice -->
+            <div id="practice-words" class="practice-mode-content hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Practice Words</h3>
+                    <div id="quiz-setup" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Number of Questions</label>
+                            <input type="number" id="quiz-count" min="5" max="20" value="10" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Direction</label>
+                            <select id="quiz-type" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                                <option value="dag-en" selected>Dagbani → English</option>
+                                <option value="en-dag">English → Dagbani</option>
+                                <option value="mixed">Mixed</option>
+                            </select>
+                        </div>
+                        <button onclick="startQuiz('words')" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg">
+                            Start Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Random Practice -->
+            <div id="practice-random" class="practice-mode-content hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Random Practice</h3>
+                    <p class="text-gray-600 mb-4">Random mix of words and direction. Quick session.</p>
+                    <div class="space-y-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Number of Questions</label>
+                            <input type="number" id="random-quiz-count" min="5" max="30" value="15" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                        </div>
+                        <button onclick="startQuiz('random')" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">
+                            Start Random Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Select Words Practice -->
+            <div id="practice-select" class="practice-mode-content hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Select Words to Learn</h3>
+                    <p class="text-gray-600 mb-4">Choose specific English or Dagbani words from the dictionary to practice.</p>
+                    <div class="space-y-4 mb-4">
+                        <div>
+                            <input type="text" id="select-words-search" placeholder="Search words to add…" 
+                                class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                                oninput="filterSelectWords()">
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="select-words-dir" onchange="filterSelectWords()" class="px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                                <option value="english">Search English</option>
+                                <option value="dagbani">Search Dagbani</option>
+                            </select>
+                            <button onclick="filterSelectWords()" class="px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200">Search</button>
+                        </div>
+                        <div id="select-words-list" class="max-h-48 overflow-y-auto border rounded-lg p-2 space-y-1 text-sm">
+                            <!-- Filled by JS -->
+                        </div>
+                        <p class="text-xs text-gray-500"><span id="selected-words-count">0</span> words selected</p>
+                        <button onclick="startSelectedWordsQuiz()" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition disabled:opacity-50" id="start-selected-btn" disabled>
+                            Practice Selected Words
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shared Quiz UI (for Words, Random, Select) -->
+            <div id="practice-quiz-panel" class="hidden mt-4">
+                <div class="bg-white rounded-2xl shadow-xl p-6">
+                    <div id="quiz-active" class="">
+                        <div class="text-center mb-6">
+                            <div class="text-4xl font-bold text-amber-600 mb-2" id="quiz-question">-</div>
+                            <div class="text-sm text-gray-600">Question <span id="quiz-current">1</span> of <span id="quiz-total">10</span></div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
+                                <div id="quiz-progress" class="bg-amber-600 h-2 rounded-full transition-all" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div id="quiz-options" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4"></div>
+                        <div id="quiz-feedback" class="hidden text-center p-4 rounded-lg mb-4"></div>
+                        <button onclick="nextQuestion()" id="quiz-next" class="hidden w-full px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
+                            Next Question
+                        </button>
+                    </div>
+                    <div id="quiz-results" class="hidden text-center">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h3 class="text-3xl font-bold text-gray-800 mb-2">Quiz Complete!</h3>
+                        <p class="text-2xl text-amber-600 mb-4">Score: <span id="quiz-score">0</span>/<span id="quiz-final-total">10</span></p>
+                        <button onclick="resetQuiz()" class="px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Numbers Quiz UI (separate from word quiz) -->
+            <div id="numbers-quiz-panel" class="hidden mt-4">
+                <div class="bg-white rounded-2xl shadow-xl p-6">
+                    <div id="numbers-quiz-active" class="">
+                        <div class="text-center mb-6">
+                            <div class="text-4xl font-bold text-amber-600 mb-2" id="numbers-quiz-question">-</div>
+                            <div class="text-sm text-gray-600">Question <span id="numbers-quiz-current">1</span> of <span id="numbers-quiz-total">10</span></div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
+                                <div id="numbers-quiz-progress" class="bg-amber-600 h-2 rounded-full transition-all" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div id="numbers-quiz-options" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4"></div>
+                        <div id="numbers-quiz-feedback" class="hidden text-center p-4 rounded-lg mb-4"></div>
+                        <button onclick="nextNumbersQuestion()" id="numbers-quiz-next" class="hidden w-full px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
+                            Next
+                        </button>
+                    </div>
+                    <div id="numbers-quiz-results" class="hidden text-center">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h3 class="text-3xl font-bold text-gray-800 mb-2">Done!</h3>
+                        <p class="text-2xl text-amber-600 mb-4">Score: <span id="numbers-quiz-score">0</span>/<span id="numbers-quiz-total-score">10</span></p>
+                        <button onclick="resetNumbersQuiz()" class="px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Names -->
+        <div id="learn-names" class="learn-section-content hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Dagbani Names</h3>
+                <p class="text-gray-600 mb-6">Explore the meanings of Dagbani names and their categories.</p>
+                <div class="mb-6 flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="names-search" placeholder="Search names or meanings…" 
+                        class="flex-1 px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        oninput="filterNames()">
+                    <select id="names-category-filter" onchange="filterNames()" class="px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 sm:w-48">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div id="names-list" class="space-y-4">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
+        <div id="learn-history" class="learn-section-content hidden">
+            <div class="mb-4">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="showHistoryTab('kingdom')" class="history-tab-btn px-4 py-2 rounded-lg border-2 text-sm font-semibold bg-amber-100 border-amber-400 text-amber-800" data-tab="kingdom">Kingdom</button>
+                    <button onclick="showHistoryTab('kingship')" class="history-tab-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-tab="kingship">Kingship</button>
+                    <button onclick="showHistoryTab('kings')" class="history-tab-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-tab="kings">Kings</button>
+                    <button onclick="showHistoryTab('modern')" class="history-tab-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold" data-tab="modern">Modern</button>
+                </div>
+            </div>
+            <div id="history-kingdom" class="history-tab-content">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">The Kingdom of Dagbon</h3>
+                    <p class="text-gray-700 mb-4">The Kingdom of Dagbon is one of the oldest and most organized traditional kingdoms in Ghana, founded in the <strong>15th century</strong> by <strong>Naa Gbewaa</strong>. The kingdom was established by the Dagomba people and remains a dominant political and cultural entity in northern Ghana.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Origins</h4>
+                    <p class="text-gray-700 mb-4">According to tradition, Naa Gbewaa's ancestor <strong>Tohazie</strong> (the "Red Hunter") led migrations westward from regions east of Lake Chad through present-day northern Nigeria, eventually settling in what is now Ghana. Gbewaa unified previously decentralized communities ruled by spiritual leaders called the <strong>Tindaamba</strong> (earth priests) into a centralized kingdom. Naa Gbewaa is considered the progenitor of multiple kingdoms, including Dagbon, Mamprugu, and Nanumba.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Territory</h4>
+                    <p class="text-gray-700 mb-4">At its peak, Dagbon extended across much of northern Ghana—including the Northern, Upper West, Upper East, and Savannah regions—and also covered portions of Burkina Faso, Ivory Coast, and Togo.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Later Period</h4>
+                    <p class="text-gray-700">By the 17th century, the Dagomba were conquered by the Asante, who forced them to pay annual slave tributes until 1874. In the 19th century, Dagbon resisted European colonial expansion, including the 1896 Battle of Adigbo against German forces. The kingdom was subsequently divided between German Togoland and British Gold Coast until reunification after World War I, becoming a British protectorate until Ghana's independence in 1957.</p>
+                </div>
+            </div>
+            <div id="history-kingship" class="history-tab-content hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Kingship &amp; the Ya Na</h3>
+                    <p class="text-gray-700 mb-4">The kingdom developed a hierarchical chieftaincy system led by the paramount chief known as the <strong>Ya Na</strong> (or <strong>Yaa Naa</strong>), who traditionally resides in <strong>Yendi</strong>, the capital of Dagbon.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">The Title</h4>
+                    <p class="text-gray-700 mb-4">The term "Yaa Naa" means <em>"king of strength"</em> or <em>"king of power"</em> in the Dagbani language. It was adopted by King Shitobu and became the title for all subsequent Dagbon monarchs.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Succession</h4>
+                    <p class="text-gray-700 mb-4">Succession to the Ya Na involves a complex system with kingmakers and an electoral college. Historically, the position rotated between two major royal houses—the <strong>Abudu</strong> and <strong>Andani</strong> families. The selection process involves traditional rituals and the approval of traditionally designated persons.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Structure</h4>
+                    <p class="text-gray-700">The kingdom is organized into a hierarchy of chiefs and sub-chiefs, with the Ya Na at the apex. Traditional authority remains deeply respected alongside Ghana's modern governance structures.</p>
+                </div>
+            </div>
+            <div id="history-modern" class="history-tab-content hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Modern Dagbon</h3>
+                    <p class="text-gray-700 mb-4">Since Ghana's independence in <strong>1957</strong>, the Kingdom of Dagbon has assumed a traditional, customary role within the modern Ghanaian state. The Ya Na and the chieftaincy system continue to hold significant cultural and social influence in northern Ghana.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Chieftaincy Conflict</h4>
+                    <p class="text-gray-700 mb-4">The most significant development in recent decades was a protracted succession dispute between the Abudu and Andani royal families. The conflict escalated in March 2002 with violent clashes. The government established a Committee of Eminent Chiefs to resolve the conflict using Dagbon customs and traditions.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Resolution</h4>
+                    <p class="text-gray-700 mb-4">The committee brokered peace agreements in 2006 and again in 2018, when Peace Agreement II was accepted by both royal gates. These efforts helped restore stability and pave the way for a new Ya Na to be installed.</p>
+                    <h4 class="font-bold text-amber-700 mt-6 mb-2">Today</h4>
+                    <p class="text-gray-700">Dagbon today maintains its identity as a living kingdom—preserving the Dagbani language, oral traditions, festivals, and the institution of the Ya Na while participating fully in Ghana's democracy and development.</p>
+                </div>
+            </div>
+            <div id="history-kings" class="history-tab-content hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kings of Dagbon (Ya Na)</h3>
+                    <p class="text-gray-600 text-sm mb-6">Click a king to read their history and achievements.</p>
+                    <div id="kings-diagram" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mb-8">
+                        <!-- Filled by JS -->
+                    </div>
+                    <div class="border-t border-amber-200 pt-6">
+                        <h4 class="font-bold text-amber-700 mb-3">References</h4>
+                        <ol class="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                            <li>Gbewaa Palace image: Shahadusadik / <a href="https://commons.wikimedia.org/wiki/File:Gbewaa_palace_in_Yendi.jpg" target="_blank" rel="noopener" class="text-amber-600 hover:underline">Wikimedia Commons</a>, CC BY-SA 4.0 (used as royal heritage image; individual king portraits are not available).</li>
+                            <li>Wikipedia. <em>List of kings of Dagbon</em>. <a href="https://en.wikipedia.org/wiki/List_of_kings_of_Dagbon" target="_blank" rel="noopener" class="text-amber-600 hover:underline">en.wikipedia.org/wiki/List_of_kings_of_Dagbon</a></li>
+                            <li>Wikipedia. <em>Naa Gbewaa</em>. <a href="https://en.wikipedia.org/wiki/Naa_Gbewaa" target="_blank" rel="noopener" class="text-amber-600 hover:underline">en.wikipedia.org/wiki/Naa_Gbewaa</a></li>
+                            <li>Wikipedia. <em>Kingdom of Dagbon</em>. <a href="https://en.wikipedia.org/wiki/Kingdom_of_Dagbon" target="_blank" rel="noopener" class="text-amber-600 hover:underline">en.wikipedia.org/wiki/Kingdom_of_Dagbon</a></li>
+                            <li>World History Edu. <em>Kingdom of Dagbon: History and Major Facts</em>. <a href="https://worldhistoryedu.com/kingdom-of-dagbon-history-and-major-facts/" target="_blank" rel="noopener" class="text-amber-600 hover:underline">worldhistoryedu.com</a></li>
+                            <li>Kuyini, Bawa (2013). <em>Re-Thinking Values in Africa: For Collective Wellbeing</em>. BookBaby. ISBN 9781922204882.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- King detail modal -->
+        <div id="king-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4" onclick="closeKingModal(event)">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-hidden flex flex-col" onclick="event.stopPropagation()">
+                <div class="p-6 overflow-y-auto flex-1">
+                    <img id="king-modal-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gbewaa_palace_in_Yendi.jpg/480px-Gbewaa_palace_in_Yendi.jpg" alt="Gbewaa Palace" class="w-full h-36 object-cover rounded-xl mb-4 bg-amber-100">
+                    <h3 id="king-modal-name" class="text-2xl font-bold text-amber-700 mb-2"></h3>
+                    <p id="king-modal-reign" class="text-gray-600 text-sm mb-4"></p>
+                    <div id="king-modal-content" class="text-gray-700 prose prose-sm"></div>
+                    <p id="king-modal-ref" class="text-xs text-gray-500 mt-4"></p>
+                </div>
+                <div class="p-4 border-t flex justify-end">
+                    <button onclick="closeKingModal()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Close</button>
+                </div>
+            </div>
+        </div>
+        <div id="learn-idioms" class="learn-section-content hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Idioms</h3>
+                <p class="text-gray-500">Content coming soon.</p>
+            </div>
+        </div>
+        <div id="learn-short-stories" class="learn-section-content hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Short Stories</h3>
+                <p class="text-gray-500">Content coming soon.</p>
+            </div>
+        </div>
+        <div id="learn-media" class="learn-section-content hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Media</h3>
+                <p class="text-gray-500">Content coming soon.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites View -->
+    <div id="favorites-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">My Favorites</h2>
+            <div id="favorites-list" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">No favorites yet. Start adding words to your favorites!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contribute View -->
+    <div id="contribute-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Contribute to the Lexicon</h2>
+            
+            <form id="word-form" onsubmit="submitWord(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Dagbani Word/Phrase</label>
+                    <input 
+                        type="text" 
+                        id="dagbani-word" 
+                        required
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="e.g., Antire"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">English Translation</label>
+                    <input 
+                        type="text" 
+                        id="english-word" 
+                        required
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="e.g., Hello"
+                    >
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Dialect</label>
+                        <select id="word-dialect" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                            <option value="standard">Standard</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                        <select id="word-category" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                            <option value="general">General</option>
+                            <option value="greetings">Greetings</option>
+                            <option value="food">Food</option>
+                            <option value="family">Family</option>
+                            <option value="nature">Nature</option>
+                            <option value="verbs">Verbs</option>
+                            <option value="adjectives">Adjectives</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Grammar Notes (Optional)</label>
+                    <textarea 
+                        id="grammar-notes" 
+                        rows="3"
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="e.g., Noun class: 1, Plural: Antireba"
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Example Sentence (Optional)</label>
+                    <textarea 
+                        id="example-sentence" 
+                        rows="2"
+                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
+                        placeholder="e.g., Antire, bɛ ni tooi sɔŋ ma?"
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Audio Pronunciation</label>
+                    <div class="border-2 border-dashed border-amber-300 rounded-lg p-6 text-center">
+                        <div id="audio-controls" class="space-y-4">
+                            <button 
+                                type="button" 
+                                onclick="startRecording()" 
+                                id="record-btn"
+                                class="px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition"
+                            >
+                                🎤 Start Recording
+                            </button>
+                            <div id="recording-status" class="hidden">
+                                <div class="recording-pulse inline-block w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                <span class="text-red-600 font-semibold">Recording...</span>
+                                <button 
+                                    type="button" 
+                                    onclick="stopRecording()" 
+                                    class="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+                                >
+                                    Stop
+                                </button>
+                            </div>
+                            <audio id="audio-playback" controls class="hidden w-full mt-4"></audio>
+                        </div>
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg"
+                >
+                    Submit for Review
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review View -->
+    <div id="review-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
+            <p class="text-gray-600 mb-6">Review and verify pending word submissions from the community.</p>
+            
+            <div id="pending-submissions" class="space-y-4">
+                <!-- Pending submissions will be dynamically inserted here -->
+            </div>
+
+            <div id="no-pending" class="hidden text-center py-8 text-gray-500">
+                <p class="text-lg">No pending submissions. Great work keeping the lexicon up to date! 🎉</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donate View -->
+    <div id="donate-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="space-y-6">
+            <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-8 text-white text-center slide-in">
+                <h2 class="text-3xl font-bold mb-4">Support Dagbani Korli</h2>
+                <p class="text-lg opacity-90 mb-6">Help preserve and promote the Dagbani language for future generations. Your contribution makes a difference!</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Ways to Support</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="border-2 border-amber-200 rounded-xl p-6 hover:border-amber-400 transition">
+                        <div class="text-4xl mb-3">💳</div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">One-Time Donation</h4>
+                        <p class="text-gray-600 mb-4">Make a single contribution to support the project</p>
+                        <div class="space-y-2 mb-4">
+                            <button onclick="processDonation(5)" class="w-full px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 transition">
+                                $5
+                            </button>
+                            <button onclick="processDonation(10)" class="w-full px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 transition">
+                                $10
+                            </button>
+                            <button onclick="processDonation(25)" class="w-full px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 transition">
+                                $25
+                            </button>
+                            <button onclick="processDonation(50)" class="w-full px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 transition">
+                                $50
+                            </button>
+                        </div>
+                        <input 
+                            type="number" 
+                            id="custom-amount" 
+                            placeholder="Custom amount" 
+                            min="1"
+                            class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 mb-2"
+                        >
+                        <button onclick="processCustomDonation()" class="w-full px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">
+                            Donate Custom Amount
+                        </button>
+                    </div>
+
+                    <div class="border-2 border-blue-200 rounded-xl p-6 hover:border-blue-400 transition">
+                        <div class="text-4xl mb-3">🔄</div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Monthly Support</h4>
+                        <p class="text-gray-600 mb-4">Become a monthly supporter and help sustain the project</p>
+                        <div class="space-y-2">
+                            <button onclick="processMonthlyDonation(5)" class="w-full px-4 py-2 bg-blue-100 text-blue-800 rounded-lg font-semibold hover:bg-blue-200 transition">
+                                $5/month
+                            </button>
+                            <button onclick="processMonthlyDonation(10)" class="w-full px-4 py-2 bg-blue-100 text-blue-800 rounded-lg font-semibold hover:bg-blue-200 transition">
+                                $10/month
+                            </button>
+                            <button onclick="processMonthlyDonation(25)" class="w-full px-4 py-2 bg-blue-100 text-blue-800 rounded-lg font-semibold hover:bg-blue-200 transition">
+                                $25/month
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h4 class="font-bold text-gray-800 mb-3">What Your Donation Supports:</h4>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-600">✓</span>
+                            <span>Server maintenance and hosting costs</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-600">✓</span>
+                            <span>Development of new features (offline mode, mobile apps)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-600">✓</span>
+                            <span>Community outreach and language preservation programs</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-600">✓</span>
+                            <span>Audio recording equipment for elders</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="text-center text-sm text-gray-600">
+                    <p>All donations are processed securely. We accept major credit cards and PayPal.</p>
+                    <p class="mt-2">For alternative payment methods, please contact: support@dagbanikorli.org</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings View -->
+    <div id="settings-view" class="view hidden container mx-auto px-4 py-6">
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Settings</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Data Management</h3>
+                        <div class="space-y-3">
+                            <button onclick="exportData()" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
+                                📥 Export Data (Backup)
+                            </button>
+                            <label class="block">
+                                <span class="sr-only">Import Data</span>
+                                <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
+                                <span class="block w-full px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-center cursor-pointer">
+                                    📤 Import Data (Restore)
+                                </span>
+                            </label>
+                            <label class="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                                <input type="checkbox" id="import-merge" class="w-4 h-4 rounded border-gray-300">
+                                Merge (add to existing) instead of replace
+                            </label>
+                            <button onclick="clearAllData()" class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">
+                                🗑️ Clear All Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Preferences</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between">
+                                <span class="text-gray-700">Dark Mode</span>
+                                <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()" class="w-4 h-4">
+                            </label>
+                            <label class="flex items-center justify-between">
+                                <span class="text-gray-700">Show Search History</span>
+                                <input type="checkbox" id="show-history" checked onchange="saveSettings()" class="w-4 h-4">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Account</h3>
+                        <div id="user-info" class="space-y-2 text-gray-700">
+                            <p><strong>Username:</strong> <span id="settings-username">-</span></p>
+                            <p><strong>Email:</strong> <span id="settings-email">-</span></p>
+                            <p><strong>Member Since:</strong> <span id="settings-date">-</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-xl z-50 fade-in">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // Application State
+        let appState = {
+            words: [],
+            pendingSubmissions: [],
+            currentUser: null,
+            users: [],
+            favorites: [],
+            searchHistory: [],
+            currentView: 'dictionary',
+            currentDialect: 'all',
+            mediaRecorder: null,
+            audioChunks: [],
+            recording: false,
+            quizState: null,
+            numbersQuizState: null,
+            selectedPracticeWords: [],
+            currentPracticeMode: 'numbers',
+            categories: ['general', 'greetings', 'food', 'family', 'nature', 'verbs', 'adjectives', 'other'],
+            browseLetterFilter: 'all'
+        };
+
+        const DAGBANI_NUMBERS = {
+            1:'yini',2:'ayi',3:'ata',4:'anahi',5:'anu',6:'ayobu',7:'ayopɔin',8:'anii',9:'awɔi',10:'pia',
+            11:'pia ni yini',12:'pia ni ayi',13:'pia ni ata',14:'pia ni anahi',15:'pia ni anu',16:'pia ni ayobu',17:'pia ni ayopɔin',18:'pishi ayi ka',19:'pishi yini ka',20:'pishi',
+            21:'pishi ni yini',30:'pishi ni pia',40:'pinai',50:'pinai ni pia',60:'pihinu',70:'pihinu ni pia',80:'pihinii',90:'pihinii ni pia',100:'kɔbiga'
+        };
+        const ENGLISH_NUMBERS = {1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven',8:'eight',9:'nine',10:'ten',11:'eleven',12:'twelve',13:'thirteen',14:'fourteen',15:'fifteen',16:'sixteen',17:'seventeen',18:'eighteen',19:'nineteen',20:'twenty',21:'twenty-one',30:'thirty',40:'forty',50:'fifty',60:'sixty',70:'seventy',80:'eighty',90:'ninety',100:'one hundred'};
+
+        const DAGBANI_NAMES = [
+            {name:'Dayuuni', meaning:'A child whose pregnancy extended beyond 9 months to a year', category:'Naawuni Zaligu Yuya', gender:'both'},
+            {name:'Chempaŋ', meaning:'Forgiveness', category:'Ŋaha Yuya', gender:'both'},
+            {name:'Bitam Simli', meaning:"They've Forgotten Friendship", category:'Ŋaha Yuya', gender:'both'},
+            {name:'Nayi', meaning:'', category:'Dɔɣirikpihim Yuya', gender:'both'},
+            {name:'Wumpaga', meaning:'', category:'Naawuni Zaligu Yuya', gender:'m'},
+            {name:'Beŋmali', meaning:'Someone born at dawn', category:'Saha Yuya', gender:'both'},
+            {name:'Siɣli', meaning:'A boy born during the rainy season', category:'Saha Yuya', variant:'Sigli', gender:'m'},
+            {name:'Chipura', meaning:'', category:'Buɣa Yuya', gender:'both'},
+            {name:'Ziŋnaa', meaning:'', category:'Saha Yuya', gender:'both'},
+            {name:'Pabo', meaning:'A person born from the blessings of the Pabo shrine', category:'Buɣa Yuya', gender:'both'},
+            {name:'Fulani', meaning:'Fulani (literally). Someone born and picked as a friend on his birth time by a Fula man/woman', category:'Dɔɣirikpihim Yuya', gender:'both'},
+            {name:'Zabaɣpaɣa', meaning:"Gonja woman (literally). Someone born and picked as a friend on his birth time by a Gonja man/woman", category:'Dɔɣirikpihim Yuya', variant:'Zabaga, Zabagpaga', gender:'f'},
+            {name:'Beininya', meaning:'live to see', category:'Ŋaha Yuya', gender:'both'},
+            {name:'Chentima', meaning:'Leave it unto me', category:'Ŋaha Yuya', gender:'both'},
+            {name:'Bandangria', meaning:"The earlier goers (the dead) are used to it (death)", category:'Ŋaha Yuya', gender:'both'},
+            {name:'Dingariba', meaning:"They'll be shocked", category:'Ŋaha Yuya', gender:'both'},
+            {name:'Timtooni', meaning:'progress or moving forward', category:'Saha Yuya', gender:'both'},
+            {name:'Tiyuuniba', meaning:"We're Monitoring Them", category:'Ŋaha Yuya', gender:'both'},
+            {name:'Yurilim', meaning:'Love', category:'Daliri Yuya', gender:'both'},
+            {name:'Gambila', meaning:'', category:'Buɣa Yuya', gender:'both'},
+            {name:'Wunpini', meaning:'', category:'Naawuni Zaligu Yuya', gender:'f'}
+        ];
+
+        const DAGBON_KINGS = [
+            {name:'Naa Gbewaa', reign:'1300s', achievement:'Founder of the Kingdoms of Mamprugu, Dagbon, and Nanung. Fathered many children. His shrine is at Pusiga. Established a stable kingdom. Adopted the Lion of Gbewaa as emblem.', ref:'Wikipedia: Naa Gbewaa, List of kings of Dagbon'},
+            {name:'Naa Shitobu', reign:'1300s–1400s', achievement:'Son of Naa Gbewaa. Adopted the title Ya Naa ("king of strength"). Led most of Gbewaa\'s children southward. Retained royal regalia and Dagbon name. Tomb at Karaga.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Nyaɣisi', reign:'1415–1432', achievement:'Son of Shitobu. Built new capital at Diyeli.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Zulandi', reign:'1432–1442', achievement:'Continued consolidation of the kingdom.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Biriyɔmda', reign:'1442–1456', achievement:'Ruled during kingdom expansion. Also known as Biriguyɔmda.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Daligu Damda', reign:'1454–1469', achievement:'Strengthened central authority.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Zoligu', reign:'1469–1486', achievement:'Extended Dagbon territories.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Zɔŋ', reign:'1486–1506', achievement:'Consolidated northern Dagbon.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Niŋmitooni', reign:'1506–1514', achievement:'Maintained kingdom stability.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Dimani', reign:'1514–1527', achievement:'Continued dynasty expansion.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Yɛnzoo', reign:'1527–1543', achievement:'Ruled during a prosperous period.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Dariʒiɛɣu', reign:'1543–1554', achievement:'Fortified kingdom borders.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Luro', reign:'1554–1570', achievement:'Defended against external pressures.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Titugri', reign:'1570–1589', achievement:'Strengthened chiefdom hierarchy.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Zaɣili', reign:'1589–1608', achievement:'Expanded trade routes.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Zokuli', reign:'1609–1627', achievement:'Fathered Bounkani in Bouna; his progeny established the Bouna Kingdom in present-day Ivory Coast.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Gungobili', reign:'1627–1648', achievement:'Maintained kingdom cohesion.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Zanjina', reign:'1648–1677', achievement:'Long reign during Asante rise.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Andani I', reign:'1677–1687', achievement:'Andani Sighle "Bangumanga". Founder of Andani royal gate.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Binbiɛɣu', reign:'1687–1700', achievement:'Ruled during period of change.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Gariba I', reign:'1700–1720', achievement:'Established Gariba lineage.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Saalana Ziblim I', reign:'1720–1735', achievement:'Strengthened ties with sub-chiefdoms.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Ziblim Bandamda II', reign:'1735–1749', achievement:'Managed Asante relations.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Andani Jaŋgbariga II', reign:'1749–1765', achievement:'Andani Jaŋgbariga. Andani gate succession.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Mahami I', reign:'1765–1785', achievement:'Mahami Koringa. Long reign during colonial era.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Sumani Zoli', reign:'1778–1779', achievement:'Sumani Zoli. Brief reign.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Ziblim III', reign:'1740–1760', achievement:'Ziblim Kuliŋku. Ruled in a period of contested succession.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Yakubu I', reign:'1799–1839', achievement:'Also known as Yakuba. Navigated Asante tributary period. One of the best-documented 19th-century Ya Na.', ref:'Wikipedia: Yakubu I, List of kings of Dagbon'},
+            {name:'Yaa Naa Abdulai I', reign:'1864–1876', achievement:'Abdulai Naɣibiɛɣu. Ruled during British expansion.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Andani II', reign:'1876–1899', achievement:'Andani Jirilɔŋ. Faced German colonial pressures; Battle of Adigbo 1896.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Alaasani Tipariga', reign:'1899–1917', achievement:'Reigned during partition between German Togoland and British Gold Coast.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Aburu Satankuɣili II', reign:'1917–1938', achievement:'Ruled as regent until 1920. Reunification period after WWI.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Mahama Kpɛma II', reign:'1938–1948', achievement:'Mahama Kpɛma. Died 6 Feb 1948. Pre-independence era.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Mahama Bila III', reign:'1948–1953', achievement:'Brief reign during independence movement.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Abdulai Bila III', reign:'1953–1967', achievement:'Long reign spanning Ghana\'s independence in 1957.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Andani Zɔlikuɣili III', reign:'1968–1969', achievement:'Short reign during political turmoil.', ref:'Wikipedia: List of kings of Dagbon'},
+            {name:'Yaa Naa Mahamadu IV', reign:'1969–1974', achievement:'Mahamadu. Removed from office. Succession dispute period.', ref:'Wikipedia: Mahamadu IV, List of kings of Dagbon', image:'images/kings/mahamadu_iv.png'},
+            {name:'Yaa Naa Yakubu II', reign:'1974–2002', achievement:'Yakubu Andani II. Murdered 27 March 2002 along with 39 elders in the palace. His death triggered the 17-year Dagbon chieftaincy conflict.', ref:'Wikipedia: Yakubu II, List of kings of Dagbon', image:'images/kings/yakubu_ii.png'},
+            {name:'Yaa Naa Abubakari Mahama II', reign:'2019–present', achievement:'Also known as Gariba II or Bukali II. 41st Yaa Naa. Born Abubakari, son of Mahama II. Enskinned 25 January 2019 after peace agreements. Ended 17-year vacancy. From Andani family. Launched Dagbon Development Fund, Gbewaa Palace redevelopment.', ref:'Wikipedia: Gariba II, Graphic Online, Citinewsroom', image:'images/kings/abubakari_mahama_ii.png'}
+        ];
+        const MASCULINE_IMG = 'images/boy.png';
+        const FEMININE_IMG = 'images/girl.png';
+
+        // Initialize App
+        function init() {
+            loadData();
+            checkAuth();
+            updateWordOfTheDay();
+            populateCategories();
+        }
+
+        // Authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                appState.currentUser = JSON.parse(currentUser);
+                showMainApp();
+            } else {
+                showLoginModal();
+            }
+        }
+
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('main-nav').style.display = 'none';
+        }
+
+        function showMainApp() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('main-nav').style.display = 'flex';
+            if (appState.currentUser) {
+                document.getElementById('user-badge').textContent = appState.currentUser.username;
+                document.getElementById('user-badge').classList.remove('hidden');
+                document.getElementById('logout-btn').style.display = 'block';
+                updateUserInfo();
+            }
+            showView('dictionary');
+            updateFavoritesCount();
+            updatePendingCount();
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            
+            if (!username || !password) {
+                showToast('Please enter both username and password', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => (u.username === username || u.email === username) && u.password === password);
+            
+            if (user) {
+                appState.currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showToast('Welcome back, ' + user.username + '!');
+                showMainApp();
+            } else {
+                showToast('Invalid username or password', 'error');
+            }
+        }
+
+        function handleRegister() {
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+            
+            if (!username || !email || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            if (users.find(u => u.username === username)) {
+                showToast('Username already exists', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                showToast('Email already registered', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                username,
+                email,
+                password,
+                dateJoined: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            appState.currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            showToast('Account created successfully!');
+            showMainApp();
+        }
+
+        function showRegisterForm() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-form').classList.remove('hidden');
+        }
+
+        function showLoginForm() {
+            document.getElementById('register-form').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+        }
+
+        function skipLogin() {
+            appState.currentUser = { id: 'guest', username: 'Guest', email: '', dateJoined: new Date().toISOString() };
+            showMainApp();
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                appState.currentUser = null;
+                showLoginModal();
+                showToast('Logged out successfully');
+            }
+        }
+
+        function updateUserInfo() {
+            if (appState.currentUser) {
+                document.getElementById('settings-username').textContent = appState.currentUser.username;
+                document.getElementById('settings-email').textContent = appState.currentUser.email || 'Not provided';
+                document.getElementById('settings-date').textContent = new Date(appState.currentUser.dateJoined).toLocaleDateString();
+            }
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const savedWords = localStorage.getItem('dagbaniWords');
+            const savedPending = localStorage.getItem('dagbaniPending');
+            const savedFavorites = localStorage.getItem('dagbaniFavorites');
+            const savedHistory = localStorage.getItem('dagbaniSearchHistory');
+            
+            if (savedWords) {
+                appState.words = JSON.parse(savedWords);
+            } else {
+                appState.words = [];
+                fetch('dictionary_data.json').then(r=>r.ok?r.json():{}).then(data=>{
+                    if (data && Array.isArray(data.words) && data.words.length > 0) {
+                        appState.words = data.words;
+                        saveData();
+                        if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
+                        if (typeof applyFilters === 'function') applyFilters();
+                    }
+                }).catch(()=>{});
+                saveData();
+            }
+            
+            if (savedPending) {
+                appState.pendingSubmissions = JSON.parse(savedPending);
+            }
+            
+            if (savedFavorites) {
+                appState.favorites = JSON.parse(savedFavorites);
+            }
+            
+            if (savedHistory) {
+                appState.searchHistory = JSON.parse(savedHistory);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('dagbaniWords', JSON.stringify(appState.words));
+            localStorage.setItem('dagbaniPending', JSON.stringify(appState.pendingSubmissions));
+            localStorage.setItem('dagbaniFavorites', JSON.stringify(appState.favorites));
+            localStorage.setItem('dagbaniSearchHistory', JSON.stringify(appState.searchHistory));
+        }
+
+        // View Navigation
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.add('hidden');
+                view.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-700');
+            });
+            
+            const selectedView = document.getElementById(`${viewName}-view`);
+            if (selectedView) {
+                selectedView.classList.remove('hidden');
+                selectedView.style.display = 'block';
+            }
+            
+            const navBtn = document.querySelector(`[data-view="${viewName}"]`);
+            if (navBtn) {
+                navBtn.classList.add('bg-amber-700');
+            }
+            
+            appState.currentView = viewName;
+            
+            if (viewName === 'review') {
+                renderPendingSubmissions();
+            } else if (viewName === 'favorites') {
+                renderFavorites();
+            } else if (viewName === 'settings') {
+                updateUserInfo();
+            } else if (viewName === 'browse') {
+                renderBrowseDictionary();
+            } else if (viewName === 'learn') {
+                showLearnSection('practice');
+            }
+        }
+
+        function showLearnSection(section) {
+            document.querySelectorAll('.learn-section-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.learn-section-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800');
+                btn.classList.add('border-gray-300', 'text-gray-700');
+            });
+            const panel = document.getElementById(`learn-${section}`);
+            const btn = document.querySelector(`[data-section="${section}"]`);
+            if (panel) panel.classList.remove('hidden');
+            if (btn) {
+                btn.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800');
+                btn.classList.remove('border-gray-300', 'text-gray-700');
+            }
+            if (section === 'practice') showPracticeMode('numbers');
+            if (section === 'names') { filterNames(); populateNamesCategories(); }
+            if (section === 'history') showHistoryTab('kingdom');
+        }
+
+        const KING_CROWN_SVG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%23fef3c7" stroke="%23b45309" stroke-width="2"/><path d="M32 14 L38 28 L52 30 L42 42 L46 54 L32 46 L18 54 L22 42 L12 30 L26 28 Z" fill="%23d97706"/><ellipse cx="32" cy="44" rx="8" ry="6" fill="%23b45309" opacity="0.4"/></svg>');
+        const KING_GBEWAA_PALACE_IMG = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gbewaa_palace_in_Yendi.jpg/330px-Gbewaa_palace_in_Yendi.jpg';
+        function getReignYearsCount(reign) {
+            const r = (reign || '').replace(/[\u2013\u2014\u2212]/g, '-');
+            if (/present/i.test(r)) {
+                const m = r.match(/(\d{4})\s*-\s*present/i);
+                if (m) return (new Date().getFullYear() - parseInt(m[1], 10)) + ' yrs';
+            }
+            const m = r.match(/(\d{4})\s*[-\u2013]\s*(\d{4})/);
+            if (m) {
+                const yrs = parseInt(m[2], 10) - parseInt(m[1], 10);
+                return yrs + ' yrs';
+            }
+            const single = r.match(/(\d{4})/);
+            if (single) return '~1 yr';
+            if (/1300s-1400s|1300s–1400s/i.test(r)) return '~100 yrs';
+            if (/1300s/i.test(r)) return '~100 yrs';
+            return '';
+        }
+        function renderKingsDiagram() {
+            const container = document.getElementById('kings-diagram');
+            if (!container) return;
+            container.innerHTML = DAGBON_KINGS.map((k, i) => {
+                const num = i + 1;
+                const yrs = getReignYearsCount(k.reign);
+                const imgSrc = k.image || KING_GBEWAA_PALACE_IMG;
+                return `
+                <button onclick="showKingDetail(${i})" class="relative text-left p-3 rounded-lg border border-amber-200 hover:border-amber-400 hover:bg-amber-50 transition flex flex-row items-center gap-3 w-full">
+                    <span class="absolute top-1.5 right-1.5 w-5 h-5 bg-amber-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">${num}</span>
+                    <div class="flex-1 min-w-0 text-left">
+                        <span class="block font-bold text-amber-700 text-xs truncate">${escapeHtml(k.name)}</span>
+                        <span class="block text-[11px] text-gray-600">${escapeHtml(k.reign)}</span>
+                        ${yrs ? `<span class="block text-[11px] text-amber-600">${yrs}</span>` : ''}
+                        <span class="block text-[10px] text-amber-500 mt-0.5">Click to read →</span>
+                    </div>
+                    <img src="${imgSrc}" alt="${escapeHtml(k.name)}" class="w-16 h-16 flex-shrink-0 object-cover rounded-lg aspect-square bg-amber-100" onerror="this.onerror=null;this.src='${KING_GBEWAA_PALACE_IMG}'">
+                </button>
+            `;
+            }).join('');
+        }
+
+        function showKingDetail(index) {
+            const k = DAGBON_KINGS[index];
+            if (!k) return;
+            const yrs = getReignYearsCount(k.reign);
+            const imgEl = document.getElementById('king-modal-img');
+            if (imgEl) {
+                imgEl.src = k.image || KING_GBEWAA_PALACE_IMG;
+                imgEl.alt = k.name;
+                imgEl.onerror = function() { this.src = KING_GBEWAA_PALACE_IMG; };
+            }
+            document.getElementById('king-modal-name').textContent = (index + 1) + '. ' + k.name;
+            document.getElementById('king-modal-reign').textContent = 'Reign: ' + k.reign + (yrs ? ' (' + yrs + ')' : '');
+            document.getElementById('king-modal-content').innerHTML = '<p>' + escapeHtml(k.achievement) + '</p>';
+            document.getElementById('king-modal-ref').textContent = 'Source: ' + k.ref;
+            document.getElementById('king-modal').classList.remove('hidden');
+            document.getElementById('king-modal').classList.add('flex');
+        }
+
+        function closeKingModal(ev) {
+            if (ev && ev.target !== ev.currentTarget) return;
+            document.getElementById('king-modal').classList.add('hidden');
+        }
+
+        function showHistoryTab(tab) {
+            document.querySelectorAll('.history-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.history-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800');
+                btn.classList.add('border-gray-300', 'text-gray-700');
+            });
+            const panel = document.getElementById(`history-${tab}`);
+            const btn = document.querySelector(`.history-tab-btn[data-tab="${tab}"]`);
+            if (panel) panel.classList.remove('hidden');
+            if (btn) {
+                btn.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800');
+                btn.classList.remove('border-gray-300', 'text-gray-700');
+            }
+            if (tab === 'kings') renderKingsDiagram();
+        }
+
+        function populateNamesCategories() {
+            const sel = document.getElementById('names-category-filter');
+            if (!sel) return;
+            if (sel.dataset.populated === '1') return;
+            sel.dataset.populated = '1';
+            const cats = [...new Set(DAGBANI_NAMES.map(n => n.category).filter(Boolean))].sort();
+            cats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                sel.appendChild(opt);
+            });
+        }
+
+        function filterNames() {
+            const query = (document.getElementById('names-search')?.value || '').trim().toLowerCase();
+            const catFilter = document.getElementById('names-category-filter')?.value || '';
+            let list = DAGBANI_NAMES;
+            if (catFilter) list = list.filter(n => n.category === catFilter);
+            if (query) list = list.filter(n =>
+                (n.name || '').toLowerCase().includes(query) ||
+                (n.variant || '').toLowerCase().includes(query) ||
+                (n.meaning || '').toLowerCase().includes(query) ||
+                (n.category || '').toLowerCase().includes(query)
+            );
+            const container = document.getElementById('names-list');
+            if (!container) return;
+            const g = n => n.gender || 'both';
+            const imgHtml = n => {
+                if (g(n) === 'm') return `<img src="${MASCULINE_IMG}" alt="masculine" class="w-14 h-14 mx-auto object-contain rounded-full">`;
+                if (g(n) === 'f') return `<img src="${FEMININE_IMG}" alt="feminine" class="w-14 h-14 mx-auto object-contain rounded-full">`;
+                return `<div class="flex justify-center gap-1"><img src="${MASCULINE_IMG}" alt="masculine" class="w-12 h-12 object-contain rounded-full"><img src="${FEMININE_IMG}" alt="feminine" class="w-12 h-12 object-contain rounded-full"></div>`;
+            };
+            container.innerHTML = list.length ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${list.map(n => `
+                <div class="border border-amber-200 rounded-xl p-4 hover:border-amber-400 hover:bg-amber-50/30 transition flex flex-col">
+                    <div class="mb-3">${imgHtml(n)}</div>
+                    <div class="flex flex-wrap items-baseline gap-2 mb-1">
+                        <span class="text-lg font-bold text-amber-700">${escapeHtml(n.name)}</span>
+                        ${n.variant ? `<span class="text-xs text-gray-500">(${escapeHtml(n.variant)})</span>` : ''}
+                    </div>
+                    ${n.meaning ? `<p class="text-gray-700 text-sm mb-2 flex-1 line-clamp-3">${escapeHtml(n.meaning)}</p>` : '<p class="flex-1 min-h-[2rem]"></p>'}
+                    <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-amber-100 text-amber-800 mt-auto">${escapeHtml(n.category)}</span>
+                </div>
+            `).join('')}</div>` : '<p class="text-gray-500">No names found.</p>';
+        }
+
+        function showPracticeMode(mode) {
+            document.querySelectorAll('.practice-mode-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.practice-mode-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800');
+                btn.classList.add('border-gray-300', 'text-gray-700');
+            });
+            const panel = document.getElementById(`practice-${mode}`);
+            const btn = document.querySelector(`[data-mode="${mode}"]`);
+            if (panel) panel.classList.remove('hidden');
+            if (btn) {
+                btn.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800');
+                btn.classList.remove('border-gray-300', 'text-gray-700');
+            }
+            appState.currentPracticeMode = mode;
+            document.getElementById('practice-quiz-panel')?.classList.add('hidden');
+            document.getElementById('numbers-quiz-panel')?.classList.add('hidden');
+            if (mode === 'select') filterSelectWords();
+        }
+
+        // Word of the Day
+        function updateWordOfTheDay() {
+            const verifiedWords = appState.words.filter(w => w.verified);
+            if (verifiedWords.length > 0) {
+                const today = new Date().getDate();
+                const wordIndex = today % verifiedWords.length;
+                const word = verifiedWords[wordIndex];
+                document.getElementById('wotd-dagbani').textContent = word.dagbani;
+                document.getElementById('wotd-english').textContent = word.english;
+            }
+        }
+
+        // Search Functionality
+        function handleSearch(event) {
+            if (event.key === 'Enter' || event.type === 'input') {
+                const query = document.getElementById('search-input').value.toLowerCase().trim();
+                const direction = document.getElementById('search-direction').value;
+                
+                if (!query) {
+                    document.getElementById('search-results').innerHTML = '';
+                    document.getElementById('no-results').classList.add('hidden');
+                    document.getElementById('search-suggestions').classList.add('hidden');
+                    return;
+                }
+                
+                // Add to search history
+                if (!appState.searchHistory.includes(query)) {
+                    appState.searchHistory.unshift(query);
+                    appState.searchHistory = appState.searchHistory.slice(0, 10);
+                    saveData();
+                    renderSearchHistory();
+                }
+                
+                applyFilters();
+            }
+        }
+
+        function showSearchSuggestions() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const suggestions = document.getElementById('search-suggestions');
+            
+            if (query.length < 2) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+            
+            const matches = appState.words
+                .filter(w => w.verified && (
+                    w.english.toLowerCase().includes(query) || 
+                    w.dagbani.toLowerCase().includes(query)
+                ))
+                .slice(0, 5);
+            
+            if (matches.length > 0) {
+                suggestions.innerHTML = matches.map(word => `
+                    <div class="p-3 hover:bg-amber-50 cursor-pointer border-b border-gray-100" onclick="selectSuggestion('${escapeHtml(word.dagbani)}')">
+                        <div class="font-semibold text-amber-700">${escapeHtml(word.dagbani)}</div>
+                        <div class="text-sm text-gray-600">${escapeHtml(word.english)}</div>
+                    </div>
+                `).join('');
+                suggestions.classList.remove('hidden');
+            } else {
+                suggestions.classList.add('hidden');
+            }
+        }
+
+        function selectSuggestion(text) {
+            document.getElementById('search-input').value = text;
+            document.getElementById('search-suggestions').classList.add('hidden');
+            handleSearch({ key: 'Enter' });
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const direction = document.getElementById('search-direction').value;
+            const hasAudio = document.getElementById('filter-audio').checked;
+            const verifiedOnly = document.getElementById('filter-verified').checked;
+            const category = document.getElementById('filter-category').value;
+            
+            if (!query) {
+                document.getElementById('search-results').innerHTML = '';
+                document.getElementById('no-results').classList.add('hidden');
+                return;
+            }
+            
+            let results = appState.words.filter(word => {
+                if (verifiedOnly && !word.verified) return false;
+                if (appState.currentDialect !== 'all' && word.dialect !== appState.currentDialect) return false;
+                if (hasAudio && !word.audio) return false;
+                if (category !== 'all' && word.category !== category) return false;
+                
+                const matchesEnglish = word.english.toLowerCase().includes(query);
+                const matchesDagbani = word.dagbani.toLowerCase().includes(query);
+                
+                if (direction === 'en-dag') return matchesEnglish;
+                if (direction === 'dag-en') return matchesDagbani;
+                return matchesEnglish || matchesDagbani;
+            });
+            
+            renderSearchResults(results);
+        }
+
+        function renderSearchResults(results) {
+            const container = document.getElementById('search-results');
+            const noResults = document.getElementById('no-results');
+            
+            if (results.length === 0) {
+                container.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            container.innerHTML = results.map(word => {
+                const isFavorite = appState.favorites.includes(word.id);
+                return `
+                <div class="bg-white rounded-2xl shadow-xl p-6 fade-in">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="text-2xl font-bold text-amber-700">${escapeHtml(word.dagbani)}</h3>
+                                <button onclick="toggleFavorite(${word.id})" class="text-2xl ${isFavorite ? 'text-red-500' : 'text-gray-300'} hover:text-red-500 transition">
+                                    ${isFavorite ? '❤️' : '🤍'}
+                                </button>
+                                <button onclick="shareWord(${word.id})" class="text-xl text-gray-400 hover:text-amber-600 transition" title="Share">
+                                    🔗
+                                </button>
+                            </div>
+                            <p class="text-xl font-semibold text-gray-700 mb-2">${escapeHtml(word.english)}</p>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold">
+                                    ${word.dialect.charAt(0).toUpperCase() + word.dialect.slice(1)}
+                                </span>
+                                <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                                    ${word.category.charAt(0).toUpperCase() + word.category.slice(1)}
+                                </span>
+                            </div>
+                        </div>
+                        ${word.audio ? `
+                            <audio controls class="ml-4">
+                                <source src="${word.audio}" type="audio/webm">
+                            </audio>
+                        ` : ''}
+                    </div>
+                    ${word.picture ? `
+                        <div class="mt-3">
+                            <img src="${word.picture}" alt="${escapeHtml(word.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain">
+                        </div>
+                    ` : ''}
+                    ${word.etymology ? `
+                        <div class="mt-3 p-3 bg-amber-50 rounded-lg border-l-4 border-amber-400">
+                            <p class="text-sm font-semibold text-amber-800 mb-1">Etymology:</p>
+                            <p class="text-sm text-gray-700">${escapeHtml(word.etymology)}</p>
+                        </div>
+                    ` : ''}
+                    ${word.grammar ? `
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                            <p class="text-sm font-semibold text-blue-800 mb-1">Grammar Notes:</p>
+                            <p class="text-sm text-gray-700">${escapeHtml(word.grammar)}</p>
+                        </div>
+                    ` : ''}
+                    ${word.example ? `
+                        <div class="mt-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
+                            <p class="text-sm font-semibold text-green-800 mb-1">Example:</p>
+                            <p class="text-sm text-gray-700">${escapeHtml(word.example)}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            }).join('');
+        }
+
+        function renderSearchHistory() {
+            const historySection = document.getElementById('search-history-section');
+            const historyContainer = document.getElementById('search-history');
+            
+            if (appState.searchHistory.length > 0 && document.getElementById('show-history').checked) {
+                historyContainer.innerHTML = appState.searchHistory.slice(0, 5).map(term => `
+                    <button onclick="searchFromHistory('${escapeHtml(term)}')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-amber-100 hover:text-amber-800 transition">
+                        ${escapeHtml(term)}
+                    </button>
+                `).join('');
+                historySection.classList.remove('hidden');
+            } else {
+                historySection.classList.add('hidden');
+            }
+        }
+
+        function searchFromHistory(term) {
+            document.getElementById('search-input').value = term;
+            handleSearch({ key: 'Enter' });
+        }
+
+        function populateCategories() {
+            const select = document.getElementById('filter-category');
+            appState.categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+                select.appendChild(option);
+            });
+        }
+
+        // Dialect Filter
+        function filterDialect(dialect) {
+            appState.currentDialect = dialect;
+            
+            document.querySelectorAll('.dialect-filter').forEach(btn => {
+                if (btn.dataset.dialect === dialect) {
+                    btn.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-700');
+                    btn.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800', 'font-semibold');
+                } else {
+                    btn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800', 'font-semibold');
+                    btn.classList.add('bg-gray-100', 'border-gray-300', 'text-gray-700');
+                }
+            });
+            
+            const query = document.getElementById('search-input').value;
+            if (query) {
+                applyFilters();
+            }
+        }
+
+        // Favorites
+        function toggleFavorite(wordId) {
+            const index = appState.favorites.indexOf(wordId);
+            if (index > -1) {
+                appState.favorites.splice(index, 1);
+                showToast('Removed from favorites');
+            } else {
+                appState.favorites.push(wordId);
+                showToast('Added to favorites');
+            }
+            saveData();
+            updateFavoritesCount();
+            if (appState.currentView === 'favorites') {
+                renderFavorites();
+            } else {
+                applyFilters();
+            }
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favorites-list');
+            const favoriteWords = appState.words.filter(w => appState.favorites.includes(w.id) && w.verified);
+            
+            if (favoriteWords.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No favorites yet. Start adding words to your favorites!</p>';
+                return;
+            }
+            
+            container.innerHTML = favoriteWords.map(word => `
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-amber-200 fade-in">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">${escapeHtml(word.english)}</h3>
+                            <p class="text-3xl font-semibold text-amber-700 mb-2">${escapeHtml(word.dagbani)}</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${word.dialect}</span>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">${word.category}</span>
+                            </div>
+                        </div>
+                        <button onclick="toggleFavorite(${word.id})" class="text-2xl text-red-500 hover:text-red-700">❤️</button>
+                    </div>
+                    ${word.grammar ? `<p class="mt-3 text-sm text-gray-600">${escapeHtml(word.grammar)}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateFavoritesCount() {
+            const count = appState.favorites.length;
+            const badge = document.getElementById('favorites-count');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Share Functionality
+        function shareWord(wordId) {
+            const word = appState.words.find(w => w.id === wordId);
+            if (word) {
+                const text = `${word.dagbani} → ${word.english}\n\nFrom Dagbani Korli Community Lexicon`;
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Dagbani Korli',
+                        text: text
+                    });
+                } else {
+                    navigator.clipboard.writeText(text);
+                    showToast('Word copied to clipboard!');
+                }
+            }
+        }
+
+        // Practice/Quiz
+        function startQuiz(mode) {
+            appState.currentPracticeMode = mode === 'select' ? 'select' : (mode === 'random' ? 'random' : 'words');
+            let verifiedWords = appState.words.filter(w => w.verified);
+            let count, type;
+            if (mode === 'select') {
+                verifiedWords = appState.selectedPracticeWords;
+                if (verifiedWords.length < 3) {
+                    showToast('Select at least 3 words to practice.', 'error');
+                    return;
+                }
+                count = Math.min(verifiedWords.length, 20);
+                type = 'mixed';
+            } else if (mode === 'random') {
+                count = parseInt(document.getElementById('random-quiz-count')?.value || 15);
+                type = 'mixed';
+            } else {
+                count = parseInt(document.getElementById('quiz-count').value);
+                type = document.getElementById('quiz-type').value;
+            }
+            
+            if (verifiedWords.length < count) {
+                showToast('Not enough words. Add more words first!', 'error');
+                return;
+            }
+            
+            const shuffled = [...verifiedWords].sort(() => Math.random() - 0.5).slice(0, count);
+            
+            appState.quizState = {
+                questions: shuffled.map(word => {
+                    const isEnglish = type === 'en-dag' || (type === 'mixed' && Math.random() > 0.5);
+                    const wrongAnswers = verifiedWords
+                        .filter(w => w.id !== word.id)
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, 3)
+                        .map(w => isEnglish ? w.dagbani : w.english);
+                    
+                    const correctAnswer = isEnglish ? word.dagbani : word.english;
+                    const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+                    
+                    return {
+                        question: isEnglish ? word.english : word.dagbani,
+                        correctAnswer,
+                        answers: allAnswers,
+                        isEnglish
+                    };
+                }),
+                current: 0,
+                score: 0,
+                answered: false
+            };
+            
+            document.querySelectorAll('.practice-mode-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('practice-quiz-panel')?.classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-active').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        function startSelectedWordsQuiz() {
+            startQuiz('select');
+        }
+
+        function renderQuizQuestion() {
+            const quiz = appState.quizState;
+            const question = quiz.questions[quiz.current];
+            
+            document.getElementById('quiz-question').textContent = question.question;
+            document.getElementById('quiz-current').textContent = quiz.current + 1;
+            document.getElementById('quiz-total').textContent = quiz.questions.length;
+            document.getElementById('quiz-progress').style.width = `${((quiz.current + 1) / quiz.questions.length) * 100}%`;
+            
+            document.getElementById('quiz-options').innerHTML = question.answers.map((answer, index) => `
+                <button 
+                    onclick="selectQuizAnswer('${escapeHtml(answer)}')" 
+                    class="quiz-option px-6 py-4 bg-gray-100 hover:bg-amber-100 border-2 border-gray-300 rounded-lg font-semibold text-lg transition"
+                    data-answer="${escapeHtml(answer)}"
+                >
+                    ${escapeHtml(answer)}
+                </button>
+            `).join('');
+            
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('quiz-next').classList.add('hidden');
+            quiz.answered = false;
+        }
+
+        function selectQuizAnswer(answer) {
+            if (appState.quizState.answered) return;
+            
+            const quiz = appState.quizState;
+            const question = quiz.questions[quiz.current];
+            const isCorrect = answer === question.correctAnswer;
+            
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                if (btn.dataset.answer === question.correctAnswer) {
+                    btn.classList.add('bg-green-500', 'text-white', 'border-green-600');
+                }
+                if (btn.dataset.answer === answer && !isCorrect) {
+                    btn.classList.add('bg-red-500', 'text-white', 'border-red-600');
+                }
+                btn.disabled = true;
+            });
+            
+            if (isCorrect) {
+                quiz.score++;
+                document.getElementById('quiz-feedback').innerHTML = '<p class="text-green-600 font-bold text-xl">✓ Correct!</p>';
+                document.getElementById('quiz-feedback').classList.remove('hidden', 'bg-red-100');
+                document.getElementById('quiz-feedback').classList.add('bg-green-100');
+            } else {
+                document.getElementById('quiz-feedback').innerHTML = `<p class="text-red-600 font-bold text-xl">✗ Incorrect. Correct answer: ${escapeHtml(question.correctAnswer)}</p>`;
+                document.getElementById('quiz-feedback').classList.remove('hidden', 'bg-green-100');
+                document.getElementById('quiz-feedback').classList.add('bg-red-100');
+            }
+            
+            quiz.answered = true;
+            document.getElementById('quiz-next').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            appState.quizState.current++;
+            
+            if (appState.quizState.current >= appState.quizState.questions.length) {
+                showQuizResults();
+            } else {
+                renderQuizQuestion();
+            }
+        }
+
+        function showQuizResults() {
+            const quiz = appState.quizState;
+            document.getElementById('quiz-active').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+            document.getElementById('quiz-score').textContent = quiz.score;
+            document.getElementById('quiz-final-total').textContent = quiz.questions.length;
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-active').classList.remove('hidden');
+            document.getElementById('practice-quiz-panel')?.classList.add('hidden');
+            appState.quizState = null;
+            showPracticeMode(appState.currentPracticeMode || 'words');
+        }
+
+        // Numbers practice
+        function startNumbersQuiz() {
+            const maxN = parseInt(document.getElementById('numbers-range').value);
+            const dir = document.getElementById('numbers-direction').value;
+            const nums = Object.keys(DAGBANI_NUMBERS).map(Number).filter(n => n <= maxN);
+            if (nums.length < 5) {
+                showToast('Not enough numbers in range.', 'error');
+                return;
+            }
+            const shuffled = [...nums].sort(() => Math.random() - 0.5).slice(0, Math.min(15, nums.length));
+            appState.numbersQuizState = {
+                questions: shuffled.map(n => {
+                    const isDagToEn = dir === 'dag-en';
+                    const q = isDagToEn ? DAGBANI_NUMBERS[n] : ENGLISH_NUMBERS[n];
+                    const correct = isDagToEn ? ENGLISH_NUMBERS[n] : DAGBANI_NUMBERS[n];
+                    const wrongNums = nums.filter(x => x !== n).sort(() => Math.random() - 0.5).slice(0, 3);
+                    const wrongs = wrongNums.map(x => isDagToEn ? ENGLISH_NUMBERS[x] : DAGBANI_NUMBERS[x]);
+                    const all = [correct, ...wrongs].sort(() => Math.random() - 0.5);
+                    return { question: q, correctAnswer: correct, answers: all };
+                }),
+                current: 0, score: 0, answered: false
+            };
+            document.querySelectorAll('.practice-mode-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('numbers-quiz-panel')?.classList.remove('hidden');
+            document.getElementById('numbers-quiz-results').classList.add('hidden');
+            document.getElementById('numbers-quiz-active').classList.remove('hidden');
+            renderNumbersQuestion();
+        }
+
+        function renderNumbersQuestion() {
+            const q = appState.numbersQuizState;
+            const item = q.questions[q.current];
+            document.getElementById('numbers-quiz-question').textContent = item.question;
+            document.getElementById('numbers-quiz-current').textContent = q.current + 1;
+            document.getElementById('numbers-quiz-total').textContent = q.questions.length;
+            document.getElementById('numbers-quiz-progress').style.width = `${((q.current + 1) / q.questions.length) * 100}%`;
+            document.getElementById('numbers-quiz-options').innerHTML = item.answers.map(a => `
+                <button onclick="selectNumbersAnswer(event)" class="numbers-quiz-opt px-6 py-4 bg-gray-100 hover:bg-amber-100 border-2 border-gray-300 rounded-lg font-semibold text-lg transition" data-answer="${escapeHtml(a)}">${escapeHtml(a)}</button>
+            `).join('');
+            document.getElementById('numbers-quiz-feedback').classList.add('hidden');
+            document.getElementById('numbers-quiz-next').classList.add('hidden');
+            q.answered = false;
+        }
+
+        function selectNumbersAnswer(ev) {
+            const answer = ev?.target?.dataset?.answer;
+            if (!appState.numbersQuizState || appState.numbersQuizState.answered || !answer) return;
+            const q = appState.numbersQuizState;
+            const item = q.questions[q.current];
+            const isCorrect = answer === item.correctAnswer;
+            document.querySelectorAll('.numbers-quiz-opt').forEach(btn => {
+                if (btn.dataset.answer === item.correctAnswer) btn.classList.add('bg-green-500', 'text-white', 'border-green-600');
+                if (btn.dataset.answer === answer && !isCorrect) btn.classList.add('bg-red-500', 'text-white', 'border-red-600');
+                btn.disabled = true;
+            });
+            const fb = document.getElementById('numbers-quiz-feedback');
+            fb.innerHTML = isCorrect ? '<p class="text-green-600 font-bold text-xl">✓ Correct!</p>' : `<p class="text-red-600 font-bold text-xl">✗ Correct: ${escapeHtml(item.correctAnswer)}</p>`;
+            fb.className = 'text-center p-4 rounded-lg mb-4 ' + (isCorrect ? 'bg-green-100' : 'bg-red-100');
+            fb.classList.remove('hidden');
+            if (isCorrect) q.score++;
+            q.answered = true;
+            document.getElementById('numbers-quiz-next').classList.remove('hidden');
+        }
+
+        function nextNumbersQuestion() {
+            appState.numbersQuizState.current++;
+            if (appState.numbersQuizState.current >= appState.numbersQuizState.questions.length) {
+                document.getElementById('numbers-quiz-active').classList.add('hidden');
+                document.getElementById('numbers-quiz-results').classList.remove('hidden');
+                document.getElementById('numbers-quiz-score').textContent = appState.numbersQuizState.score;
+                document.getElementById('numbers-quiz-total-score').textContent = appState.numbersQuizState.questions.length;
+            } else {
+                renderNumbersQuestion();
+            }
+        }
+
+        function resetNumbersQuiz() {
+            document.getElementById('numbers-quiz-results').classList.add('hidden');
+            document.getElementById('numbers-quiz-active').classList.remove('hidden');
+            document.getElementById('numbers-quiz-panel')?.classList.add('hidden');
+            appState.numbersQuizState = null;
+            showPracticeMode('numbers');
+        }
+
+        // Select words to practice
+        function filterSelectWords() {
+            const query = (document.getElementById('select-words-search')?.value || '').trim().toLowerCase();
+            const dir = document.getElementById('select-words-dir')?.value || 'english';
+            const verified = appState.words.filter(w => w.verified);
+            let list = verified;
+            if (query) {
+                list = verified.filter(w => (dir === 'english' ? (w.english || '').toLowerCase() : (w.dagbani || '').toLowerCase()).includes(query));
+            }
+            const container = document.getElementById('select-words-list');
+            if (!container) return;
+            container.innerHTML = list.slice(0, 50).map(w => {
+                const sel = appState.selectedPracticeWords.some(x => x.id === w.id);
+                const label = dir === 'english' ? `${escapeHtml(w.english)} → ${escapeHtml(w.dagbani)}` : `${escapeHtml(w.dagbani)} → ${escapeHtml(w.english)}`;
+                return `<label class="flex items-center gap-2 p-2 hover:bg-amber-50 rounded cursor-pointer"><input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleSelectWord(this, ${JSON.stringify(w.id)})"> ${label}</label>`;
+            }).join('') || '<p class="text-gray-500 p-2">No words found. Try a different search.</p>';
+            document.getElementById('selected-words-count').textContent = appState.selectedPracticeWords.length;
+            document.getElementById('start-selected-btn').disabled = appState.selectedPracticeWords.length < 3;
+        }
+
+        function toggleSelectWord(checkboxEl, wordId) {
+            const word = appState.words.find(w => w.id === wordId);
+            const idx = appState.selectedPracticeWords.findIndex(w => w.id === wordId);
+            if (checkboxEl.checked) {
+                if (idx < 0 && word) appState.selectedPracticeWords.push(word);
+            } else {
+                if (idx >= 0) appState.selectedPracticeWords.splice(idx, 1);
+            }
+            document.getElementById('selected-words-count').textContent = appState.selectedPracticeWords.length;
+            document.getElementById('start-selected-btn').disabled = appState.selectedPracticeWords.length < 3;
+        }
+
+        // Word Submission
+        function submitWord(event) {
+            event.preventDefault();
+            
+            const english = document.getElementById('english-word').value.trim();
+            const dagbani = document.getElementById('dagbani-word').value.trim();
+            const dialect = document.getElementById('word-dialect').value;
+            const category = document.getElementById('word-category').value;
+            const grammar = document.getElementById('grammar-notes').value.trim();
+            const example = document.getElementById('example-sentence').value.trim();
+            const audioBlob = appState.audioChunks.length > 0 ? 
+                URL.createObjectURL(new Blob(appState.audioChunks, { type: 'audio/webm' })) : null;
+            
+            const submission = {
+                id: Date.now(),
+                english,
+                dagbani,
+                dialect,
+                category,
+                grammar: grammar || null,
+                example: example || null,
+                audio: audioBlob,
+                verified: false,
+                submittedBy: appState.currentUser?.username || 'Guest',
+                dateAdded: new Date().toISOString()
+            };
+            
+            appState.pendingSubmissions.push(submission);
+            saveData();
+            
+            document.getElementById('word-form').reset();
+            document.getElementById('audio-playback').classList.add('hidden');
+            document.getElementById('recording-status').classList.add('hidden');
+            document.getElementById('record-btn').classList.remove('hidden');
+            appState.audioChunks = [];
+            
+            showToast('Word submitted successfully! It will be reviewed by the community.');
+            updatePendingCount();
+        }
+
+        // Audio Recording
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                appState.mediaRecorder = new MediaRecorder(stream);
+                appState.audioChunks = [];
+                
+                appState.mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        appState.audioChunks.push(event.data);
+                    }
+                };
+                
+                appState.mediaRecorder.onstop = () => {
+                    if (appState.audioChunks.length > 0) {
+                        const audioBlob = new Blob(appState.audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audioPlayback = document.getElementById('audio-playback');
+                        audioPlayback.src = audioUrl;
+                        audioPlayback.classList.remove('hidden');
+                    }
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                appState.mediaRecorder.start();
+                appState.recording = true;
+                
+                document.getElementById('record-btn').classList.add('hidden');
+                document.getElementById('recording-status').classList.remove('hidden');
+            } catch (error) {
+                showToast('Error accessing microphone. Please check permissions.', 'error');
+                console.error('Recording error:', error);
+            }
+        }
+
+        function stopRecording() {
+            if (appState.mediaRecorder && appState.recording) {
+                appState.mediaRecorder.stop();
+                appState.recording = false;
+                document.getElementById('recording-status').classList.add('hidden');
+                document.getElementById('record-btn').classList.remove('hidden');
+            }
+        }
+
+        // Review System
+        function renderPendingSubmissions() {
+            const container = document.getElementById('pending-submissions');
+            const noPending = document.getElementById('no-pending');
+            
+            if (appState.pendingSubmissions.length === 0) {
+                container.innerHTML = '';
+                noPending.classList.remove('hidden');
+                return;
+            }
+            
+            noPending.classList.add('hidden');
+            container.innerHTML = appState.pendingSubmissions.map(submission => `
+                <div class="bg-gray-50 rounded-xl p-6 border-2 border-gray-200 fade-in">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">${escapeHtml(submission.english)}</h3>
+                            <p class="text-2xl font-semibold text-amber-700 mb-2">${escapeHtml(submission.dagbani)}</p>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${submission.dialect}</span>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">${submission.category}</span>
+                            </div>
+                            ${submission.grammar ? `
+                                <div class="mt-2 p-2 bg-blue-50 rounded text-sm text-gray-700">
+                                    <strong>Grammar:</strong> ${escapeHtml(submission.grammar)}
+                                </div>
+                            ` : ''}
+                            ${submission.example ? `
+                                <div class="mt-2 p-2 bg-green-50 rounded text-sm text-gray-700">
+                                    <strong>Example:</strong> ${escapeHtml(submission.example)}
+                                </div>
+                            ` : ''}
+                            ${submission.audio ? `
+                                <audio controls class="mt-3 w-full">
+                                    <source src="${submission.audio}" type="audio/webm">
+                                </audio>
+                            ` : ''}
+                            <p class="text-xs text-gray-500 mt-2">Submitted by: ${submission.submittedBy}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            onclick="approveSubmission(${submission.id})" 
+                            class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+                        >
+                            ✓ Approve
+                        </button>
+                        <button 
+                            onclick="rejectSubmission(${submission.id})" 
+                            class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+                        >
+                            ✗ Reject
+                        </button>
+                        <button 
+                            onclick="suggestEdit(${submission.id})" 
+                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+                        >
+                            ✏ Edit
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function approveSubmission(id) {
+            const submission = appState.pendingSubmissions.find(s => s.id === id);
+            if (submission) {
+                submission.verified = true;
+                appState.words.push(submission);
+                appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
+                saveData();
+                renderPendingSubmissions();
+                updatePendingCount();
+                updateWordOfTheDay();
+                showToast('Word approved and added to dictionary!');
+            }
+        }
+
+        function rejectSubmission(id) {
+            if (confirm('Are you sure you want to reject this submission?')) {
+                appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
+                saveData();
+                renderPendingSubmissions();
+                updatePendingCount();
+                showToast('Submission rejected.');
+            }
+        }
+
+        function suggestEdit(id) {
+            const submission = appState.pendingSubmissions.find(s => s.id === id);
+            if (submission) {
+                const newDagbani = prompt('Suggest an edit for the Dagbani translation:', submission.dagbani);
+                if (newDagbani && newDagbani.trim() !== submission.dagbani) {
+                    submission.dagbani = newDagbani.trim();
+                    saveData();
+                    renderPendingSubmissions();
+                    showToast('Edit suggestion saved. Please review again.');
+                }
+            }
+        }
+
+        function updatePendingCount() {
+            const count = appState.pendingSubmissions.length;
+            const badge = document.getElementById('pending-count');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Donate
+        function processDonation(amount) {
+            showToast(`Thank you for your $${amount} donation! In a real implementation, this would process payment.`, 'success');
+            // In production, integrate with payment gateway (Stripe, PayPal, etc.)
+        }
+
+        function processCustomDonation() {
+            const amount = parseFloat(document.getElementById('custom-amount').value);
+            if (amount && amount > 0) {
+                processDonation(amount);
+                document.getElementById('custom-amount').value = '';
+            } else {
+                showToast('Please enter a valid amount', 'error');
+            }
+        }
+
+        function processMonthlyDonation(amount) {
+            showToast(`Thank you for your $${amount}/month subscription! In a real implementation, this would set up recurring payments.`, 'success');
+            // In production, integrate with payment gateway for subscriptions
+        }
+
+        // Export/Import
+        function exportData() {
+            const data = {
+                words: appState.words,
+                pendingSubmissions: appState.pendingSubmissions,
+                favorites: appState.favorites,
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dagbani-korli-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Data exported successfully!');
+        }
+
+        function clearAllData() {
+            if (!confirm('Clear ALL dictionary data? This cannot be undone.')) return;
+            appState.words = [];
+            appState.pendingSubmissions = [];
+            appState.favorites = [];
+            appState.searchHistory = [];
+            appState.browseLetterFilter = 'all';
+            localStorage.removeItem('dagbaniWords');
+            localStorage.removeItem('dagbaniPending');
+            localStorage.removeItem('dagbaniFavorites');
+            localStorage.removeItem('dagbaniSearchHistory');
+            saveData();
+            updateWordOfTheDay();
+            if (appState.currentView === 'dictionary') {
+                document.getElementById('search-results').innerHTML = '';
+                document.getElementById('no-results').classList.add('hidden');
+            }
+            if (appState.currentView === 'favorites') renderFavorites();
+            if (appState.currentView === 'review') renderPendingSubmissions();
+            if (appState.currentView === 'browse') renderBrowseDictionary();
+            renderSearchHistory();
+            showToast('All data cleared.');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const mergeMode = document.getElementById('import-merge')?.checked ?? false;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    let words = [];
+                    let confirmed = false;
+                    if (data.metadata && Array.isArray(data.entries)) {
+                        words = data.entries.map((entry, i) => {
+                            const ety = entry.etymology;
+                            let grammar = entry.part_of_speech ? entry.part_of_speech : '';
+                            if (entry.notes) grammar += (grammar ? '. ' : '') + entry.notes;
+                            if (ety && ety.source_language) {
+                                grammar += (grammar ? '. ' : '') + 'From: ' + ety.source_language;
+                                if (ety.intermediate) grammar += ' via ' + ety.intermediate;
+                                if (ety.original_word) grammar += ' (' + ety.original_word + ')';
+                            }
+                            const ex = entry.examples;
+                            const example = Array.isArray(ex) ? ex.join(' ') : (ex || null);
+                            return {
+                                id: entry.id || 'blench-' + (i + 1),
+                                dagbani: entry.headword || '',
+                                english: entry.definition || '',
+                                dialect: 'standard',
+                                category: entry.class || 'general',
+                                grammar: grammar.trim() || null,
+                                example: example,
+                                verified: true,
+                                dateAdded: new Date().toISOString()
+                            };
+                        });
+                        const msg = mergeMode
+                            ? `Add ${words.length} entries from ${data.metadata?.title || 'Blench dictionary'} to existing dictionary?`
+                            : `Import ${words.length} entries from ${data.metadata?.title || 'Blench dictionary'}? This will replace current data.`;
+                        confirmed = confirm(msg);
+                        if (confirmed) {
+                            if (mergeMode) {
+                                const existingIds = new Set(appState.words.map(w => w.id));
+                                let nextId = 1;
+                                const ensureId = (w) => {
+                                    if (existingIds.has(w.id)) {
+                                        while (existingIds.has('merge-' + nextId)) nextId++;
+                                        w.id = 'merge-' + nextId++;
+                                    }
+                                    existingIds.add(w.id);
+                                    return w;
+                                };
+                                appState.words = [...appState.words, ...words.map(ensureId)];
+                            } else {
+                                appState.words = words;
+                            }
+                        }
+                    } else if (data.words) {
+                        const msg = mergeMode
+                            ? `Add ${data.words.length} entries to existing dictionary?`
+                            : 'This will replace all current data. Are you sure?';
+                        confirmed = confirm(msg);
+                        if (confirmed) {
+                            if (mergeMode) {
+                                const existingIds = new Set(appState.words.map(w => w.id));
+                                let nextId = 1;
+                                const ensureId = (w) => {
+                                    const wid = w.id;
+                                    if (!wid || existingIds.has(wid)) {
+                                        while (existingIds.has('merge-' + nextId)) nextId++;
+                                        w.id = 'merge-' + nextId++;
+                                    } else {
+                                        existingIds.add(wid);
+                                    }
+                                    existingIds.add(w.id);
+                                    return w;
+                                };
+                                appState.words = [...appState.words, ...data.words.map(w => ({ ...w })).map(ensureId)];
+                            } else {
+                                appState.words = data.words;
+                            }
+                        }
+                    } else {
+                        showToast('Unknown file format. Need "entries" or "words" array.', 'error');
+                    }
+                    if (confirmed) {
+                        if (!mergeMode) {
+                            if (data.pendingSubmissions) appState.pendingSubmissions = data.pendingSubmissions;
+                            if (data.favorites) appState.favorites = data.favorites;
+                        }
+                        saveData();
+                        showToast(mergeMode ? `Added ${words.length || data.words?.length || 0} entries.` : 'Data imported successfully!');
+                        updateWordOfTheDay();
+                        if (appState.currentView === 'favorites') renderFavorites();
+                        if (appState.currentView === 'review') renderPendingSubmissions();
+                        if (appState.currentView === 'browse') renderBrowseDictionary();
+                    }
+                } catch (error) {
+                    showToast('Error importing data. Please check the file format.', 'error');
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+            event.target.value = '';
+        }
+
+        // Settings
+        function saveSettings() {
+            localStorage.setItem('showHistory', document.getElementById('show-history').checked);
+            renderSearchHistory();
+        }
+
+        function toggleDarkMode() {
+            // Basic dark mode toggle - can be enhanced
+            document.body.classList.toggle('dark');
+            showToast('Dark mode toggled');
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-xl z-50 fade-in ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            } text-white`;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Browse A-Z Dictionary
+        function getBrowseViewMode() {
+            return (document.getElementById('browse-view-mode')?.value || 'grid');
+        }
+        let browseSearchDebounceTimer;
+        function debouncedBrowseSearch() {
+            clearTimeout(browseSearchDebounceTimer);
+            browseSearchDebounceTimer = setTimeout(renderBrowseDictionary, 200);
+        }
+        function renderBrowseDictionary() {
+            const sortBy = document.getElementById('browse-sort').value;
+            const dialectFilter = document.getElementById('browse-dialect-filter').value;
+            const viewMode = getBrowseViewMode();
+            
+            // Filter words
+            let words = appState.words.filter(w => w.verified);
+            if (dialectFilter !== 'all') {
+                words = words.filter(w => w.dialect === dialectFilter);
+            }
+            const listSearchRaw = (document.getElementById('browse-list-search')?.value || '').trim();
+            const listSearch = listSearchRaw.toLowerCase();
+            if (listSearch && getBrowseViewMode() === 'list') {
+                words = words.filter(w =>
+                    (w.dagbani || '').toLowerCase().includes(listSearch) ||
+                    (w.english || '').toLowerCase().includes(listSearch)
+                );
+            }
+            
+            // Sort words
+            words.sort((a, b) => {
+                const aText = sortBy === 'english' ? a.english.toLowerCase() : a.dagbani.toLowerCase();
+                const bText = sortBy === 'english' ? b.english.toLowerCase() : b.dagbani.toLowerCase();
+                return aText.localeCompare(bText);
+            });
+            
+            if (words.length === 0) {
+                document.getElementById('browse-content').innerHTML = '';
+                document.getElementById('browse-empty').classList.remove('hidden');
+                document.getElementById('browse-total-count').textContent = '0';
+                appState.browseLetterFilter = 'all';
+                generateAlphabetNav([]);
+                return;
+            }
+            
+            document.getElementById('browse-empty').classList.add('hidden');
+            
+            // Group words by first letter of Dagbani (letter filter uses Dagbani)
+            const grouped = {};
+            words.forEach(word => {
+                const text = (word.dagbani || '').trim();
+                if (!text) return;
+                const firstChar = text.charAt(0);
+                let letterKey;
+                if (/[A-Za-z]/.test(firstChar)) {
+                    letterKey = firstChar.toUpperCase();
+                } else if (/[0-9]/.test(firstChar)) {
+                    letterKey = firstChar;
+                } else {
+                    letterKey = '#';
+                }
+                if (!grouped[letterKey]) grouped[letterKey] = [];
+                grouped[letterKey].push(word);
+            });
+            
+            // Sort keys: All letters A-Z, then 0-9, then #
+            const allKeys = Object.keys(grouped).sort((a, b) => {
+                if (a === '#') return 1;
+                if (b === '#') return -1;
+                if (/[0-9]/.test(a) && /[A-Z]/.test(b)) return 1;
+                if (/[A-Z]/.test(a) && /[0-9]/.test(b)) return -1;
+                return a.localeCompare(b);
+            });
+            
+            // Generate alphabet navigation (A-Z, 0-9, #, All)
+            generateAlphabetNav(allKeys);
+            
+            // Filter by selected letter if set
+            const letterFilter = appState.browseLetterFilter;
+            const keysToShow = letterFilter === 'all' 
+                ? allKeys 
+                : allKeys.filter(k => k === letterFilter);
+            
+            // Update total count (reflect filtered count when letter selected)
+            const displayCount = letterFilter === 'all' ? words.length : (grouped[letterFilter] || []).length;
+            document.getElementById('browse-total-count').textContent = displayCount;
+            
+            if (keysToShow.length === 0) {
+                const char = letterFilter === '#' ? 'Other' : letterFilter;
+                document.getElementById('browse-content').innerHTML = '';
+                document.getElementById('browse-empty').classList.remove('hidden');
+                document.getElementById('browse-empty').innerHTML = `<p class="text-gray-500 text-lg">No words found for "${char}".</p>`;
+                return;
+            }
+            
+            document.getElementById('browse-empty').classList.add('hidden');
+            
+            // Render grouped words
+            const content = document.getElementById('browse-content');
+            const isListView = viewMode === 'list';
+            const headerEl = document.getElementById('browse-list-header');
+            if (headerEl) headerEl.classList.toggle('hidden', !isListView);
+            content.innerHTML = keysToShow.map(letter => {
+                const letterWords = grouped[letter];
+                if (isListView) {
+                    return `
+                    <div id="letter-${letter}" class="fade-in mb-12">
+                        <h2 class="text-5xl font-bold text-amber-600/90 mb-6 tracking-tight">
+                            ${letter === '#' ? '#' : letter}
+                            <span class="text-base font-normal text-amber-400/80 ml-3">${letterWords.length} entries</span>
+                        </h2>
+                        <div class="bg-white rounded-2xl shadow-lg shadow-amber-900/5 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full min-w-[900px] text-sm border-collapse">
+                                    <thead>
+                                        <tr class="text-left">
+                                            <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Singular</th>
+                                            <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">pl./imprf</th>
+                                            <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">p/o/s</th>
+                                            <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">cl.</th>
+                                            <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Definition</th>
+                                            <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Comment</th>
+                                            <th class="py-4 px-3 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Image</th>
+                                            <th class="py-4 px-3 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Voice</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${letterWords.map(word => {
+                                            const plImprf = extractPluralOrImpf(word);
+                                            const pos = extractPartOfSpeech(word);
+                                            const comment = buildComment(word);
+                                            const wid = JSON.stringify(word.id);
+                                            const pic = (word.picture || '').replace(/"/g, '&quot;');
+                                            const imgCell = word.picture 
+                                                ? `<img src="${pic}" alt="" class="w-12 h-12 object-cover rounded-lg border border-amber-200" onerror="this.style.display='none'">`
+                                                : '';
+                                            const audioUrl = (word.audio || '').replace(/"/g, '&quot;');
+                                            const audioCell = word.audio 
+                                                ? `<audio preload="none" controls class="h-8 w-24" onclick="event.stopPropagation()"><source src="${audioUrl}" type="audio/webm"></audio>`
+                                                : '';
+                                            return `
+                                        <tr class="hover:bg-amber-50/60 transition-colors cursor-pointer group" onclick="viewWordDetails(${wid})">
+                                            <td class="py-3.5 px-5 align-top font-medium text-gray-900 group-hover:text-amber-700">${escapeHtml(word.dagbani || '')}</td>
+                                            <td class="py-3.5 px-5 align-top text-gray-500">${escapeHtml(plImprf)}</td>
+                                            <td class="py-3.5 px-5 align-top text-gray-500 text-xs">${escapeHtml(pos)}</td>
+                                            <td class="py-3.5 px-5 align-top text-gray-400"></td>
+                                            <td class="py-3.5 px-5 align-top text-gray-700">${escapeHtml(word.english || '')}</td>
+                                            <td class="py-3.5 px-5 align-top text-gray-500 text-xs leading-relaxed">${comment}</td>
+                                            <td class="py-3.5 px-3 align-middle">${imgCell}</td>
+                                            <td class="py-3.5 px-3 align-middle">${audioCell}</td>
+                                        </tr>
+                                    `;
+                                    }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }
+                return `
+                    <div id="letter-${letter}" class="bg-white rounded-2xl shadow-xl p-6 fade-in">
+                        <h3 class="text-3xl font-bold text-amber-600 mb-4 pb-2 border-b-2 border-amber-200 sticky top-20 bg-white z-10">
+                            ${letter === '#' ? 'Other' : letter}
+                            <span class="text-lg font-normal text-gray-500 ml-2">(${letterWords.length})</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                            ${letterWords.map(word => {
+                                const isFavorite = appState.favorites.includes(word.id);
+                                const wid = JSON.stringify(word.id);
+                                return `
+                                <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-amber-400 hover:shadow-md transition">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <div class="flex-1">
+                                            <h4 class="text-xl font-bold text-amber-700">${escapeHtml(word.dagbani)}</h4>
+                                            <p class="text-lg font-semibold text-gray-700 mt-1">${escapeHtml(word.english)}</p>
+                                        </div>
+                                        <button onclick="event.stopPropagation(); toggleFavorite(${wid})" class="text-xl ${isFavorite ? 'text-red-500' : 'text-gray-300'} hover:text-red-500 transition ml-2">
+                                            ${isFavorite ? '❤️' : '🤍'}
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded text-xs font-semibold">
+                                            ${word.dialect}
+                                        </span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">
+                                            ${word.category}
+                                        </span>
+                                    </div>
+                                    ${word.grammar ? `
+                                        <p class="text-xs text-gray-600 mt-2 line-clamp-2">${escapeHtml(word.grammar)}</p>
+                                    ` : ''}
+                                    ${word.audio ? `
+                                        <audio controls class="w-full mt-2 h-8">
+                                            <source src="${word.audio}" type="audio/webm">
+                                        </audio>
+                                    ` : ''}
+                                    <button onclick="viewWordDetails(${wid})" class="mt-2 text-xs text-amber-600 hover:text-amber-800 font-semibold">
+                                        View Details →
+                                    </button>
+                                </div>
+                            `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function extractPluralOrImpf(word) {
+            const ex = (word.example || '').toString();
+            const gr = (word.grammar || '').toString();
+            const m = ex.match(/(?:pl\.|plural)[\s,:]+([^\s}\]{.]+)/i) || gr.match(/(?:pl\.|plural)[\s,:]+([^\s}]+)/i);
+            return m ? m[1].trim() : '';
+        }
+        function extractPartOfSpeech(word) {
+            const g = (word.grammar || '').toString();
+            const beforeFrom = g.split(/(?:\s+From:|\s*\.\s*Blair)/i)[0].trim();
+            const abbrev = beforeFrom.match(/^(n\.?|pron\.?|adv\.?|v\.?|adj\.?|excl\.?|conj\.?|prep\.?|int\.?|p\.?n\.?)/i);
+            return abbrev ? abbrev[0] : (beforeFrom.slice(0, 20) || '');
+        }
+        function buildComment(word) {
+            const parts = [];
+            if (word.example) parts.push(escapeHtml(String(word.example)));
+            if (word.etymology) parts.push('&lt;' + escapeHtml(String(word.etymology)));
+            if (parts.length === 0) return '';
+            return parts.join(' ');
+        }
+
+        function generateAlphabetNav(availableLetters) {
+            const nav = document.getElementById('alphabet-nav');
+            const selected = appState.browseLetterFilter;
+            
+            // All button first
+            let html = `
+                <button 
+                    onclick="filterBrowseByLetter('all')" 
+                    class="px-3 py-2 rounded-lg font-semibold transition ${
+                        selected === 'all' ? 'bg-amber-600 text-white border-2 border-amber-600' : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-2 border-amber-300'
+                    }"
+                >
+                    All
+                </button>
+            `;
+            
+            // A-Z - all active, no disabled
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            html += alphabet.map(letter => {
+                const isSelected = selected === letter;
+                return `
+                    <button 
+                        onclick="filterBrowseByLetter('${letter}')" 
+                        class="px-2 py-1.5 rounded-lg font-semibold text-sm transition ${
+                            isSelected 
+                                ? 'bg-amber-600 text-white border-2 border-amber-600' 
+                                : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-2 border-amber-300'
+                        }"
+                    >
+                        ${letter}
+                    </button>
+                `;
+            }).join('');
+            
+            // 0-9 - all active, no disabled
+            const digits = '0123456789'.split('');
+            html += digits.map(d => {
+                const isSelected = selected === d;
+                return `
+                    <button 
+                        onclick="filterBrowseByLetter('${d}')" 
+                        class="px-2 py-1.5 rounded-lg font-semibold text-sm transition ${
+                            isSelected 
+                                ? 'bg-amber-600 text-white border-2 border-amber-600' 
+                                : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-2 border-amber-300'
+                        }"
+                    >
+                        ${d}
+                    </button>
+                `;
+            }).join('');
+            
+            // Other (#) - always active
+            const isHashSelected = selected === '#';
+            html += `
+                <button 
+                    onclick="filterBrowseByLetter('#')" 
+                    class="px-2 py-1.5 rounded-lg font-semibold text-sm transition ${isHashSelected ? 'bg-amber-600 text-white border-2 border-amber-600' : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-2 border-amber-300'}"
+                >
+                    #
+                </button>
+            `;
+            
+            nav.innerHTML = html;
+        }
+
+        function filterBrowseByLetter(letter) {
+            appState.browseLetterFilter = letter;
+            renderBrowseDictionary();
+        }
+
+        function viewWordDetails(wordId) {
+            const word = appState.words.find(w => w.id === wordId);
+            if (word) {
+                // Switch to dictionary view and search for the word (Dagbani leading)
+                showView('dictionary');
+                document.getElementById('search-input').value = word.dagbani;
+                handleSearch({ key: 'Enter' });
+                // Scroll to results
+                setTimeout(() => {
+                    document.getElementById('search-results').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+
+        // Utility Functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            init();
+            renderSearchHistory();
+        });
+    </script>
+</body>
+</html>
