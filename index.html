@@ -1530,7 +1530,7 @@
         const ENGLISH_NUMBERS = {1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven',8:'eight',9:'nine',10:'ten',11:'eleven',12:'twelve',13:'thirteen',14:'fourteen',15:'fifteen',16:'sixteen',17:'seventeen',18:'eighteen',19:'nineteen',20:'twenty',21:'twenty-one',30:'thirty',40:'forty',50:'fifty',60:'sixty',70:'seventy',80:'eighty',90:'ninety',100:'one hundred'};
 
         const ROLES = { visitor: 'visitor', user: 'user', contributor: 'contributor', admin: 'admin' };
-        const MASTER_ADMIN_USERNAMES = ['admin', 'maman']; // Only these can promote users to admin
+        const MASTER_ADMIN_USERNAMES = ['admin', 'maman', 'mwumpini']; // Only these can promote users to admin
         const PAGE_SIZE = 20;
 
         function paginate(items, page, pageSize) {
@@ -1697,11 +1697,16 @@
 
         function seedAdminIfNeeded() {
             let users = JSON.parse(localStorage.getItem('users') || '[]');
-            if (!users.some(u => u.role === ROLES.admin)) {
-                const adminSeed = { id: 'admin-seed', username: 'admin', email: 'admin@dagbanikorli.org', password: 'admin123', role: ROLES.admin, dateJoined: new Date().toISOString() };
-                users.push(adminSeed);
-                localStorage.setItem('users', JSON.stringify(users));
-            }
+            const seeds = [
+                { id: 'admin-seed', username: 'admin', email: 'admin@dagbanikorli.org', password: 'admin123', role: ROLES.admin, dateJoined: new Date().toISOString() },
+                { id: 'admin-mwumpini', username: 'mwumpini', email: 'mwumpini@gmail.com', password: '0540222273', role: ROLES.admin, dateJoined: new Date().toISOString() }
+            ];
+            let changed = false;
+            seeds.forEach(seed => {
+                if (!users.some(u => u.username === seed.username || u.email === seed.email)) { users.push(seed); changed = true; }
+            });
+            if (!users.some(u => u.role === ROLES.admin)) { users.push(seeds[0]); changed = true; }
+            if (changed) localStorage.setItem('users', JSON.stringify(users));
         }
 
         function showLoginModal(mode) {
