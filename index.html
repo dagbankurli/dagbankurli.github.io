@@ -1000,10 +1000,13 @@
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">My Contributions</h2>
             <p class="text-gray-600 mb-6">Track your submitted words and their status.</p>
-            <div class="flex flex-wrap gap-2 mb-6">
+            <div class="flex flex-wrap items-center gap-2 mb-6">
                 <button onclick="filterMyContributions('all')" id="mc-filter-all" class="px-4 py-2 rounded-lg font-semibold bg-amber-100 border-2 border-amber-400 text-amber-800">All</button>
                 <button onclick="filterMyContributions('pending')" id="mc-filter-pending" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Pending</button>
                 <button onclick="filterMyContributions('approved')" id="mc-filter-approved" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Approved</button>
+                <div id="mc-export-pending-wrap" class="hidden md:ml-auto">
+                    <button onclick="exportPendingForAdmin()" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-400 bg-amber-100 text-amber-800 hover:bg-amber-200 transition">📤 Export pending for admin</button>
+                </div>
             </div>
             <div id="my-contributions-list" class="space-y-4">
                 <!-- Filled by renderMyContributions -->
@@ -1285,7 +1288,13 @@
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
             <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
-            
+            <div id="review-import-tip" class="mb-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
+                <p class="text-sm text-gray-700"><strong>Contributors on another device?</strong> Have them use My Contributions → "Export pending for admin", then send you the file. Import it here:</p>
+                <label class="inline-flex items-center gap-2 mt-2 cursor-pointer px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
+                    <span>📥 Import contributor submissions</span>
+                    <input type="file" accept=".json" class="hidden" onchange="importContributorSubmissions(event)">
+                </label>
+            </div>
             <div class="flex gap-2 mb-6 border-b border-gray-200">
                 <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
                 <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
@@ -3518,6 +3527,8 @@
             const isMe = s => (s.submittedBy && s.submittedBy === username) || (s.contributorAttribution && attribution && s.contributorAttribution === attribution);
             const pendingWords = (appState.pendingSubmissions || []).filter(isMe);
             const pendingPhrases = (appState.pendingPhrases || []).filter(isMe);
+            const exportWrap = document.getElementById('mc-export-pending-wrap');
+            if (exportWrap) exportWrap.classList.toggle('hidden', pendingWords.length + pendingPhrases.length === 0);
             const approvedWords = (appState.words || []).filter(w => (w.submittedBy && w.submittedBy === username) || (w.contributorAttribution && attribution && w.contributorAttribution === attribution));
             const approvedPhrases = (appState.phrases || []).filter(p => (p.submittedBy && p.submittedBy === username) || (p.contributorAttribution && attribution && p.contributorAttribution === attribution));
             const pending = [...pendingWords.map(s => ({ ...s, status: 'pending', kind: 'word' })), ...pendingPhrases.map(s => ({ ...s, status: 'pending', kind: 'phrase' }))];
@@ -3543,6 +3554,79 @@
                     </div>
                 </div>
             `).join('') + renderPaginationBar(total, currentPage, totalPages, 'myContributions');
+        }
+
+        function exportPendingForAdmin() {
+            const username = appState.currentUser?.username;
+            const attribution = appState.currentUser?.attributionName;
+            const isMe = s => (s.submittedBy && s.submittedBy === username) || (s.contributorAttribution && attribution && s.contributorAttribution === attribution);
+            const pendingWords = (appState.pendingSubmissions || []).filter(isMe);
+            const pendingPhrases = (appState.pendingPhrases || []).filter(isMe);
+            if (pendingWords.length + pendingPhrases.length === 0) {
+                showToast('No pending submissions to export.', 'error');
+                return;
+            }
+            const data = {
+                pendingSubmissions: pendingWords,
+                pendingPhrases,
+                exportDate: new Date().toISOString(),
+                exportedBy: username || attribution
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dagban-kurli-pending-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Pending submissions exported. Send this file to your admin for review.');
+        }
+
+        function importContributorSubmissions(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const incomingWords = data.pendingSubmissions || [];
+                    const incomingPhrases = data.pendingPhrases || [];
+                    if (incomingWords.length === 0 && incomingPhrases.length === 0) {
+                        showToast('No pending submissions in this file.', 'error');
+                        return;
+                    }
+                    appState.pendingSubmissions = appState.pendingSubmissions || [];
+                    appState.pendingPhrases = appState.pendingPhrases || [];
+                    const existingIdsW = new Set(appState.pendingSubmissions.map(s => s.id));
+                    const existingIdsP = new Set(appState.pendingPhrases.map(p => p.id));
+                    let addedW = 0, addedP = 0;
+                    incomingWords.forEach(s => {
+                        const id = s.id || Date.now() + Math.random();
+                        if (!existingIdsW.has(id)) {
+                            appState.pendingSubmissions.push({ ...s, id });
+                            existingIdsW.add(id);
+                            addedW++;
+                        }
+                    });
+                    incomingPhrases.forEach(p => {
+                        const id = p.id || Date.now() + Math.random();
+                        if (!existingIdsP.has(id)) {
+                            appState.pendingPhrases.push({ ...p, id });
+                            existingIdsP.add(id);
+                            addedP++;
+                        }
+                    });
+                    saveData();
+                    updatePendingCount();
+                    renderPendingSubmissions();
+                    renderPendingPhrases();
+                    showToast(`Imported ${addedW} word(s) and ${addedP} phrase(s) for review.`);
+                } catch (err) {
+                    showToast('Invalid file format.', 'error');
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file, 'UTF-8');
         }
 
         // Review System
@@ -4017,7 +4101,34 @@
                         showToast('Unknown file format. Need "entries" or "words" array.', 'error');
                     }
                     if (confirmed) {
-                        if (!mergeMode) {
+                        if (mergeMode) {
+                            if (data.pendingSubmissions && data.pendingSubmissions.length > 0) {
+                                const existingIds = new Set((appState.pendingSubmissions || []).map(s => s.id));
+                                data.pendingSubmissions.forEach(s => {
+                                    if (s.id && !existingIds.has(s.id)) {
+                                        appState.pendingSubmissions.push(s);
+                                        existingIds.add(s.id);
+                                    } else if (!existingIds.has(s.id)) {
+                                        s.id = s.id || Date.now() + Math.random();
+                                        appState.pendingSubmissions.push(s);
+                                        existingIds.add(s.id);
+                                    }
+                                });
+                            }
+                            if (data.pendingPhrases && data.pendingPhrases.length > 0) {
+                                const existingIds = new Set((appState.pendingPhrases || []).map(p => p.id));
+                                data.pendingPhrases.forEach(p => {
+                                    if (p.id && !existingIds.has(p.id)) {
+                                        appState.pendingPhrases.push(p);
+                                        existingIds.add(p.id);
+                                    } else if (!existingIds.has(p.id)) {
+                                        p.id = p.id || Date.now() + Math.random();
+                                        appState.pendingPhrases.push(p);
+                                        existingIds.add(p.id);
+                                    }
+                                });
+                            }
+                        } else {
                             if (data.pendingSubmissions) appState.pendingSubmissions = data.pendingSubmissions;
                             if (data.phrases) appState.phrases = data.phrases;
                             if (data.pendingPhrases) appState.pendingPhrases = data.pendingPhrases;
