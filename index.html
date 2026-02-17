@@ -6,7 +6,63 @@
     <meta name="theme-color" content="#d97706">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Dagbani Korli - Community Lexicon</title>
+    <title>Dagban Kurli - Dagbani-English Community Lexicon &amp; Learning Resource</title>
+    <meta name="description" content="Free Dagbani-English dictionary and community lexicon. Learn Dagbani language with vocabulary, phrases, numbers, and cultural content. Search, contribute, and practice Dagbani from Ghana's Dagbon region.">
+    <meta name="keywords" content="Dagbani, Dagbani dictionary, Dagbani English, learn Dagbani, Ghana language, Dagbon, Mamprusi, Gur language, African language learning, Dagbani vocabulary, Dagbani phrases">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="author" content="Dagban Kurli Community">
+    <meta name="application-name" content="Dagban Kurli">
+    <link rel="canonical" href="https://dagbanikorli.org/">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dagban Kurli - Dagbani-English Community Lexicon">
+    <meta property="og:description" content="Free Dagbani-English dictionary, phrasebook, and learning resource. Search words, learn phrases, practice numbers, and contribute to the community lexicon.">
+    <meta property="og:url" content="https://dagbanikorli.org/">
+    <meta property="og:site_name" content="Dagban Kurli">
+    <meta property="og:locale" content="en_US">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dagban Kurli - Dagbani-English Community Lexicon">
+    <meta name="twitter:description" content="Free Dagbani-English dictionary and learning resource. Learn vocabulary, phrases, and practice Dagbani from Ghana's Dagbon region.">
+    <!-- JSON-LD for AI & Search -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": "https://dagbanikorli.org/#website",
+                "name": "Dagban Kurli",
+                "alternateName": "Dagbani Community Lexicon",
+                "url": "https://dagbanikorli.org/",
+                "description": "Free Dagbani-English dictionary and community lexicon for learning the Dagbani language of Ghana's Dagbon region.",
+                "inLanguage": ["en", "dag"],
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://dagbanikorli.org/?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            },
+            {
+                "@type": "WebApplication",
+                "@id": "https://dagbanikorli.org/#app",
+                "name": "Dagban Kurli",
+                "applicationCategory": "EducationalApplication",
+                "operatingSystem": "Any",
+                "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+                "description": "Interactive Dagbani-English lexicon with search, phrasebook, vocabulary practice, numbers, and cultural content. Community-contributed dictionary."
+            },
+            {
+                "@type": "LearningResource",
+                "name": "Dagbani Language Learning",
+                "description": "Learn Dagbani vocabulary, common phrases, numbers, and cultural context. Includes Dagbani-English dictionary, phrasebook, and practice exercises.",
+                "inLanguage": "dag",
+                "teaches": "Dagbani language",
+                "educationalLevel": "All levels"
+            }
+        ]
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -136,108 +192,156 @@
             opacity: 1;
             pointer-events: auto;
         }
+        /* Dark mode */
+        html.dark, html.dark body { background: #1f2937 !important; color: #e5e7eb; }
+        .dark .bg-white { background-color: #374151 !important; }
+        .dark .bg-amber-50, .dark .bg-gray-50 { background-color: #4b5563 !important; }
+        .dark .text-gray-800, .dark .text-gray-700 { color: #e5e7eb !important; }
+        .dark .text-gray-600, .dark .text-gray-500 { color: #9ca3af !important; }
+        .dark .border-gray-200, .dark .border-gray-300 { border-color: #4b5563 !important; }
+        .dark input, .dark select, .dark textarea { background: #374151 !important; color: #e5e7eb !important; border-color: #4b5563 !important; }
+        /* Loading spinner */
+        .spinner { width: 40px; height: 40px; border: 4px solid #fef3c7; border-top-color: #d97706; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .skeleton { background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%); background-size: 200% 100%; animation: skeleton 1.5s ease-in-out infinite; border-radius: 0.5rem; }
+        @keyframes skeleton { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skip-link { position: absolute; left: -9999px; z-index: 100; padding: 0.5rem 1rem; background: #d97706; color: white; border-radius: 0.5rem; font-weight: 600; }
+        .skip-link:focus { left: 1rem; top: 1rem; position: absolute; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen overflow-x-hidden">
+<body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen overflow-x-hidden" itemscope itemtype="https://schema.org/WebApplication">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!-- Static content for crawlers & AI (no JS required) -->
+    <noscript>
+        <div style="padding:2rem;max-width:800px;margin:0 auto">
+            <h1>Dagban Kurli - Dagbani-English Community Lexicon</h1>
+            <p>Learn the Dagbani language with our free dictionary, phrasebook, and practice tools. Dagbani is spoken in Ghana's Northern Region, especially in the Dagbon kingdom.</p>
+            <h2>Common Dagbani Words &amp; Phrases</h2>
+            <dl>
+                <dt lang="dag">Antire</dt><dd>Hello</dd>
+                <dt lang="dag">Naawuni salaam alaikum</dt><dd>Peace be upon you</dd>
+                <dt lang="dag">Daaliri</dt><dd>Thank you</dd>
+                <dt lang="dag">Naawuni</dt><dd>God</dd>
+                <dt lang="dag">Yini</dt><dd>One</dd>
+                <dt lang="dag">Pia</dt><dd>Ten</dd>
+            </dl>
+            <p><a href="#">Enable JavaScript to use the full dictionary and learning features.</a></p>
+        </div>
+    </noscript>
+    <div id="global-loading" class="fixed inset-0 bg-white/90 z-[70] flex flex-col items-center justify-center gap-4 hidden" role="status" aria-live="polite" aria-label="Loading Dagban Kurli" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="text-gray-600 font-medium">Loading Dagban Kurli…</p>
+    </div>
     <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto" style="padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full slide-in">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Welcome to Dagbani Korli</h2>
+    <div id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title" aria-describedby="login-form-title" onclick="if(event.target===this)closeLoginModal()" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" style="padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full slide-in" onclick="event.stopPropagation()">
+            <h2 id="login-modal-title" class="text-2xl font-bold text-gray-800 mb-6 text-center">Welcome to Dagban Kurli</h2>
             
-            <div id="login-form" class="space-y-4">
+            <div id="login-form" class="space-y-4" role="form" aria-label="Sign in form">
+                <h3 id="login-form-title" class="text-lg font-semibold text-gray-700 text-center">Sign In</h3>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Username or Email</label>
-                    <input 
-                        type="text" 
-                        id="login-username" 
-                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                        placeholder="Enter your username"
-                    >
+                    <label for="login-username" class="block text-sm font-semibold text-gray-700 mb-2">Username or Email</label>
+                    <input type="text" id="login-username" aria-required="true" aria-describedby="login-username-hint" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="Enter your username" autocomplete="username">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                    <input 
-                        type="password" 
-                        id="login-password" 
-                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                        placeholder="Enter your password"
-                    >
+                    <label for="login-password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                    <input type="password" id="login-password" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="Enter your password" autocomplete="current-password">
                 </div>
-                <button 
-                    onclick="handleLogin()" 
-                    class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg"
-                >
-                    Sign In
-                </button>
-                <p class="text-center text-sm text-gray-600">
-                    Don't have an account? 
-                    <button onclick="showRegisterForm()" class="text-amber-600 font-semibold hover:underline">Sign Up</button>
+                <button onclick="handleLogin()" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg">Sign In</button>
+                <p id="login-register-prompt" class="text-center text-sm text-gray-600">
+                    Don't have an account? <button onclick="showRegisterForm()" class="text-amber-600 font-semibold hover:underline">Sign Up</button>
                 </p>
-                <button 
-                    onclick="skipLogin()" 
-                    class="w-full text-sm text-gray-500 hover:text-gray-700"
-                >
-                    Continue as Guest
-                </button>
+                <p id="login-admin-link" class="text-center text-xs text-gray-500">
+                    <button onclick="showLoginModal('admin')" class="text-amber-600 hover:underline">Admin login</button>
+                </p>
+                <button id="login-guest-btn" onclick="closeLoginModal()" class="w-full text-sm text-gray-500 hover:text-gray-700">Cancel</button>
             </div>
 
             <div id="register-form" class="hidden space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 text-center">Create Account</h3>
+                <div>
+                    <label for="register-role" class="block text-sm font-semibold text-gray-700 mb-2">Account Type</label>
+                    <select id="register-role" aria-label="Select account type" onchange="toggleContributorFields()" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                        <option value="user">Learner (save progress, favorites)</option>
+                        <option value="contributor">Contributor (edit words; system will reference you)</option>
+                    </select>
+                </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
-                    <input 
-                        type="text" 
-                        id="register-username" 
-                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                        placeholder="Choose a username"
-                    >
+                    <input type="text" id="register-username" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="Choose a username">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                    <input 
-                        type="email" 
-                        id="register-email" 
-                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                        placeholder="your@email.com"
-                    >
+                    <input type="email" id="register-email" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="your@email.com" autocomplete="email">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                    <input 
-                        type="password" 
-                        id="register-password" 
-                        class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                        placeholder="Create a password"
-                    >
+                    <label for="register-password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                    <input type="password" id="register-password" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="Create a password (min 6 characters)" autocomplete="new-password">
                 </div>
-                <button 
-                    onclick="handleRegister()" 
-                    class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg"
-                >
-                    Create Account
-                </button>
-                <p class="text-center text-sm text-gray-600">
-                    Already have an account? 
-                    <button onclick="showLoginForm()" class="text-amber-600 font-semibold hover:underline">Sign In</button>
-                </p>
+                <div id="contributor-references-field" class="hidden">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Name / Profile for attribution <span class="text-amber-600">*</span></label>
+                    <input type="text" id="register-references" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Dr. Abubakari Alhassan, Dagbani Linguist">
+                    <p class="text-xs text-gray-500 mt-1">Your full name and how you are known. The system will reference you when your contributions are displayed.</p>
+                </div>
+                <button onclick="handleRegister()" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition shadow-lg">Create Account</button>
+                <p class="text-center text-sm text-gray-600">Already have an account? <button onclick="showLoginForm()" class="text-amber-600 font-semibold hover:underline">Sign In</button></p>
+                <p class="text-center text-xs text-gray-500"><button onclick="showLoginModal('admin')" class="text-amber-600 hover:underline">Admin login</button></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Word Modal (contributors/admins) -->
+    <div id="edit-word-modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeEditWordModal()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in" onclick="event.stopPropagation()">
+            <h2 id="edit-modal-title" class="text-xl font-bold text-gray-800 mb-4">Suggest edit</h2>
+            <input type="hidden" id="edit-word-id">
+            <div class="space-y-4">
+                <div><label for="edit-dagbani" class="block text-sm font-semibold text-gray-700 mb-1">Dagbani</label><input type="text" id="edit-dagbani" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label for="edit-english" class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-english" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Grammar (optional)</label><textarea id="edit-grammar" rows="2" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></textarea></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Example (optional)</label><textarea id="edit-example" rows="2" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></textarea></div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="submitEditWord()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Submit for review</button>
+                <button onclick="closeEditWordModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Error Modal (learners) -->
+    <div id="report-error-modal" role="dialog" aria-modal="true" aria-labelledby="report-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeReportErrorModal()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in" onclick="event.stopPropagation()">
+            <h2 id="report-modal-title" class="text-xl font-bold text-gray-800 mb-4">Report error / Suggest correction</h2>
+            <input type="hidden" id="report-word-id">
+            <div class="space-y-4">
+                <div><label for="report-description" class="block text-sm font-semibold text-gray-700 mb-1">What's wrong or your suggested correction</label><textarea id="report-description" rows="3" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg" placeholder="Describe the error or suggest the correct translation..."></textarea></div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="submitReportError()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Submit</button>
+                <button onclick="closeReportErrorModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Navigation Bar -->
-    <nav class="bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg sticky top-0 z-40 safe-top" id="main-nav" style="display: none;">
+    <nav role="navigation" aria-label="Main navigation" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg sticky top-0 z-40 safe-top" id="main-nav" style="display: none;">
         <div class="w-full max-w-[100vw] mx-auto px-3 sm:px-4 py-2 sm:py-3">
             <div class="flex items-center justify-between gap-2 w-full min-w-0">
                 <div class="flex items-center gap-2 flex-shrink-0 min-w-0 overflow-hidden">
-                    <h1 class="text-lg sm:text-xl font-bold truncate">Dagbani Korli</h1>
+                    <h1 class="text-lg sm:text-xl font-bold truncate">Dagban Kurli</h1>
                     <span id="user-badge" class="text-sm bg-amber-700 px-3 py-1 rounded-full hidden flex-shrink-0"></span>
+                    <button id="nav-sign-in" onclick="showLoginModal('user')" class="px-3 py-1.5 text-sm font-semibold rounded-lg hover:bg-amber-700 transition border border-amber-500" style="display: none;">Sign In</button>
                 </div>
                 <!-- Desktop nav links: CSS controls visibility -->
                 <div class="desktop-nav-links gap-2 flex-shrink-0 items-center">
-                    <button onclick="showView('dictionary')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="dictionary">Dictionary</button>
-                    <button onclick="showView('browse')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="browse">Browse A-Z</button>
-                    <button onclick="showView('learn')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="learn">Learn</button>
+                <button onclick="showView('dictionary')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="dictionary" aria-label="Open dictionary search">Dictionary</button>
+                <button onclick="showView('browse')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="browse" aria-label="Browse dictionary A to Z">Browse A-Z</button>
+                <button onclick="showView('learn')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="learn" aria-label="Learn Dagbani">Learn</button>
                     <button onclick="showView('favorites')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="favorites">Favorites<span id="favorites-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
+                    <button onclick="showView('community')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="community">Community</button>
+                    <button onclick="showView('leaderboard')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="leaderboard">Leaderboard</button>
                     <button onclick="showView('contribute')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="contribute">Contribute</button>
+                    <button id="nav-mycontributions" onclick="showView('mycontributions')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="mycontributions" style="display: none;">My Contributions</button>
                     <button onclick="showView('review')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="review">Review<span id="pending-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
                     <button onclick="showView('donate')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="donate">Donate</button>
                     <button onclick="showView('settings')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="settings">Settings</button>
@@ -259,13 +363,17 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             <div class="flex flex-col gap-2 pt-2">
+                <button id="nav-sign-in-drawer" onclick="closeNavDrawer(); showLoginModal('user')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" style="display: none;">Sign In</button>
                 <button onclick="navDrawerGo('dictionary')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="dictionary">Dictionary</button>
                 <button onclick="navDrawerGo('browse')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="browse">Browse A-Z</button>
                 <button onclick="navDrawerGo('learn')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="learn">Learn</button>
                 <button onclick="navDrawerGo('favorites')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="favorites">Favorites<span id="favorites-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
+                <button onclick="navDrawerGo('community')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="community">Community</button>
+                <button onclick="navDrawerGo('leaderboard')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="leaderboard">Leaderboard</button>
                 <button onclick="navDrawerGo('contribute')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="contribute">Contribute</button>
+                <button id="nav-mycontributions-drawer" onclick="navDrawerGo('mycontributions')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="mycontributions" style="display: none;">My Contributions</button>
                 <button onclick="navDrawerGo('review')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="review">Review<span id="pending-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
-                <button onclick="navDrawerGo('donate')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="donate">Donate</button>
+                    <button onclick="navDrawerGo('donate')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="donate">Donate</button>
                 <button onclick="navDrawerGo('settings')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="settings">Settings</button>
                 <button onclick="navDrawerLogout()" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" id="logout-btn-drawer" style="display: none;">Logout</button>
             </div>
@@ -278,7 +386,7 @@
         <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-4 sm:p-6 mb-6 text-white slide-in overflow-hidden">
             <h2 class="text-lg sm:text-xl font-semibold mb-2">📚 Word of the Day</h2>
             <div id="word-of-the-day" class="min-w-0">
-                <p class="text-xl sm:text-2xl md:text-3xl font-bold truncate" id="wotd-dagbani">-</p>
+                <p class="text-xl sm:text-2xl md:text-3xl font-bold truncate" id="wotd-dagbani" lang="dag">-</p>
                 <p class="text-base sm:text-lg opacity-90 break-words" id="wotd-english">-</p>
             </div>
         </div>
@@ -290,16 +398,19 @@
             <div class="flex flex-col sm:flex-row gap-2 mb-4">
                 <div class="flex-1 relative min-w-0">
                     <input 
-                        type="text" 
+                        type="search" 
                         id="search-input" 
                         placeholder="Search Dagbani or English..." 
+                        aria-label="Search dictionary in Dagbani or English"
+                        aria-describedby="search-direction"
                         class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-base sm:text-lg min-h-[44px]"
                         onkeyup="handleSearch(event)"
                         oninput="showSearchSuggestions()"
+                        autocomplete="off"
                     >
-                    <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 bg-white border-2 border-amber-300 rounded-lg mt-1 shadow-xl z-10 max-h-60 overflow-y-auto"></div>
+                    <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 bg-white border-2 border-amber-300 rounded-lg mt-1 shadow-xl z-10 max-h-60 overflow-y-auto" role="listbox" aria-label="Search suggestions"></div>
                 </div>
-                <select id="search-direction" class="px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 min-h-[44px] w-full sm:w-auto">
+                <select id="search-direction" aria-label="Search direction: both, Dagbani to English, or English to Dagbani" class="px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 min-h-[44px] w-full sm:w-auto">
                     <option value="both">Both Directions</option>
                     <option value="dag-en" selected>Dagbani → English</option>
                     <option value="en-dag">English → Dagbani</option>
@@ -311,24 +422,20 @@
                 <div>
                     <label class="text-sm font-semibold text-gray-600 mb-2 block">Dialect:</label>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="filterDialect('all')" class="dialect-filter px-4 py-2 rounded-lg bg-amber-100 border-2 border-amber-400 text-amber-800 font-semibold flex-shrink-0 min-h-[44px]" data-dialect="all">
-                            All
-                        </button>
-                        <button onclick="filterDialect('standard')" class="dialect-filter px-4 py-2 rounded-lg bg-gray-100 border-2 border-gray-300 text-gray-700 flex-shrink-0 min-h-[44px]" data-dialect="standard">
-                            Standard
-                        </button>
+                        <button onclick="filterDialect('all')" class="dialect-filter px-4 py-2 rounded-lg bg-amber-100 border-2 border-amber-400 text-amber-800 font-semibold flex-shrink-0 min-h-[44px]" data-dialect="all" aria-pressed="true" aria-label="Show all dialects">All</button>
+                        <button onclick="filterDialect('standard')" class="dialect-filter px-4 py-2 rounded-lg bg-gray-100 border-2 border-gray-300 text-gray-700 flex-shrink-0 min-h-[44px]" data-dialect="standard" aria-pressed="false" aria-label="Show standard dialect only">Standard</button>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-4 items-center">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" id="filter-audio" onchange="applyFilters()" class="w-4 h-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filter-audio" aria-label="Filter by words that have audio" onchange="applyFilters()" class="w-4 h-4">
                         <span class="text-sm text-gray-700">Has Audio</span>
                     </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" id="filter-verified" checked onchange="applyFilters()" class="w-4 h-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filter-verified" aria-label="Show only verified words" checked onchange="applyFilters()" class="w-4 h-4">
                         <span class="text-sm text-gray-700">Verified Only</span>
                     </label>
-                    <select id="filter-category" onchange="applyFilters()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-sm">
+                    <select id="filter-category" aria-label="Filter by category" onchange="applyFilters()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-sm">
                         <option value="all">All Categories</option>
                     </select>
                 </div>
@@ -339,18 +446,25 @@
                 <label class="text-sm font-semibold text-gray-600 mb-2 block">Recent Searches:</label>
                 <div id="search-history" class="flex flex-wrap gap-2"></div>
             </div>
+
+            <!-- Last 5 new words/edits -->
+            <div id="community-announcement-banner" class="hidden mt-6 pt-6 border-t border-gray-200">
+                <p class="text-sm font-semibold text-gray-700 mb-3">📢 Recent additions</p>
+                <div id="community-announcement-items" class="space-y-2 text-sm text-gray-700"></div>
+                <button onclick="showView('community')" class="mt-3 text-amber-600 font-semibold hover:underline text-sm">See more in Community →</button>
+            </div>
         </div>
 
         <!-- Search Results -->
-        <div id="search-results" class="space-y-4">
+        <main id="main-content" role="main" aria-label="Dagbani-English dictionary and learning content" tabindex="-1">
+        <div id="search-results" class="space-y-4" role="region" aria-label="Search results" aria-live="polite">
             <!-- Results will be dynamically inserted here -->
         </div>
-
-        <!-- No Results Message -->
-        <div id="no-results" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
+        <div id="no-results" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center" role="status" aria-live="polite">
             <p class="text-gray-500 text-lg mb-4">No results found. Try a different search term.</p>
             <p class="text-gray-600 text-sm">Know a word? <button onclick="showView('contribute')" class="text-amber-600 font-semibold hover:underline">Contribute it</button></p>
         </div>
+        </main>
     </div>
 
     <!-- Browse A-Z View -->
@@ -363,21 +477,21 @@
                 <div class="flex flex-col sm:flex-row flex-wrap gap-3">
                     <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
                         <span class="text-sm font-semibold text-gray-700 shrink-0">Sort by:</span>
-                        <select id="browse-sort" onchange="renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
+                        <select id="browse-sort" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
                             <option value="dagbani" selected>Dagbani (A-Z)</option>
                             <option value="english">English (A-Z)</option>
                         </select>
                     </label>
                     <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
                         <span class="text-sm font-semibold text-gray-700 shrink-0">Dialect:</span>
-                        <select id="browse-dialect-filter" onchange="renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
+                        <select id="browse-dialect-filter" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
                             <option value="all">All Dialects</option>
                             <option value="standard">Standard</option>
                         </select>
                     </label>
                     <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
                         <span class="text-sm font-semibold text-gray-700 shrink-0">View:</span>
-                        <select id="browse-view-mode" onchange="renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
+                        <select id="browse-view-mode" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
                             <option value="grid">Cards</option>
                             <option value="list">List (Table)</option>
                         </select>
@@ -429,6 +543,7 @@
                 <button onclick="showLearnSection('practice')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 transition text-sm font-semibold bg-amber-100 border-amber-400 text-amber-800 touch-manipulation" data-section="practice">Practice</button>
                 <button onclick="showLearnSection('names')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="names">Names</button>
                 <button onclick="showLearnSection('history')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="history">History</button>
+                <button onclick="showLearnSection('phrases')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="phrases">Phrases</button>
                 <button onclick="showLearnSection('idioms')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="idioms">Idioms</button>
                 <button onclick="showLearnSection('short-stories')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="short-stories">Short Stories</button>
                 <button onclick="showLearnSection('media')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="media">Media</button>
@@ -524,10 +639,10 @@
                         <div>
                             <input type="text" id="select-words-search" placeholder="Search words to add…" 
                                 class="w-full px-4 py-3 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                                oninput="filterSelectWords()">
+                                oninput="(appState.pagination=appState.pagination||{}).selectWords=1;filterSelectWords()">
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <select id="select-words-dir" onchange="filterSelectWords()" class="px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 min-h-[44px]">
+                            <select id="select-words-dir" onchange="(appState.pagination=appState.pagination||{}).selectWords=1;filterSelectWords()" class="px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 min-h-[44px]">
                                 <option value="english">Search English</option>
                                 <option value="dagbani">Search Dagbani</option>
                             </select>
@@ -536,6 +651,7 @@
                         <div id="select-words-list" class="max-h-48 overflow-y-auto border rounded-lg p-2 space-y-1 text-sm">
                             <!-- Filled by JS -->
                         </div>
+                        <div id="select-words-pagination" class="mt-2 min-h-[2.5rem]"></div>
                         <p class="text-xs text-gray-500"><span id="selected-words-count">0</span> words selected</p>
                         <button onclick="startSelectedWordsQuiz()" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition disabled:opacity-50" id="start-selected-btn" disabled>
                             Practice Selected Words
@@ -609,9 +725,12 @@
                 <div class="mb-6 flex flex-col sm:flex-row gap-2">
                     <input type="text" id="names-search" placeholder="Search names or meanings…" 
                         class="flex-1 min-w-0 px-4 py-3 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500"
-                        oninput="filterNames()">
-                    <select id="names-category-filter" onchange="filterNames()" class="px-4 py-3 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 sm:w-48 touch-manipulation">
-                        <option value="">All Categories</option>
+                        oninput="(appState.pagination=appState.pagination||{}).names=1;filterNames()">
+                    <select id="names-category-filter" onchange="(appState.pagination=appState.pagination||{}).names=1;filterNames()" class="px-4 py-3 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 sm:w-48 touch-manipulation">
+                        <option value="">All</option>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                        <option value="both">Male &amp; Female</option>
                     </select>
                 </div>
                 <div id="names-list" class="space-y-4">
@@ -668,9 +787,10 @@
                 <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                     <h3 class="text-xl font-bold text-gray-800 mb-2">Kings of Dagbon (Ya Na)</h3>
                     <p class="text-gray-600 text-sm mb-6">Click a king to read their history and achievements.</p>
-                    <div id="kings-diagram" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mb-8">
+                    <div id="kings-diagram" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mb-4">
                         <!-- Filled by JS -->
                     </div>
+                    <div id="kings-pagination" class="mb-8 min-h-[2.5rem]"></div>
                     <div class="border-t border-amber-200 pt-6">
                         <h4 class="font-bold text-amber-700 mb-3">References</h4>
                         <ol class="text-sm text-gray-600 space-y-1 list-decimal list-inside">
@@ -698,6 +818,101 @@
                 <div class="p-4 border-t flex justify-end">
                     <button onclick="closeKingModal()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Close</button>
                 </div>
+            </div>
+        </div>
+        <div id="learn-phrases" class="learn-section-content hidden">
+            <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Phrases</h3>
+                <p class="text-gray-600 mb-6">Community-contributed Dagbani phrases for everyday use. Contributors can add new phrases.</p>
+                <div id="phrase-contribute-gate" class="hidden bg-amber-50 border-2 border-amber-300 rounded-xl p-6 text-center mb-6">
+                    <p class="text-gray-700 mb-4">Sign up as a Contributor to submit phrases.</p>
+                    <button onclick="openContributorSignup()" class="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign Up as Contributor</button>
+                    <p class="text-sm text-gray-600 mt-3">Already a contributor? <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></p>
+                </div>
+                <div id="phrase-contribute-form-wrapper" class="mb-6">
+                    <form id="phrase-form" onsubmit="submitPhrase(event)" class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50 space-y-4">
+                        <h4 class="font-bold text-gray-800">Add a Phrase</h4>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Phrase</label>
+                            <input type="text" id="phrase-dagbani" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Antire">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">English Translation</label>
+                            <input type="text" id="phrase-english" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Hello">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional)</label>
+                            <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
+                                <button type="button" onclick="startPhraseRecording()" id="phrase-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                                <div id="phrase-recording-status" class="hidden flex items-center gap-2">
+                                    <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                                    <span class="text-red-600 font-medium text-sm">Recording</span>
+                                    <button type="button" onclick="stopPhraseRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                                </div>
+                                <audio id="phrase-audio-playback" controls class="hidden w-full h-10 mt-2"></audio>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                            <select id="phrase-category" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                                <option value="basics">Basics</option>
+                                <option value="common_signs">Common signs</option>
+                                <option value="problems">Problems</option>
+                                <option value="numbers">Numbers</option>
+                                <option value="time">Time</option>
+                                <option value="clock_time">Clock time</option>
+                                <option value="duration">Duration</option>
+                                <option value="days">Days</option>
+                                <option value="months">Months</option>
+                                <option value="writing_time_and_date">Writing time and date</option>
+                                <option value="colors">Colors</option>
+                                <option value="transportation">Transportation</option>
+                                <option value="bus_and_train">Bus and train</option>
+                                <option value="directions">Directions</option>
+                                <option value="taxi">Taxi</option>
+                                <option value="lodging">Lodging</option>
+                                <option value="money">Money</option>
+                                <option value="eating">Eating</option>
+                                <option value="bars">Bars</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="driving">Driving</option>
+                                <option value="authority">Authority</option>
+                                <option value="general">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="px-6 py-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">Submit for Review</button>
+                    </form>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span class="text-sm font-semibold text-gray-700">Filter by category:</span>
+                    <select id="phrase-filter-select" onchange="filterPhrases(this.value)" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[180px]">
+                        <option value="all">All categories</option>
+                        <option value="basics">Basics</option>
+                        <option value="common_signs">Common signs</option>
+                        <option value="problems">Problems</option>
+                        <option value="numbers">Numbers</option>
+                        <option value="time">Time</option>
+                        <option value="clock_time">Clock time</option>
+                        <option value="duration">Duration</option>
+                        <option value="days">Days</option>
+                        <option value="months">Months</option>
+                        <option value="writing_time_and_date">Writing time and date</option>
+                        <option value="colors">Colors</option>
+                        <option value="transportation">Transportation</option>
+                        <option value="bus_and_train">Bus and train</option>
+                        <option value="directions">Directions</option>
+                        <option value="taxi">Taxi</option>
+                        <option value="lodging">Lodging</option>
+                        <option value="money">Money</option>
+                        <option value="eating">Eating</option>
+                        <option value="bars">Bars</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="driving">Driving</option>
+                        <option value="authority">Authority</option>
+                        <option value="general">Other</option>
+                    </select>
+                </div>
+                <div id="phrase-list-container" class="space-y-4"></div>
             </div>
         </div>
         <div id="learn-idioms" class="learn-section-content hidden">
@@ -730,10 +945,176 @@
         </div>
     </div>
 
+    <!-- Community View -->
+    <div id="community-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Community Updates</h2>
+            <p class="text-gray-600 mb-6">New words added by our contributors. Help grow the lexicon!</p>
+            <div id="community-feed" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">No new contributions yet. Be the first to contribute!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard View -->
+    <div id="leaderboard-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Leaderboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-amber-700 mb-3">🏆 Top Contributors</h3>
+                    <div id="leaderboard-contributors" class="space-y-2"></div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-amber-700 mb-3">👍 Most Voted Words</h3>
+                    <div id="leaderboard-words" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contributor Profile View -->
+    <div id="contributor-profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <button onclick="showView('leaderboard')" class="text-amber-600 font-semibold hover:underline mb-4">← Back to Leaderboard</button>
+            <h2 id="contributor-profile-name" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+            <p id="contributor-profile-stats" class="text-gray-600 mb-6"></p>
+            <div id="contributor-profile-words" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- My Contributions View (Contributors only) -->
+    <div id="mycontributions-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">My Contributions</h2>
+            <p class="text-gray-600 mb-6">Track your submitted words and their status.</p>
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="filterMyContributions('all')" id="mc-filter-all" class="px-4 py-2 rounded-lg font-semibold bg-amber-100 border-2 border-amber-400 text-amber-800">All</button>
+                <button onclick="filterMyContributions('pending')" id="mc-filter-pending" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Pending</button>
+                <button onclick="filterMyContributions('approved')" id="mc-filter-approved" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Approved</button>
+            </div>
+            <div id="my-contributions-list" class="space-y-4">
+                <!-- Filled by renderMyContributions -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Phrase List View -->
+    <div id="phrases-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Phrase List</h2>
+            <p class="text-gray-600 mb-6">Community-contributed Dagbani phrases for everyday use. Contributors can add new phrases.</p>
+            
+            <div id="phrase-contribute-gate" class="hidden bg-amber-50 border-2 border-amber-300 rounded-xl p-6 text-center mb-6">
+                <p class="text-gray-700 mb-4">Sign up as a Contributor to submit phrases.</p>
+                <button onclick="openContributorSignup()" class="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign Up as Contributor</button>
+                <p class="text-sm text-gray-600 mt-3">Already a contributor? <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></p>
+            </div>
+            
+            <div id="phrase-contribute-form-wrapper" class="mb-6">
+                <form id="phrase-form" onsubmit="submitPhrase(event)" class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50 space-y-4">
+                    <h3 class="font-bold text-gray-800">Add a Phrase</h3>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Phrase</label>
+                        <input type="text" id="phrase-dagbani" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Antire">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">English Translation</label>
+                        <input type="text" id="phrase-english" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Hello">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional)</label>
+                        <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
+                            <button type="button" onclick="startPhraseRecording()" id="phrase-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                            <div id="phrase-recording-status" class="hidden flex items-center gap-2">
+                                <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                                <span class="text-red-600 font-medium text-sm">Recording</span>
+                                <button type="button" onclick="stopPhraseRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                            </div>
+                            <audio id="phrase-audio-playback" controls class="hidden w-full h-10 mt-2"></audio>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                        <select id="phrase-category" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                            <option value="basics">Basics</option>
+                            <option value="common_signs">Common signs</option>
+                            <option value="problems">Problems</option>
+                            <option value="numbers">Numbers</option>
+                            <option value="time">Time</option>
+                            <option value="clock_time">Clock time</option>
+                            <option value="duration">Duration</option>
+                            <option value="days">Days</option>
+                            <option value="months">Months</option>
+                            <option value="writing_time_and_date">Writing time and date</option>
+                            <option value="colors">Colors</option>
+                            <option value="transportation">Transportation</option>
+                            <option value="bus_and_train">Bus and train</option>
+                            <option value="directions">Directions</option>
+                            <option value="taxi">Taxi</option>
+                            <option value="lodging">Lodging</option>
+                            <option value="money">Money</option>
+                            <option value="eating">Eating</option>
+                            <option value="bars">Bars</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="driving">Driving</option>
+                            <option value="authority">Authority</option>
+                            <option value="general">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">Submit for Review</button>
+                </form>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span class="text-sm font-semibold text-gray-700">Filter by category:</span>
+                <select id="phrase-filter-select" onchange="filterPhrases(this.value)" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[180px]">
+                    <option value="all">All categories</option>
+                    <option value="basics">Basics</option>
+                    <option value="common_signs">Common signs</option>
+                    <option value="problems">Problems</option>
+                    <option value="numbers">Numbers</option>
+                    <option value="time">Time</option>
+                    <option value="clock_time">Clock time</option>
+                    <option value="duration">Duration</option>
+                    <option value="days">Days</option>
+                    <option value="months">Months</option>
+                    <option value="writing_time_and_date">Writing time and date</option>
+                    <option value="colors">Colors</option>
+                    <option value="transportation">Transportation</option>
+                    <option value="bus_and_train">Bus and train</option>
+                    <option value="directions">Directions</option>
+                    <option value="taxi">Taxi</option>
+                    <option value="lodging">Lodging</option>
+                    <option value="money">Money</option>
+                    <option value="eating">Eating</option>
+                    <option value="bars">Bars</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="driving">Driving</option>
+                    <option value="authority">Authority</option>
+                    <option value="general">Other</option>
+                </select>
+            </div>
+            <div id="phrase-list-container" class="space-y-4">
+                <!-- Filled by renderPhraseList -->
+            </div>
+        </div>
+    </div>
+
     <!-- Contribute View -->
     <div id="contribute-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
-        <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
+        <div id="contribute-gate" class="hidden bg-amber-50 border-2 border-amber-300 rounded-2xl p-8 text-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Contribute to the Lexicon</h2>
+            <p class="text-gray-700 mb-6">Sign up as a Contributor to submit words and help grow our community lexicon.</p>
+            <button onclick="openContributorSignup()" class="px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign Up as Contributor</button>
+            <p class="text-sm text-gray-600 mt-4">Already a contributor? <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></p>
+        </div>
+        <div id="contribute-form-wrapper" class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Contribute to the Lexicon</h2>
+            <div class="flex gap-2 mb-6 border-b border-gray-200">
+                <button type="button" onclick="switchContributeMode('single')" id="contribute-mode-single" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Single Word</button>
+                <button type="button" onclick="switchContributeMode('bulk')" id="contribute-mode-bulk" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Bulk Upload</button>
+            </div>
             
             <form id="word-form" onsubmit="submitWord(event)" class="space-y-4">
                 <div>
@@ -801,6 +1182,19 @@
                 </div>
 
                 <div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="word-allow-comments" checked class="w-4 h-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500">
+                        <span class="text-sm font-semibold text-gray-700">Allow comments on this word</span>
+                    </label>
+                    <p class="text-xs text-gray-500 mt-1 ml-6">Others can discuss or ask questions. You can disable this later.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Image URL (Optional)</label>
+                    <input type="url" id="word-picture" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Audio Pronunciation</label>
                     <div class="border-2 border-dashed border-amber-300 rounded-lg p-6 text-center">
                         <div id="audio-controls" class="space-y-4">
@@ -835,6 +1229,41 @@
                     Submit for Review
                 </button>
             </form>
+
+            <div id="contribute-bulk-wrapper" class="hidden space-y-4">
+                <p class="text-sm text-gray-600">Enter one word per line. Each line: <strong>Dagbani,English</strong> or <strong>Dagbani|English</strong>. Optional: <strong>Dagbani,English,Category</strong></p>
+                <textarea id="bulk-words-input" rows="12" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 font-mono text-sm" placeholder="Antire,Hello&#10;Naawuni,God&#10;Bɛɛ,They|people"></textarea>
+                <div class="mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="bulk-allow-comments" checked class="w-4 h-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500">
+                        <span class="text-sm font-semibold text-gray-700">Allow comments on these words</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Default Dialect</label>
+                        <select id="bulk-dialect" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                            <option value="standard">Standard</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Default Category</label>
+                        <select id="bulk-category" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500">
+                            <option value="general">General</option>
+                            <option value="greetings">Greetings</option>
+                            <option value="food">Food</option>
+                            <option value="family">Family</option>
+                            <option value="nature">Nature</option>
+                            <option value="verbs">Verbs</option>
+                            <option value="adjectives">Adjectives</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="submitBulkWords()" class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition shadow-lg">
+                    Submit All for Review
+                </button>
+            </div>
         </div>
     </div>
 
@@ -842,14 +1271,25 @@
     <div id="review-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
-            <p class="text-gray-600 mb-6">Review and verify pending word submissions from the community.</p>
+            <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
             
-            <div id="pending-submissions" class="space-y-4">
-                <!-- Pending submissions will be dynamically inserted here -->
+            <div class="flex gap-2 mb-6 border-b border-gray-200">
+                <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
+                <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
             </div>
 
-            <div id="no-pending" class="hidden text-center py-8 text-gray-500">
-                <p class="text-lg">No pending submissions. Great work keeping the lexicon up to date! 🎉</p>
+            <div id="review-words-panel">
+                <div id="pending-submissions" class="space-y-4"></div>
+                <div id="no-pending" class="hidden text-center py-8 text-gray-500">
+                    <p class="text-lg">No pending word submissions. Great work keeping the lexicon up to date! 🎉</p>
+                </div>
+            </div>
+
+            <div id="review-phrases-panel" class="hidden">
+                <div id="pending-phrases" class="space-y-4"></div>
+                <div id="no-pending-phrases" class="hidden text-center py-8 text-gray-500">
+                    <p class="text-lg">No pending phrase submissions.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -858,7 +1298,7 @@
     <div id="donate-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="space-y-6">
             <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-8 text-white text-center slide-in">
-                <h2 class="text-3xl font-bold mb-4">Support Dagbani Korli</h2>
+                <h2 class="text-3xl font-bold mb-4">Support Dagban Kurli</h2>
                 <p class="text-lg opacity-90 mb-6">Help preserve and promote the Dagbani language for future generations. Your contribution makes a difference!</p>
             </div>
 
@@ -977,7 +1417,7 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-700 mb-3">Preferences</h3>
                         <div class="space-y-3">
-                            <label class="flex items-center justify-between">
+                            <label class="flex items-center justify-between cursor-pointer">
                                 <span class="text-gray-700">Dark Mode</span>
                                 <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()" class="w-4 h-4">
                             </label>
@@ -993,7 +1433,24 @@
                         <div id="user-info" class="space-y-2 text-gray-700">
                             <p><strong>Username:</strong> <span id="settings-username">-</span></p>
                             <p><strong>Email:</strong> <span id="settings-email">-</span></p>
+                            <p><strong>Role:</strong> <span id="settings-role">-</span></p>
                             <p><strong>Member Since:</strong> <span id="settings-date">-</span></p>
+                        </div>
+                        <p id="settings-visitor-prompt" class="hidden text-amber-700 font-medium mt-2">Sign in to save your progress and favorites across devices.</p>
+                    </div>
+
+                    <div id="activity-log-section" class="hidden">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Activity Log</h3>
+                        <p class="text-sm text-gray-600 mb-3">Recent approvals and rejections.</p>
+                        <div id="activity-log-list" class="space-y-2 max-h-48 overflow-y-auto text-sm"></div>
+                        <div id="activity-log-pagination" class="mt-2 min-h-[2rem]"></div>
+                    </div>
+
+                    <div id="user-management-section" class="hidden">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">User Management</h3>
+                        <p class="text-sm text-gray-600 mb-3">As a master admin, you can promote contributors to admin. Only master admins can create new admins.</p>
+                        <div id="user-management-list" class="space-y-2">
+                            <!-- Filled by renderUserManagement -->
                         </div>
                     </div>
                 </div>
@@ -1002,7 +1459,7 @@
     </div>
 
     <!-- Toast Notification (responsive, safe area aware) -->
-    <div id="toast" class="hidden fixed left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bottom-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))] bg-green-500 text-white px-6 py-3 rounded-xl shadow-xl z-[60] fade-in">
+    <div id="toast" class="hidden fixed left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bottom-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))] bg-green-500 text-white px-6 py-3 rounded-xl shadow-xl z-[60] fade-in" role="status" aria-live="polite" aria-atomic="true">
         <span id="toast-message"></span>
     </div>
 
@@ -1020,11 +1477,19 @@
         }
     </style>
 
+    <script src="seed_phrases.js"></script>
     <script>
+        const SITE_URL = 'https://dagbanikorli.org';
         // Application State
         let appState = {
             words: [],
             pendingSubmissions: [],
+            phrases: [],
+            pendingPhrases: [],
+            communityFeed: [],
+            comments: [],
+            wordVotes: {},
+            activityLog: [],
             currentUser: null,
             users: [],
             favorites: [],
@@ -1033,6 +1498,8 @@
             currentDialect: 'all',
             mediaRecorder: null,
             audioChunks: [],
+            phraseMediaRecorder: null,
+            phraseAudioChunks: [],
             recording: false,
             quizState: null,
             numbersQuizState: null,
@@ -1048,6 +1515,60 @@
             21:'pishi ni yini',30:'pishi ni pia',40:'pinai',50:'pinai ni pia',60:'pihinu',70:'pihinu ni pia',80:'pihinii',90:'pihinii ni pia',100:'kɔbiga'
         };
         const ENGLISH_NUMBERS = {1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven',8:'eight',9:'nine',10:'ten',11:'eleven',12:'twelve',13:'thirteen',14:'fourteen',15:'fifteen',16:'sixteen',17:'seventeen',18:'eighteen',19:'nineteen',20:'twenty',21:'twenty-one',30:'thirty',40:'forty',50:'fifty',60:'sixty',70:'seventy',80:'eighty',90:'ninety',100:'one hundred'};
+
+        const ROLES = { visitor: 'visitor', user: 'user', contributor: 'contributor', admin: 'admin' };
+        const MASTER_ADMIN_USERNAMES = ['admin', 'maman']; // Only these can promote users to admin
+        const PAGE_SIZE = 20;
+
+        function paginate(items, page) {
+            const p = Math.max(1, parseInt(page, 10) || 1);
+            const total = items.length;
+            const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            const currentPage = Math.min(p, totalPages);
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const slice = items.slice(start, start + PAGE_SIZE);
+            return { slice, currentPage, totalPages, total, start };
+        }
+
+        function renderPaginationBar(total, currentPage, totalPages, pageKey) {
+            if (totalPages <= 1 || total <= PAGE_SIZE) return '';
+            const pages = [];
+            const maxVisible = 5;
+            let from = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let to = Math.min(totalPages, from + maxVisible - 1);
+            if (to - from < maxVisible - 1) from = Math.max(1, to - maxVisible + 1);
+            for (let i = from; i <= to; i++) pages.push(i);
+            const prev = currentPage > 1 ? currentPage - 1 : 0;
+            const next = currentPage < totalPages ? currentPage + 1 : 0;
+            const pageButtons = pages.map(p => `<button class="px-3 py-1.5 rounded-lg font-semibold transition text-sm ${p === currentPage ? 'bg-amber-600 text-white' : 'hover:bg-amber-100 text-amber-700'}" onclick="goToPage('${pageKey}',${p})">${p}</button>`).join('');
+            return `<nav class="flex flex-wrap items-center justify-center gap-2 py-4 mt-6 border-t border-amber-200" aria-label="Pagination">
+                <span class="text-sm text-gray-600 mr-2">Page ${currentPage} of ${totalPages} · ${total} total</span>
+                <button class="px-3 py-1.5 rounded-lg font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm" ${prev ? `onclick="goToPage('${pageKey}',${prev})"` : 'disabled'}>‹ Prev</button>
+                <div class="flex gap-1">${pageButtons}</div>
+                <button class="px-3 py-1.5 rounded-lg font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm" ${next ? `onclick="goToPage('${pageKey}',${next})"` : 'disabled'}>Next ›</button>
+            </nav>`;
+        }
+
+        function goToPage(key, page) {
+            appState.pagination = appState.pagination || {};
+            appState.pagination[key] = page;
+            if (key === 'phraseList') renderPhraseList();
+            else if (key === 'browse') renderBrowseDictionary();
+            else if (key === 'communityFeed') renderCommunityFeed();
+            else if (key === 'myContributions') renderMyContributions();
+            else if (key === 'pendingSubmissions') renderPendingSubmissions();
+            else if (key === 'pendingPhrases') renderPendingPhrases();
+            else if (key === 'searchResults') applyFilters();
+            else if (key === 'favorites') renderFavorites();
+            else if (key === 'contributorProfile') { const n = appState.contributorProfileName || document.getElementById('contributor-profile-name')?.textContent; if (n) showContributorProfile(n); }
+            else if (key === 'phrasebook') renderPhrasebook();
+            else if (key === 'selectWords') filterSelectWords();
+            else if (key === 'names') filterNames();
+            else if (key === 'userManagement') renderUserManagement();
+            else if (key === 'activityLog') renderActivityLog();
+            else if (key === 'kings') renderKingsDiagram();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         const DAGBANI_NAMES = [
             {name:'Dayuuni', meaning:'A child whose pregnancy extended beyond 9 months to a year', category:'Naawuni Zaligu Yuya', gender:'both'},
@@ -1119,41 +1640,119 @@
 
         // Initialize App
         function init() {
+            applySavedDarkMode();
             loadData();
             checkAuth();
             updateWordOfTheDay();
+            renderCommunityAnnouncementBanner();
             populateCategories();
         }
 
-        // Authentication
+        // Authentication - Visitors use app without login; others sign in when needed
         function checkAuth() {
             const currentUser = localStorage.getItem('currentUser');
             if (currentUser) {
-                appState.currentUser = JSON.parse(currentUser);
-                showMainApp();
+                try {
+                    const u = JSON.parse(currentUser);
+                    appState.currentUser = u;
+                } catch (e) {
+                    appState.currentUser = getVisitorUser();
+                }
             } else {
-                showLoginModal();
+                appState.currentUser = getVisitorUser();
+            }
+            seedAdminIfNeeded();
+            showMainApp();
+        }
+
+        function getVisitorUser() {
+            return { id: 'guest', username: 'Visitor', email: '', role: ROLES.visitor };
+        }
+
+        function getCurrentRole() {
+            const u = appState.currentUser;
+            if (!u || u.id === 'guest') return ROLES.visitor;
+            return u.role || ROLES.user;
+        }
+
+        function isAdmin() { return getCurrentRole() === ROLES.admin; }
+        function isMasterAdmin() { return isAdmin() && MASTER_ADMIN_USERNAMES.includes((appState.currentUser?.username || '')); }
+        function isContributor() { return getCurrentRole() === ROLES.contributor || isAdmin(); }
+        function isLoggedIn() { return appState.currentUser && appState.currentUser.id !== 'guest'; }
+
+        function seedAdminIfNeeded() {
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (!users.some(u => u.role === ROLES.admin)) {
+                const adminSeed = { id: 'admin-seed', username: 'admin', email: 'admin@dagbanikorli.org', password: 'admin123', role: ROLES.admin, dateJoined: new Date().toISOString() };
+                users.push(adminSeed);
+                localStorage.setItem('users', JSON.stringify(users));
             }
         }
 
-        function showLoginModal() {
+        function showLoginModal(mode) {
             document.getElementById('login-modal').classList.remove('hidden');
-            document.getElementById('main-nav').style.display = 'none';
+            document.getElementById('login-modal').dataset.mode = mode || 'user';
+            showLoginForm();
+            if (mode === 'admin') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+                document.getElementById('login-form-title').textContent = 'Admin Sign In';
+                document.getElementById('login-register-prompt').classList.add('hidden');
+                document.getElementById('login-guest-btn').classList.add('hidden');
+            } else {
+                document.getElementById('login-form-title').textContent = 'Sign In';
+                document.getElementById('login-register-prompt').classList.remove('hidden');
+                document.getElementById('login-guest-btn').classList.remove('hidden');
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+
+        function openSignIn() {
+            closeNavDrawer();
+            showLoginModal('user');
+        }
+
+        function openContributorSignup() {
+            closeNavDrawer();
+            showLoginModal('user');
+            showRegisterForm();
+            document.getElementById('register-role').value = 'contributor';
+            toggleContributorFields();
         }
 
         function showMainApp() {
             document.getElementById('login-modal').classList.add('hidden');
             document.getElementById('main-nav').style.display = 'flex';
-            if (appState.currentUser) {
-                document.getElementById('user-badge').textContent = appState.currentUser.username;
-                document.getElementById('user-badge').classList.remove('hidden');
-                document.getElementById('logout-btn').style.display = 'block';
-                document.getElementById('logout-btn-drawer').style.display = 'block';
+            const role = getCurrentRole();
+            const badge = document.getElementById('user-badge');
+            const signInBtn = document.getElementById('nav-sign-in');
+            const signInDrawer = document.getElementById('nav-sign-in-drawer');
+            const logoutBtn = document.getElementById('logout-btn');
+            const logoutBtnDrawer = document.getElementById('logout-btn-drawer');
+            const reviewBtns = document.querySelectorAll('[data-view="review"]');
+            if (isLoggedIn()) {
+                badge.textContent = appState.currentUser.username + (isMasterAdmin() ? ' (Master Admin)' : role === ROLES.admin ? ' (Admin)' : role === ROLES.contributor ? ' (Contributor)' : '');
+                badge.classList.remove('hidden');
+                if (signInBtn) signInBtn.style.display = 'none';
+                if (signInDrawer) signInDrawer.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                logoutBtnDrawer.style.display = 'block';
                 updateUserInfo();
             } else {
-                document.getElementById('logout-btn').style.display = 'none';
-                document.getElementById('logout-btn-drawer').style.display = 'none';
+                badge.classList.add('hidden');
+                if (signInBtn) signInBtn.style.display = 'block';
+                if (signInDrawer) signInDrawer.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                logoutBtnDrawer.style.display = 'none';
             }
+            reviewBtns.forEach(el => { el.style.display = isAdmin() ? '' : 'none'; });
+            ['nav-mycontributions', 'nav-mycontributions-drawer'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = isContributor() ? '' : 'none';
+            });
             showView('dictionary');
             updateFavoritesCount();
             updatePendingCount();
@@ -1162,6 +1761,7 @@
         function handleLogin() {
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
+            const isAdminMode = document.getElementById('login-modal').dataset.mode === 'admin';
             
             if (!username || !password) {
                 showToast('Please enter both username and password', 'error');
@@ -1169,25 +1769,47 @@
             }
 
             const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => (u.username === username || u.email === username) && u.password === password);
+            let user = users.find(u => (u.username === username || u.email === username) && u.password === password);
             
             if (user) {
+                if (isAdminMode && user.role !== ROLES.admin) {
+                    showToast('Admin access only. Use regular login.', 'error');
+                    return;
+                }
+                if (!isAdminMode && user.role === ROLES.admin) {
+                    showToast('Use Admin login for this account.', 'error');
+                    return;
+                }
                 appState.currentUser = user;
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 showToast('Welcome back, ' + user.username + '!');
+                closeLoginModal();
                 showMainApp();
             } else {
                 showToast('Invalid username or password', 'error');
             }
         }
 
+        function toggleContributorFields() {
+            const role = document.getElementById('register-role').value;
+            const refField = document.getElementById('contributor-references-field');
+            refField.classList.toggle('hidden', role !== 'contributor');
+        }
+
         function handleRegister() {
             const username = document.getElementById('register-username').value.trim();
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value.trim();
+            const role = document.getElementById('register-role').value;
+            const references = document.getElementById('register-references')?.value?.trim() || '';
             
             if (!username || !email || !password) {
                 showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (role === 'contributor' && !references) {
+                showToast('Contributors must provide a name for attribution', 'error');
                 return;
             }
 
@@ -1213,6 +1835,8 @@
                 username,
                 email,
                 password,
+                role: role,
+                attributionName: role === 'contributor' ? references : null,
                 dateJoined: new Date().toISOString()
             };
 
@@ -1222,67 +1846,221 @@
             appState.currentUser = newUser;
             localStorage.setItem('currentUser', JSON.stringify(newUser));
             showToast('Account created successfully!');
+            closeLoginModal();
             showMainApp();
         }
 
         function showRegisterForm() {
             document.getElementById('login-form').classList.add('hidden');
             document.getElementById('register-form').classList.remove('hidden');
+            document.getElementById('login-modal').dataset.mode = 'user';
+            toggleContributorFields();
         }
 
         function showLoginForm() {
             document.getElementById('register-form').classList.add('hidden');
             document.getElementById('login-form').classList.remove('hidden');
-        }
-
-        function skipLogin() {
-            appState.currentUser = { id: 'guest', username: 'Guest', email: '', dateJoined: new Date().toISOString() };
-            showMainApp();
+            document.getElementById('login-form-title').textContent = 'Sign In';
+            document.getElementById('login-register-prompt').classList.remove('hidden');
+            document.getElementById('login-guest-btn').classList.remove('hidden');
         }
 
         function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('currentUser');
-                appState.currentUser = null;
-                showLoginModal();
+                appState.currentUser = getVisitorUser();
                 showToast('Logged out successfully');
+                showMainApp();
             }
         }
 
-        function updateUserInfo() {
-            if (appState.currentUser) {
-                document.getElementById('settings-username').textContent = appState.currentUser.username;
-                document.getElementById('settings-email').textContent = appState.currentUser.email || 'Not provided';
-                document.getElementById('settings-date').textContent = new Date(appState.currentUser.dateJoined).toLocaleDateString();
+        function renderActivityLog() {
+            const actList = document.getElementById('activity-log-list');
+            const paginationEl = document.getElementById('activity-log-pagination');
+            if (!actList || !isAdmin()) return;
+            const log = (appState.activityLog || []).slice().reverse();
+            const { slice: logSlice, currentPage, totalPages, total } = paginate(log, (appState.pagination || {}).activityLog);
+            actList.innerHTML = logSlice.length ? logSlice.map(e => `<p class="text-gray-600">${e.type === 'approved' ? '✓' : '✗'} <strong>${escapeHtml(e.dagbani || '')}</strong> by ${escapeHtml(e.by || '')} • ${e.at ? new Date(e.at).toLocaleString() : ''}</p>`).join('') : '<p class="text-gray-500">No activity yet.</p>';
+            if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'activityLog');
+        }
+
+        function renderUserManagement() {
+            const list = document.getElementById('user-management-list');
+            if (!list || !isMasterAdmin()) return;
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const contributors = users.filter(u => u.role === ROLES.contributor);
+            const admins = users.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username));
+            const combined = contributors.map(u => ({ ...u, _type: 'contributor' })).concat(admins.map(u => ({ ...u, _type: 'admin' })));
+            if (combined.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-sm">No contributors or admins to manage.</p>';
+                return;
             }
+            const { slice: pageSlice, currentPage, totalPages, total } = paginate(combined, (appState.pagination || {}).userManagement);
+            const contribsOnPage = pageSlice.filter(u => u._type === 'contributor');
+            const adminsOnPage = pageSlice.filter(u => u._type === 'admin');
+            let html = '';
+            if (contribsOnPage.length > 0) {
+                html += '<p class="text-sm font-semibold text-gray-600 mb-2">Contributors (promote to admin):</p>';
+                contribsOnPage.forEach(u => {
+                    html += `<div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 mb-2">
+                        <span>${escapeHtml(u.username)} ${u.attributionName ? '(' + escapeHtml(u.attributionName) + ')' : ''}</span>
+                        <button onclick="promoteToAdmin(${JSON.stringify(u.username)})" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Make admin</button>
+                    </div>`;
+                });
+            }
+            if (adminsOnPage.length > 0) {
+                html += '<p class="text-sm font-semibold text-gray-600 mt-4 mb-2">Admins:</p>';
+                adminsOnPage.forEach(u => {
+                    html += `<div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200 mb-2">
+                        <span>${escapeHtml(u.username)}</span>
+                        <div class="flex gap-2">
+                            <span class="text-amber-700 text-sm font-semibold">Admin</span>
+                            <button onclick="demoteToContributor(${JSON.stringify(u.username)})" class="text-xs px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Demote</button>
+                        </div>
+                    </div>`;
+                });
+            }
+            list.innerHTML = html + renderPaginationBar(total, currentPage, totalPages, 'userManagement');
+        }
+
+        function demoteToContributor(username) {
+            if (!isMasterAdmin()) { showToast('Only master admins can demote.', 'error'); return; }
+            if (MASTER_ADMIN_USERNAMES.includes(username)) { showToast('Cannot demote master admins.', 'error'); return; }
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.username === username);
+            if (!user || user.role !== ROLES.admin) return;
+            user.role = ROLES.contributor;
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUserManagement();
+            showToast(`${username} demoted to contributor.`);
+        }
+
+        function promoteToAdmin(username) {
+            if (!isMasterAdmin()) { showToast('Only master admins can create admins.', 'error'); return; }
+            if (!username) return;
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.username === username);
+            if (!user) { showToast('User not found.', 'error'); return; }
+            if (user.role === ROLES.admin) { showToast('User is already an admin.', 'error'); return; }
+            if (user.role !== ROLES.contributor) { showToast('Only contributors can be promoted to admin.', 'error'); return; }
+            user.role = ROLES.admin;
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUserManagement();
+            showToast(`${username} is now an admin.`);
+        }
+
+        function updateUserInfo() {
+            const su = document.getElementById('settings-username');
+            const se = document.getElementById('settings-email');
+            const sd = document.getElementById('settings-date');
+            const sr = document.getElementById('settings-role');
+            const svp = document.getElementById('settings-visitor-prompt');
+            const umSection = document.getElementById('user-management-section');
+            if (appState.currentUser && isLoggedIn()) {
+                const r = appState.currentUser.role || ROLES.user;
+                const roleLabel = isMasterAdmin() ? 'Master Admin' : { user: 'Learner', contributor: 'Contributor', admin: 'Admin' }[r] || 'User';
+                if (su) su.textContent = appState.currentUser.username;
+                if (se) se.textContent = appState.currentUser.email || 'Not provided';
+                if (sd) sd.textContent = appState.currentUser.dateJoined ? new Date(appState.currentUser.dateJoined).toLocaleDateString() : '-';
+                if (sr) sr.textContent = roleLabel;
+                if (svp) svp.classList.add('hidden');
+                if (umSection) {
+                    if (isMasterAdmin()) {
+                        umSection.classList.remove('hidden');
+                        renderUserManagement();
+                    } else {
+                        umSection.classList.add('hidden');
+                    }
+                }
+                const actSection = document.getElementById('activity-log-section');
+                if (actSection) {
+                    if (isAdmin()) {
+                        actSection.classList.remove('hidden');
+                        renderActivityLog();
+                    } else {
+                        actSection.classList.add('hidden');
+                    }
+                }
+            } else {
+                if (su) su.textContent = 'Visitor';
+                if (umSection) umSection.classList.add('hidden');
+                if (se) se.textContent = '-';
+                if (sd) sd.textContent = '-';
+                if (sr) sr.textContent = 'Visitor';
+                if (svp) svp.classList.remove('hidden');
+            }
+        }
+
+        function injectVocabularySchema() {
+            const words = (appState.words || []).filter(w => w.verified && w.dagbani && w.english).slice(0, 200);
+            if (words.length === 0) return;
+            const terms = words.map(w => ({
+                '@type': 'DefinedTerm',
+                'name': w.dagbani,
+                'description': w.english,
+                'inDefinedTermSet': SITE_URL + '/#vocabulary'
+            }));
+            const script = document.getElementById('vocabulary-schema');
+            if (script) script.remove();
+            const s = document.createElement('script');
+            s.id = 'vocabulary-schema';
+            s.type = 'application/ld+json';
+            s.textContent = JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'DefinedTermSet',
+                '@id': SITE_URL + '/#vocabulary',
+                'name': 'Dagbani-English Vocabulary',
+                'description': 'Community-contributed Dagbani to English dictionary entries',
+                'inLanguage': 'dag',
+                'hasDefinedTerm': terms
+            });
+            document.head.appendChild(s);
         }
 
         // Load data from localStorage
         function loadData() {
+            const loadingEl = document.getElementById('global-loading');
+            if (loadingEl) { loadingEl.classList.remove('hidden'); loadingEl.setAttribute('aria-busy', 'true'); }
+            document.body.setAttribute('aria-busy', 'true');
             const savedWords = localStorage.getItem('dagbaniWords');
             const savedPending = localStorage.getItem('dagbaniPending');
             const savedFavorites = localStorage.getItem('dagbaniFavorites');
             const savedHistory = localStorage.getItem('dagbaniSearchHistory');
             
+            function hideLoading() {
+                if (loadingEl) { loadingEl.classList.add('hidden'); loadingEl.setAttribute('aria-busy', 'false'); }
+                document.body.removeAttribute('aria-busy');
+            }
+            
             if (savedWords) {
                 appState.words = JSON.parse(savedWords);
+                injectVocabularySchema();
+                hideLoading();
             } else {
                 appState.words = [];
                 fetch('dictionary_data.json').then(r=>r.ok?r.json():{}).then(data=>{
                     if (data && Array.isArray(data.words) && data.words.length > 0) {
                         appState.words = data.words;
                         saveData();
+                        injectVocabularySchema();
                         if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
                         if (typeof applyFilters === 'function') applyFilters();
                     }
-                }).catch(()=>{});
+                }).catch(()=>{}).finally(hideLoading);
                 saveData();
             }
             
             if (savedPending) {
                 appState.pendingSubmissions = JSON.parse(savedPending);
             }
-            
+            const savedPhrases = localStorage.getItem('dagbaniPhrases');
+            if (savedPhrases) {
+                try { appState.phrases = JSON.parse(savedPhrases); } catch (e) { appState.phrases = []; }
+            }
+            const savedPendingPhrases = localStorage.getItem('dagbaniPendingPhrases');
+            if (savedPendingPhrases) {
+                try { appState.pendingPhrases = JSON.parse(savedPendingPhrases); } catch (e) { appState.pendingPhrases = []; }
+            }
             if (savedFavorites) {
                 appState.favorites = JSON.parse(savedFavorites);
             }
@@ -1290,14 +2068,36 @@
             if (savedHistory) {
                 appState.searchHistory = JSON.parse(savedHistory);
             }
+            const savedFeed = localStorage.getItem('dagbaniCommunityFeed');
+            if (savedFeed) {
+                try { appState.communityFeed = JSON.parse(savedFeed); } catch (e) { appState.communityFeed = []; }
+            }
+            const savedComments = localStorage.getItem('dagbaniComments');
+            if (savedComments) {
+                try { appState.comments = JSON.parse(savedComments); } catch (e) { appState.comments = []; }
+            }
+            const savedVotes = localStorage.getItem('dagbaniWordVotes');
+            if (savedVotes) {
+                try { appState.wordVotes = JSON.parse(savedVotes); } catch (e) { appState.wordVotes = {}; }
+            }
+            const savedActivity = localStorage.getItem('dagbaniActivityLog');
+            if (savedActivity) {
+                try { appState.activityLog = JSON.parse(savedActivity); } catch (e) { appState.activityLog = []; }
+            }
         }
 
         // Save data to localStorage
         function saveData() {
             localStorage.setItem('dagbaniWords', JSON.stringify(appState.words));
             localStorage.setItem('dagbaniPending', JSON.stringify(appState.pendingSubmissions));
+            localStorage.setItem('dagbaniPhrases', JSON.stringify(appState.phrases));
+            localStorage.setItem('dagbaniPendingPhrases', JSON.stringify(appState.pendingPhrases));
             localStorage.setItem('dagbaniFavorites', JSON.stringify(appState.favorites));
             localStorage.setItem('dagbaniSearchHistory', JSON.stringify(appState.searchHistory));
+            localStorage.setItem('dagbaniCommunityFeed', JSON.stringify(appState.communityFeed));
+            localStorage.setItem('dagbaniComments', JSON.stringify(appState.comments));
+            localStorage.setItem('dagbaniWordVotes', JSON.stringify(appState.wordVotes));
+            localStorage.setItem('dagbaniActivityLog', JSON.stringify((appState.activityLog || []).slice(-200)));
         }
 
         // View Navigation
@@ -1321,8 +2121,21 @@
             
             appState.currentView = viewName;
             
-            if (viewName === 'review') {
+            if (viewName === 'contribute') {
+                const gate = document.getElementById('contribute-gate');
+                const form = document.getElementById('contribute-form-wrapper');
+                if (isContributor()) {
+                    if (gate) gate.classList.add('hidden');
+                    if (form) form.classList.remove('hidden');
+                } else {
+                    if (gate) { gate.classList.remove('hidden'); gate.style.display = 'block'; }
+                    if (form) form.classList.add('hidden');
+                }
+            } else if (viewName === 'review') {
+                if (!isAdmin()) { showView('dictionary'); return; }
+                setReviewTab('words');
                 renderPendingSubmissions();
+                renderPendingPhrases();
             } else if (viewName === 'favorites') {
                 renderFavorites();
             } else if (viewName === 'settings') {
@@ -1331,6 +2144,25 @@
                 renderBrowseDictionary();
             } else if (viewName === 'learn') {
                 showLearnSection('practice');
+            } else if (viewName === 'community') {
+                renderCommunityFeed();
+            } else if (viewName === 'leaderboard') {
+                renderLeaderboard();
+            } else if (viewName === 'mycontributions') {
+                renderMyContributions();
+            } else if (viewName === 'phrases') {
+                const gate = document.getElementById('phrase-contribute-gate');
+                const formWrap = document.getElementById('phrase-contribute-form-wrapper');
+                if (isContributor()) {
+                    if (gate) gate.classList.add('hidden');
+                    if (formWrap) formWrap.classList.remove('hidden');
+                } else {
+                    if (gate) { gate.classList.remove('hidden'); gate.style.display = 'block'; }
+                    if (formWrap) formWrap.classList.add('hidden');
+                }
+                renderPhraseList();
+            } else if (viewName === 'dictionary') {
+                renderCommunityAnnouncementBanner();
             }
         }
 
@@ -1374,8 +2206,9 @@
                 btn.classList.remove('border-gray-300', 'text-gray-700');
             }
             if (section === 'practice') showPracticeMode('numbers');
-            if (section === 'names') { filterNames(); populateNamesCategories(); }
+            if (section === 'names') { filterNames(); }
             if (section === 'history') showHistoryTab('kingdom');
+            if (section === 'phrasebook') renderPhrasebook();
         }
 
         const KING_CROWN_SVG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%23fef3c7" stroke="%23b45309" stroke-width="2"/><path d="M32 14 L38 28 L52 30 L42 42 L46 54 L32 46 L18 54 L22 42 L12 30 L26 28 Z" fill="%23d97706"/><ellipse cx="32" cy="44" rx="8" ry="6" fill="%23b45309" opacity="0.4"/></svg>');
@@ -1399,8 +2232,11 @@
         }
         function renderKingsDiagram() {
             const container = document.getElementById('kings-diagram');
+            const paginationEl = document.getElementById('kings-pagination');
             if (!container) return;
-            container.innerHTML = DAGBON_KINGS.map((k, i) => {
+            const { slice: kingsSlice, currentPage, totalPages, total } = paginate(DAGBON_KINGS, (appState.pagination || {}).kings);
+            container.innerHTML = kingsSlice.map((k, idx) => {
+                const i = (currentPage - 1) * PAGE_SIZE + idx;
                 const num = i + 1;
                 const yrs = getReignYearsCount(k.reign);
                 const imgSrc = k.image || KING_GBEWAA_PALACE_IMG;
@@ -1417,6 +2253,7 @@
                 </button>
             `;
             }).join('');
+            if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'kings');
         }
 
         function showKingDetail(index) {
@@ -1458,25 +2295,11 @@
             if (tab === 'kings') renderKingsDiagram();
         }
 
-        function populateNamesCategories() {
-            const sel = document.getElementById('names-category-filter');
-            if (!sel) return;
-            if (sel.dataset.populated === '1') return;
-            sel.dataset.populated = '1';
-            const cats = [...new Set(DAGBANI_NAMES.map(n => n.category).filter(Boolean))].sort();
-            cats.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                sel.appendChild(opt);
-            });
-        }
-
         function filterNames() {
             const query = (document.getElementById('names-search')?.value || '').trim().toLowerCase();
-            const catFilter = document.getElementById('names-category-filter')?.value || '';
+            const genderFilter = document.getElementById('names-category-filter')?.value || '';
             let list = DAGBANI_NAMES;
-            if (catFilter) list = list.filter(n => n.category === catFilter);
+            if (genderFilter) list = list.filter(n => (n.gender || 'both') === genderFilter);
             if (query) list = list.filter(n =>
                 (n.name || '').toLowerCase().includes(query) ||
                 (n.variant || '').toLowerCase().includes(query) ||
@@ -1491,7 +2314,8 @@
                 if (g(n) === 'f') return `<img src="${FEMININE_IMG}" alt="feminine" class="w-14 h-14 mx-auto object-contain rounded-full">`;
                 return `<div class="flex justify-center gap-1"><img src="${MASCULINE_IMG}" alt="masculine" class="w-12 h-12 object-contain rounded-full"><img src="${FEMININE_IMG}" alt="feminine" class="w-12 h-12 object-contain rounded-full"></div>`;
             };
-            container.innerHTML = list.length ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${list.map(n => `
+            const { slice: listSlice, currentPage, totalPages, total } = paginate(list, (appState.pagination || {}).names);
+            container.innerHTML = listSlice.length ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${listSlice.map(n => `
                 <div class="border border-amber-200 rounded-xl p-4 hover:border-amber-400 hover:bg-amber-50/30 transition flex flex-col">
                     <div class="mb-3">${imgHtml(n)}</div>
                     <div class="flex flex-wrap items-baseline gap-2 mb-1">
@@ -1501,7 +2325,7 @@
                     ${n.meaning ? `<p class="text-gray-700 text-sm mb-2 flex-1 line-clamp-3">${escapeHtml(n.meaning)}</p>` : '<p class="flex-1 min-h-[2rem]"></p>'}
                     <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-amber-100 text-amber-800 mt-auto">${escapeHtml(n.category)}</span>
                 </div>
-            `).join('')}</div>` : '<p class="text-gray-500">No names found.</p>';
+            `).join('')}</div>${renderPaginationBar(total, currentPage, totalPages, 'names')}` : '<p class="text-gray-500">No names found.</p>';
         }
 
         function showPracticeMode(mode) {
@@ -1533,6 +2357,22 @@
                 document.getElementById('wotd-dagbani').textContent = word.dagbani;
                 document.getElementById('wotd-english').textContent = word.english;
             }
+        }
+
+        function renderCommunityAnnouncementBanner() {
+            const banner = document.getElementById('community-announcement-banner');
+            const itemsEl = document.getElementById('community-announcement-items');
+            if (!banner || !itemsEl) return;
+            const feed = (appState.communityFeed || []).slice(0, 5);
+            if (feed.length === 0) {
+                banner.classList.add('hidden');
+                return;
+            }
+            banner.classList.remove('hidden');
+            itemsEl.innerHTML = feed.map(item => {
+                const by = escapeHtml(item.contributorAttribution || 'Community');
+                return `<p><strong>${escapeHtml(item.dagbani)}</strong> → ${escapeHtml(item.english)} <span class="text-gray-500">by ${by}</span></p>`;
+            }).join('');
         }
 
         // Search Functionality
@@ -1577,8 +2417,10 @@
                 .slice(0, 5);
             
             if (matches.length > 0) {
+                suggestions.setAttribute('role', 'listbox');
+                suggestions.setAttribute('aria-label', 'Search suggestions');
                 suggestions.innerHTML = matches.map(word => `
-                    <div class="p-3 hover:bg-amber-50 cursor-pointer border-b border-gray-100" onclick="selectSuggestion('${escapeHtml(word.dagbani)}')">
+                    <div role="option" class="p-3 hover:bg-amber-50 cursor-pointer border-b border-gray-100" onclick="selectSuggestion('${escapeHtml(word.dagbani)}')" aria-label="${escapeHtml(word.dagbani)}, ${escapeHtml(word.english)}">
                         <div class="font-semibold text-amber-700">${escapeHtml(word.dagbani)}</div>
                         <div class="text-sm text-gray-600">${escapeHtml(word.english)}</div>
                     </div>
@@ -1622,10 +2464,15 @@
                 return matchesEnglish || matchesDagbani;
             });
             
-            renderSearchResults(results);
+            appState.searchResults = results;
+            appState.pagination = appState.pagination || {};
+            if (results.length !== (appState._prevSearchCount || 0)) appState.pagination.searchResults = 1;
+            appState._prevSearchCount = results.length;
+            renderSearchResults();
         }
 
-        function renderSearchResults(results) {
+        function renderSearchResults() {
+            const results = appState.searchResults || [];
             const container = document.getElementById('search-results');
             const noResults = document.getElementById('no-results');
             
@@ -1636,21 +2483,25 @@
             }
             
             noResults.classList.add('hidden');
-            container.innerHTML = results.map(word => {
+            const { slice: resultsSlice, currentPage, totalPages, total } = paginate(results, (appState.pagination || {}).searchResults);
+            container.innerHTML = resultsSlice.map(word => {
                 const isFavorite = appState.favorites.includes(word.id);
+                const cardLabel = `Word: ${escapeHtml(word.dagbani)} - ${escapeHtml(word.english)}`;
                 return `
-                <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 fade-in">
+                <article class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 fade-in" aria-label="${cardLabel}" data-word-id="${word.id}">
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                <h3 class="text-xl sm:text-2xl font-bold text-amber-700 break-words">${escapeHtml(word.dagbani)}</h3>
+                                <h3 class="text-xl sm:text-2xl font-bold text-amber-700 break-words" lang="dag">${escapeHtml(word.dagbani)}</h3>
                                 <div class="flex gap-1 flex-shrink-0">
-                                    <button onclick="toggleFavorite(${word.id})" class="text-2xl min-w-[44px] min-h-[44px] flex items-center justify-center ${isFavorite ? 'text-red-500' : 'text-gray-300'} hover:text-red-500 transition touch-manipulation" aria-label="Toggle favorite">
+                                    <button onclick="toggleFavorite(${JSON.stringify(word.id)})" class="text-2xl min-w-[44px] min-h-[44px] flex items-center justify-center ${isFavorite ? 'text-red-500' : 'text-gray-300'} hover:text-red-500 transition touch-manipulation" aria-label="Toggle favorite">
                                         ${isFavorite ? '❤️' : '🤍'}
                                     </button>
-                                    <button onclick="shareWord(${word.id})" class="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-amber-600 transition touch-manipulation" title="Share" aria-label="Share">
+                                    <button onclick="shareWord(${JSON.stringify(word.id)})" class="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-amber-600 transition touch-manipulation" title="Share" aria-label="Share">
                                         🔗
                                     </button>
+                                    ${isContributor() ? `<button onclick="openEditWordModal(${JSON.stringify(word.id)})" class="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-amber-600 transition touch-manipulation" title="Suggest edit" aria-label="Suggest edit">✏️</button>` : ''}
+                                    ${!isContributor() && isLoggedIn() ? `<button onclick="openReportErrorModal(${JSON.stringify(word.id)})" class="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-amber-600 transition touch-manipulation" title="Report error" aria-label="Report error">⚠️</button>` : ''}
                                 </div>
                             </div>
                             <p class="text-lg sm:text-xl font-semibold text-gray-700 mb-2 break-words">${escapeHtml(word.english)}</p>
@@ -1692,9 +2543,110 @@
                             <p class="text-sm text-gray-700">${escapeHtml(word.example)}</p>
                         </div>
                     ` : ''}
-                </div>
+                    ${word.contributorAttribution ? `
+                        <p class="text-xs text-gray-500 mt-3">Contributor: <button onclick="showContributorProfile(${JSON.stringify(word.contributorAttribution)})" class="text-amber-600 hover:underline font-medium" aria-label="View ${escapeHtml(word.contributorAttribution)}'s profile">${escapeHtml(word.contributorAttribution)}</button></p>
+                    ` : ''}
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-4">
+                        <div class="flex items-center gap-1" title="${isLoggedIn()?'':'Sign in to vote'}">
+                            <button onclick="voteWord(${JSON.stringify(word.id)},1)" class="p-1.5 rounded ${getMyVote(word.id)===1?'bg-green-200 text-green-700':isLoggedIn()?'hover:bg-gray-100 text-gray-500':'text-gray-300 cursor-not-allowed'} transition" title="${isLoggedIn()?'Helpful':'Sign in to vote'}" aria-label="Upvote">👍</button>
+                            <span class="text-sm font-medium text-gray-600 min-w-[1.5rem] text-center">${getVoteScore(word.id)}</span>
+                            <button onclick="voteWord(${JSON.stringify(word.id)},-1)" class="p-1.5 rounded ${getMyVote(word.id)===-1?'bg-red-200 text-red-700':isLoggedIn()?'hover:bg-gray-100 text-gray-500':'text-gray-300 cursor-not-allowed'} transition" title="${isLoggedIn()?'Not helpful':'Sign in to vote'}" aria-label="Downvote">👎</button>
+                        </div>
+                        <button onclick="toggleWordComments(${JSON.stringify(word.id)})" class="flex items-center gap-1 text-sm text-gray-600 hover:text-amber-600" title="View comments" aria-label="View or add comments (${getCommentsForWord(word.id).length} comment${getCommentsForWord(word.id).length === 1 ? '' : 's'})">
+                            💬 ${getCommentsForWord(word.id).length}
+                        </button>
+                    </div>
+                    <div id="comments-box-${word.id}" class="hidden mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        ${word.allowComments === false ? '<p class="text-sm text-gray-500 italic">Comments disabled by contributor.</p>' : `
+                            <div id="comments-list-${word.id}" class="space-y-2 mb-4 max-h-40 overflow-y-auto"></div>
+                            ${isLoggedIn() ? `
+                                <div class="flex gap-2">
+                                    <input type="text" id="comment-input-${word.id}" placeholder="Add a comment..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" onkeyup="if(event.key==='Enter')submitComment(${JSON.stringify(word.id)})">
+                                    <button onclick="submitComment(${JSON.stringify(word.id)})" class="px-3 py-2 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Post</button>
+                                </div>
+                            ` : '<p class="text-sm text-gray-500"><button onclick="showLoginModal(\'user\')" class="text-amber-600 font-semibold hover:underline">Sign in</button> to comment.</p>'}
+                        `}
+                    </div>
+                </article>
             `;
-            }).join('');
+            }).join('') + renderPaginationBar(total, currentPage, totalPages, 'searchResults');
+            document.querySelectorAll('[id^="comments-list-"]').forEach(el => {
+                const wid = el.id.replace('comments-list-','');
+                if (wid) renderCommentsForWord(wid);
+            });
+        }
+
+        function getVoteScore(wordId) {
+            const v = appState.wordVotes[wordId] || {};
+            return Object.values(v).reduce((s, x) => s + (x || 0), 0);
+        }
+        function getMyVote(wordId) {
+            if (!isLoggedIn()) return 0;
+            const uid = appState.currentUser?.id || appState.currentUser?.username;
+            return (appState.wordVotes[wordId] || {})[uid] || 0;
+        }
+        function voteWord(wordId, direction) {
+            if (!isLoggedIn()) { showToast('Sign in to vote', 'error'); return; }
+            const uid = appState.currentUser?.id || appState.currentUser?.username;
+            if (!appState.wordVotes[wordId]) appState.wordVotes[wordId] = {};
+            const prev = appState.wordVotes[wordId][uid] || 0;
+            if (prev === direction) { appState.wordVotes[wordId][uid] = 0; }
+            else { appState.wordVotes[wordId][uid] = direction; }
+            saveData();
+            applyFilters();
+        }
+        function getCommentsForWord(wordId) {
+            return (appState.comments || []).filter(c => String(c.wordId) === String(wordId));
+        }
+        function renderCommentsForWord(wordId) {
+            const list = document.getElementById(`comments-list-${wordId}`);
+            if (!list) return;
+            const word = appState.words.find(w => String(w.id) === String(wordId));
+            const comments = getCommentsForWord(wordId);
+            const top = comments.filter(c => !c.parentId);
+            const byParent = {};
+            comments.filter(c => c.parentId).forEach(c => { if (!byParent[c.parentId]) byParent[c.parentId] = []; byParent[c.parentId].push(c); });
+            const allowReplies = word && word.allowComments !== false && isLoggedIn();
+            function renderComment(c, isReply) {
+                const replies = byParent[c.id] || [];
+                return `<div class="${isReply ? 'ml-6 border-l-2 border-amber-200 pl-3' : ''}">
+                    <p class="text-sm"><strong>${escapeHtml(c.author)}</strong>: ${escapeHtml(c.text)} <span class="text-gray-400 text-xs">${c.date ? new Date(c.date).toLocaleDateString() : ''}</span>
+                    ${allowReplies && !isReply ? ` <button onclick="toggleReplyInput(${JSON.stringify(wordId)},${c.id})" class="text-amber-600 hover:underline text-xs">Reply</button>` : ''}</p>
+                    ${replies.map(r => renderComment(r, true)).join('')}
+                    <div id="reply-box-${wordId}-${c.id}" class="hidden mt-2">
+                        <input type="text" id="reply-input-${wordId}-${c.id}" placeholder="Write a reply..." class="w-full px-2 py-1.5 text-sm border rounded" onkeyup="if(event.key==='Enter')submitComment(${JSON.stringify(wordId)},${JSON.stringify(c.id)})">
+                        <button onclick="submitComment(${JSON.stringify(wordId)},${JSON.stringify(c.id)})" class="mt-1 text-sm text-amber-600 font-semibold">Post reply</button>
+                    </div>
+                </div>`;
+            }
+            list.innerHTML = top.length ? top.map(c => renderComment(c, false)).join('') : '<p class="text-sm text-gray-500">No comments yet.</p>';
+        }
+        function toggleReplyInput(wordId, parentId) {
+            const box = document.getElementById(`reply-box-${wordId}-${parentId}`);
+            if (box) box.classList.toggle('hidden');
+        }
+        function toggleWordComments(wordId) {
+            const box = document.getElementById(`comments-box-${wordId}`);
+            if (box) {
+                box.classList.toggle('hidden');
+                if (!box.classList.contains('hidden')) renderCommentsForWord(wordId);
+            }
+        }
+        function submitComment(wordId, parentId) {
+            if (!isLoggedIn()) { showToast('Sign in to comment', 'error'); return; }
+            const input = document.getElementById(parentId ? `reply-input-${wordId}-${parentId}` : `comment-input-${wordId}`);
+            const word = appState.words.find(w => String(w.id) === String(wordId));
+            if (!word || word.allowComments === false) return;
+            const text = (input?.value || '').trim();
+            if (!text) return;
+            const author = appState.currentUser?.username || appState.currentUser?.attributionName || 'Visitor';
+            appState.comments.push({ id: Date.now(), wordId, text, author, date: new Date().toISOString(), parentId: parentId || null });
+            saveData();
+            if (input) { input.value = ''; }
+            const box = parentId ? document.getElementById(`reply-box-${wordId}-${parentId}`) : null;
+            if (box) box.classList.add('hidden');
+            renderCommentsForWord(wordId);
+            showToast('Comment posted!');
         }
 
         function renderSearchHistory() {
@@ -1775,8 +2727,8 @@
                 container.innerHTML = '<p class="text-gray-500 text-center py-8">No favorites yet. Start adding words to your favorites!</p>';
                 return;
             }
-            
-            container.innerHTML = favoriteWords.map(word => `
+            const { slice: favSlice, currentPage, totalPages, total } = paginate(favoriteWords, (appState.pagination || {}).favorites);
+            container.innerHTML = favSlice.map(word => `
                 <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-amber-200 fade-in">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
@@ -1786,12 +2738,13 @@
                                 <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${word.dialect}</span>
                                 <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">${word.category}</span>
                             </div>
+                            ${word.contributorAttribution ? `<p class="text-xs text-gray-500 mt-2">Contributor: ${escapeHtml(word.contributorAttribution)}</p>` : ''}
                         </div>
                         <button onclick="toggleFavorite(${word.id})" class="text-2xl text-red-500 hover:text-red-700">❤️</button>
                     </div>
                     ${word.grammar ? `<p class="mt-3 text-sm text-gray-600">${escapeHtml(word.grammar)}</p>` : ''}
                 </div>
-            `).join('');
+            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'favorites');
         }
 
         function updateFavoritesCount() {
@@ -1813,10 +2766,13 @@
         function shareWord(wordId) {
             const word = appState.words.find(w => w.id === wordId);
             if (word) {
-                const text = `${word.dagbani} → ${word.english}\n\nFrom Dagbani Korli Community Lexicon`;
+                let text = `${word.dagbani} → ${word.english}\n\nFrom Dagban Kurli Community Lexicon`;
+                if (word.contributorAttribution) {
+                    text += `\nContributor: ${word.contributorAttribution}`;
+                }
                 if (navigator.share) {
                     navigator.share({
-                        title: 'Dagbani Korli',
+                        title: 'Dagban Kurli',
                         text: text
                     });
                 } else {
@@ -2065,12 +3021,16 @@
                 list = verified.filter(w => (dir === 'english' ? (w.english || '').toLowerCase() : (w.dagbani || '').toLowerCase()).includes(query));
             }
             const container = document.getElementById('select-words-list');
+            const paginationEl = document.getElementById('select-words-pagination');
             if (!container) return;
-            container.innerHTML = list.slice(0, 50).map(w => {
+            const page = (appState.pagination || {}).selectWords || 1;
+            const { slice, currentPage, totalPages, total } = paginate(list, page);
+            container.innerHTML = slice.length ? slice.map(w => {
                 const sel = appState.selectedPracticeWords.some(x => x.id === w.id);
                 const label = dir === 'english' ? `${escapeHtml(w.english)} → ${escapeHtml(w.dagbani)}` : `${escapeHtml(w.dagbani)} → ${escapeHtml(w.english)}`;
                 return `<label class="flex items-center gap-2 p-2 hover:bg-amber-50 rounded cursor-pointer"><input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleSelectWord(this, ${JSON.stringify(w.id)})"> ${label}</label>`;
-            }).join('') || '<p class="text-gray-500 p-2">No words found. Try a different search.</p>';
+            }).join('') : '<p class="text-gray-500 p-2">No words found. Try a different search.</p>';
+            if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'selectWords');
             document.getElementById('selected-words-count').textContent = appState.selectedPracticeWords.length;
             document.getElementById('start-selected-btn').disabled = appState.selectedPracticeWords.length < 3;
         }
@@ -2097,9 +3057,11 @@
             const category = document.getElementById('word-category').value;
             const grammar = document.getElementById('grammar-notes').value.trim();
             const example = document.getElementById('example-sentence').value.trim();
+            const picture = (document.getElementById('word-picture')?.value || '').trim() || null;
             const audioBlob = appState.audioChunks.length > 0 ? 
                 URL.createObjectURL(new Blob(appState.audioChunks, { type: 'audio/webm' })) : null;
             
+            const allowComments = document.getElementById('word-allow-comments')?.checked !== false;
             const submission = {
                 id: Date.now(),
                 english,
@@ -2108,9 +3070,12 @@
                 category,
                 grammar: grammar || null,
                 example: example || null,
+                picture,
                 audio: audioBlob,
                 verified: false,
-                submittedBy: appState.currentUser?.username || 'Guest',
+                allowComments,
+                submittedBy: appState.currentUser?.username || 'Visitor',
+                contributorAttribution: appState.currentUser?.attributionName || null,
                 dateAdded: new Date().toISOString()
             };
             
@@ -2125,6 +3090,232 @@
             
             showToast('Word submitted successfully! It will be reviewed by the community.');
             updatePendingCount();
+        }
+
+        function switchContributeMode(mode) {
+            const single = document.getElementById('word-form');
+            const bulk = document.getElementById('contribute-bulk-wrapper');
+            const singleBtn = document.getElementById('contribute-mode-single');
+            const bulkBtn = document.getElementById('contribute-mode-bulk');
+            if (mode === 'bulk') {
+                if (single) single.classList.add('hidden');
+                if (bulk) bulk.classList.remove('hidden');
+                if (singleBtn) { singleBtn.classList.remove('border-amber-500', 'text-amber-700', 'border-b-2'); singleBtn.classList.add('text-gray-600'); }
+                if (bulkBtn) { bulkBtn.classList.add('border-amber-500', 'text-amber-700', 'border-b-2'); bulkBtn.classList.remove('text-gray-600'); }
+            } else {
+                if (single) single.classList.remove('hidden');
+                if (bulk) bulk.classList.add('hidden');
+                if (singleBtn) { singleBtn.classList.add('border-amber-500', 'text-amber-700', 'border-b-2'); singleBtn.classList.remove('text-gray-600'); }
+                if (bulkBtn) { bulkBtn.classList.remove('border-amber-500', 'text-amber-700', 'border-b-2'); bulkBtn.classList.add('text-gray-600'); }
+            }
+        }
+
+        function submitBulkWords() {
+            const text = (document.getElementById('bulk-words-input').value || '').trim();
+            const dialect = document.getElementById('bulk-dialect').value;
+            const defaultCategory = document.getElementById('bulk-category').value;
+            if (!text) {
+                showToast('Please enter words to submit.', 'error');
+                return;
+            }
+            const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            const valid = appState.categories || ['general', 'greetings', 'food', 'family', 'nature', 'verbs', 'adjectives', 'other'];
+            let count = 0;
+            const errors = [];
+            for (const line of lines) {
+                let dagbani = '', english = '', category = defaultCategory;
+                if (line.includes(',') && !line.includes('|')) {
+                    const parts = line.split(',').map(p => p.trim());
+                    dagbani = parts[0] || '';
+                    english = parts[1] || '';
+                    if (parts[2] && valid.includes(parts[2].toLowerCase())) category = parts[2].toLowerCase();
+                } else if (line.includes('|')) {
+                    const parts = line.split('|').map(p => p.trim());
+                    dagbani = parts[0] || '';
+                    english = parts[1] || '';
+                } else {
+                    errors.push(`Skipped: "${line.substring(0, 30)}..."`);
+                    continue;
+                }
+                if (dagbani && english) {
+                    const allowComments = document.getElementById('bulk-allow-comments')?.checked !== false;
+                    appState.pendingSubmissions.push({
+                        id: Date.now() + count,
+                        dagbani, english, dialect, category,
+                        grammar: null, example: null, audio: null,
+                        verified: false,
+                        allowComments,
+                        submittedBy: appState.currentUser?.username || 'Visitor',
+                        contributorAttribution: appState.currentUser?.attributionName || null,
+                        dateAdded: new Date().toISOString()
+                    });
+                    count++;
+                }
+            }
+            if (count > 0) {
+                saveData();
+                document.getElementById('bulk-words-input').value = '';
+                updatePendingCount();
+                if (isContributor() && appState.currentView === 'mycontributions') renderMyContributions();
+                showToast(`${count} word${count !== 1 ? 's' : ''} submitted for review!`);
+            }
+            if (errors.length > 0 && count === 0) {
+                showToast('No valid lines. Use format: Dagbani,English', 'error');
+            }
+        }
+
+        function submitPhrase(event) {
+            event.preventDefault();
+            const dagbani = document.getElementById('phrase-dagbani').value.trim();
+            const english = document.getElementById('phrase-english').value.trim();
+            const category = document.getElementById('phrase-category').value;
+            const chunks = appState.phraseAudioChunks || [];
+            const doSubmit = (audio) => {
+                const phrase = {
+                    id: Date.now(),
+                    dagbani,
+                    english,
+                    category: category || 'general',
+                    audio: audio || null,
+                    submittedBy: appState.currentUser?.username || 'Visitor',
+                    contributorAttribution: appState.currentUser?.attributionName || null,
+                    dateAdded: new Date().toISOString()
+                };
+                appState.pendingPhrases.push(phrase);
+                appState.phraseAudioChunks = [];
+                saveData();
+                document.getElementById('phrase-form').reset();
+                const rec = document.getElementById('phrase-recording-status');
+                const play = document.getElementById('phrase-audio-playback');
+                const recBtn = document.getElementById('phrase-record-btn');
+                if (rec) rec.classList.add('hidden');
+                if (play) { play.classList.add('hidden'); play.src = ''; }
+                if (recBtn) recBtn.classList.remove('hidden');
+                showToast('Phrase submitted for review!');
+                updatePendingCount();
+                if (appState.currentView === 'mycontributions') renderMyContributions();
+            };
+            if (chunks.length > 0) {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onload = () => { doSubmit(reader.result); };
+                reader.readAsDataURL(blob);
+            } else {
+                doSubmit(null);
+            }
+            updatePendingCount();
+            if (appState.currentView === 'mycontributions') renderMyContributions();
+        }
+
+        function speakPhrase(text, lang) {
+            if (!text || typeof window.speechSynthesis === 'undefined') {
+                showToast('Voice not supported in this browser', 'error');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.rate = 0.9;
+            u.pitch = 1;
+            u.volume = 1;
+            u.lang = lang || 'ha';
+            const voices = speechSynthesis.getVoices();
+            const dagVoice = voices.find(v => v.lang.startsWith('ha') || v.lang.startsWith('sw') || v.lang.startsWith('dag'));
+            if (dagVoice) u.voice = dagVoice;
+            speechSynthesis.speak(u);
+        }
+        if (typeof window !== 'undefined' && window.speechSynthesis) speechSynthesis.getVoices();
+
+        const PHRASE_CATEGORY_LABELS = { basics: 'Basics', common_signs: 'Common signs', problems: 'Problems', numbers: 'Numbers', time: 'Time', clock_time: 'Clock time', duration: 'Duration', days: 'Days', months: 'Months', writing_time_and_date: 'Writing time and date', colors: 'Colors', transportation: 'Transportation', bus_and_train: 'Bus and train', directions: 'Directions', taxi: 'Taxi', lodging: 'Lodging', money: 'Money', eating: 'Eating', bars: 'Bars', shopping: 'Shopping', driving: 'Driving', authority: 'Authority', general: 'Other', greetings: 'Basics', courtesy: 'Basics', travel: 'Transportation', food: 'Eating', family: 'Other', other: 'Other' };
+
+        let phraseFilter = 'all';
+        function filterPhrases(cat) {
+            phraseFilter = cat || 'all';
+            const sel = document.getElementById('phrase-filter-select');
+            if (sel) sel.value = phraseFilter;
+            appState.pagination = appState.pagination || {};
+            appState.pagination.phraseList = 1;
+            renderPhraseList();
+        }
+
+        const BUILTIN_PHRASES = [
+            { dagbani: 'Antire', english: 'Hello', category: 'basics' },
+            { dagbani: 'Naawuni salaam alaikum', english: 'Peace be upon you (greeting)', category: 'basics' },
+            { dagbani: 'A ni sɔɣi?', english: 'How are you?', category: 'basics' },
+            { dagbani: 'N sɔɣiya / Mala', english: 'I am fine', category: 'basics' },
+            { dagbani: 'A yi wula?', english: 'How did you sleep? (Good morning)', category: 'basics' },
+            { dagbani: 'Daaliri', english: 'Thank you', category: 'basics' },
+            { dagbani: 'Di simdi', english: "You're welcome", category: 'basics' },
+            { dagbani: 'M mali anfaani', english: 'Excuse me', category: 'basics' },
+            { dagbani: 'Ba ni sɔŋ ma?', english: 'Can you help me?', category: 'basics' },
+            { dagbani: 'N nyɛla…', english: 'I am… (self-introduction)', category: 'basics' },
+            { dagbani: 'A yuli bo?', english: 'What is your name?', category: 'basics' },
+            { dagbani: 'N yuli nye…', english: 'My name is…', category: 'basics' },
+            { dagbani: 'Ti ni kuli lahi paai', english: 'See you again / Goodbye', category: 'basics' }
+        ];
+        function renderPhrasebook() {
+            const container = document.getElementById('phrasebook-list');
+            if (!container) return;
+            const contributed = appState.phrases || [];
+            const seed = (typeof SEED_PHRASES !== 'undefined' ? SEED_PHRASES : []).filter(p => (p.category || '').match(/^(basics|common_signs)$/));
+            const all = [...BUILTIN_PHRASES];
+            seed.forEach(p => { if (!all.some(x => (x.dagbani || '').toLowerCase() === (p.dagbani || '').toLowerCase())) all.push({ dagbani: p.dagbani, english: p.english }); });
+            contributed.forEach(p => {
+                if (!all.some(x => (x.dagbani || '').toLowerCase() === (p.dagbani || '').toLowerCase())) all.push({ dagbani: p.dagbani, english: p.english });
+            });
+            all.sort((a, b) => (a.dagbani || '').localeCompare(b.dagbani || ''));
+            const { slice: allSlice, currentPage, totalPages, total } = paginate(all, (appState.pagination || {}).phrasebook);
+            const dagSafe = t => JSON.stringify(t || '');
+            container.innerHTML = allSlice.map(p => `
+                <div class="p-4 border-l-4 border-amber-400 bg-amber-50 rounded-r-lg flex items-start justify-between gap-4">
+                    <div class="min-w-0">
+                        <p class="font-bold text-amber-800" lang="dag">${escapeHtml(p.dagbani)}</p>
+                        <p class="text-gray-700">${escapeHtml(p.english)}</p>
+                    </div>
+                    <button onclick="speakPhrase(${dagSafe(p.dagbani)})" class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-amber-200 text-amber-800 hover:bg-amber-300 transition text-sm font-medium" aria-label="Play" title="Listen">🔊</button>
+                </div>
+            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'phrasebook');
+        }
+
+        function getCanonicalPhraseCategory(cat) {
+            const legacy = { greetings: 'basics', courtesy: 'basics', travel: 'transportation', food: 'eating', family: 'general', other: 'general' };
+            return legacy[cat] || cat || 'general';
+        }
+
+        function renderPhraseList() {
+            const container = document.getElementById('phrase-list-container');
+            if (!container) return;
+            const seed = (typeof SEED_PHRASES !== 'undefined' ? SEED_PHRASES : []) || [];
+            const contributed = appState.phrases || [];
+            const byKey = {};
+            seed.forEach(p => { byKey[(p.dagbani || '').toLowerCase()] = { ...p, isSeed: true }; });
+            contributed.forEach(p => { byKey[(p.dagbani || '').toLowerCase()] = { ...p, isSeed: false }; });
+            let phrases = Object.values(byKey);
+            if (phraseFilter !== 'all') {
+                phrases = phrases.filter(p => getCanonicalPhraseCategory(p.category || 'general') === phraseFilter);
+            }
+            phrases.sort((a, b) => (a.dagbani || '').localeCompare(b.dagbani || ''));
+            if (phrases.length === 0) {
+                const msg = phraseFilter === 'all' ? 'No phrases yet. Use the form above to add phrases (contributors only).' : 'No phrases in this category yet. Try "All categories" or add one using the form above.';
+                container.innerHTML = `<p class="text-gray-500 text-center py-8">${msg}</p>`;
+                return;
+            }
+            const { slice, currentPage, totalPages, total } = paginate(phrases, (appState.pagination || {}).phraseList);
+            const getLabel = c => PHRASE_CATEGORY_LABELS[getCanonicalPhraseCategory(c || 'general')] || 'Other';
+            container.innerHTML = slice.map(p => {
+                const dagJson = JSON.stringify(p.dagbani || '');
+                const audioHtml = p.audio ? `<audio controls class="h-8 w-32 mt-1" preload="metadata"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : '';
+                const ttsHtml = `<button onclick="speakPhrase(${dagJson})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-200 text-amber-800 hover:bg-amber-300 transition text-sm font-medium" aria-label="Play pronunciation" title="Listen">🔊 Play</button>`;
+                return `
+                <div class="p-4 border-l-4 border-amber-400 bg-amber-50 rounded-r-lg fade-in">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-xs font-semibold text-amber-700 bg-amber-200 px-2 py-0.5 rounded">${escapeHtml(getLabel(p.category))}</span>
+                        <div class="flex items-center gap-2">${audioHtml}${ttsHtml}</div>
+                    </div>
+                    <p class="font-bold text-amber-800 mt-1" lang="dag">${escapeHtml(p.dagbani)}</p>
+                    <p class="text-gray-700">${escapeHtml(p.english)}</p>
+                    ${p.contributorAttribution ? `<p class="text-xs text-gray-500 mt-1">By ${escapeHtml(p.contributorAttribution)}</p>` : ''}
+                </div>
+            `}).join('') + renderPaginationBar(total, currentPage, totalPages, 'phraseList');
         }
 
         // Audio Recording
@@ -2171,6 +3362,155 @@
             }
         }
 
+        async function startPhraseRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                appState.phraseMediaRecorder = new MediaRecorder(stream);
+                appState.phraseAudioChunks = [];
+                appState.phraseMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) appState.phraseAudioChunks.push(e.data); };
+                appState.phraseMediaRecorder.onstop = () => {
+                    if (appState.phraseAudioChunks.length > 0) {
+                        const blob = new Blob(appState.phraseAudioChunks, { type: 'audio/webm' });
+                        const play = document.getElementById('phrase-audio-playback');
+                        if (play) { play.src = URL.createObjectURL(blob); play.classList.remove('hidden'); }
+                    }
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                appState.phraseMediaRecorder.start();
+                document.getElementById('phrase-record-btn').classList.add('hidden');
+                document.getElementById('phrase-recording-status').classList.remove('hidden');
+            } catch (err) {
+                showToast('Microphone access denied.', 'error');
+            }
+        }
+        function stopPhraseRecording() {
+            if (appState.phraseMediaRecorder && appState.phraseMediaRecorder.state === 'recording') {
+                appState.phraseMediaRecorder.stop();
+                document.getElementById('phrase-recording-status').classList.add('hidden');
+                document.getElementById('phrase-record-btn').classList.remove('hidden');
+            }
+        }
+
+        function renderLeaderboard() {
+            const contribEl = document.getElementById('leaderboard-contributors');
+            const wordsEl = document.getElementById('leaderboard-words');
+            if (!contribEl || !wordsEl) return;
+            const byAttribution = {};
+            appState.words.filter(w => w.verified && (w.contributorAttribution || w.submittedBy)).forEach(w => {
+                const k = w.contributorAttribution || w.submittedBy || 'Community';
+                byAttribution[k] = (byAttribution[k] || 0) + 1;
+            });
+            const topContrib = Object.entries(byAttribution).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            contribEl.innerHTML = topContrib.map(([name, count], i) => `
+                <div class="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
+                    <span class="font-medium">${i + 1}. <button onclick="showContributorProfile(${JSON.stringify(name)})" class="text-amber-700 hover:underline">${escapeHtml(name)}</button></span>
+                    <span class="text-sm text-gray-600">${count} words</span>
+                </div>
+            `).join('') || '<p class="text-gray-500 text-sm">No contributors yet.</p>';
+            const wordScores = appState.words.filter(w => w.verified).map(w => ({
+                ...w,
+                score: getVoteScore(w.id)
+            })).filter(w => w.score > 0).sort((a, b) => b.score - a.score).slice(0, 10);
+            wordsEl.innerHTML = wordScores.map((w, i) => `
+                <div class="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
+                    <span class="font-medium">${escapeHtml(w.dagbani)} → ${escapeHtml(w.english)}</span>
+                    <span class="text-sm text-gray-600">👍 ${w.score}</span>
+                </div>
+            `).join('') || '<p class="text-gray-500 text-sm">No voted words yet.</p>';
+        }
+
+        function showContributorProfile(attribution) {
+            appState.contributorProfileName = attribution;
+            const words = appState.words.filter(w => w.verified && (w.contributorAttribution === attribution || w.submittedBy === attribution));
+            document.getElementById('contributor-profile-name').textContent = attribution;
+            document.getElementById('contributor-profile-stats').textContent = `${words.length} approved word${words.length !== 1 ? 's' : ''}`;
+            const { slice: wordsSlice, currentPage, totalPages, total } = paginate(words, (appState.pagination || {}).contributorProfile);
+            document.getElementById('contributor-profile-words').innerHTML = words.length ? wordsSlice.map(w => `
+                <div class="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <p class="font-bold text-amber-700">${escapeHtml(w.dagbani)}</p>
+                    <p class="text-gray-700">${escapeHtml(w.english)}</p>
+                </div>
+            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'contributorProfile') : '<p class="text-gray-500">No words yet.</p>';
+            showView('contributor-profile');
+        }
+
+        function renderCommunityFeed() {
+            const container = document.getElementById('community-feed');
+            if (!container) return;
+            const feed = appState.communityFeed || [];
+            if (feed.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No new contributions yet. Be the first to contribute!</p>';
+                return;
+            }
+            const { slice: feedSlice, currentPage, totalPages, total } = paginate(feed, (appState.pagination || {}).communityFeed);
+            container.innerHTML = feedSlice.map(item => {
+                const d = item.dateAdded ? new Date(item.dateAdded) : null;
+                const dateStr = d ? d.toLocaleDateString(undefined, { dateStyle: 'medium' }) : '';
+                return `
+                    <div class="p-4 rounded-xl border-2 border-amber-100 bg-amber-50/50 hover:border-amber-200 transition fade-in">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-lg font-bold text-amber-700">${escapeHtml(item.dagbani)}</p>
+                                <p class="text-base font-semibold text-gray-700">${escapeHtml(item.english)}</p>
+                                <p class="text-sm text-gray-500 mt-1">Added by ${escapeHtml(item.contributorAttribution || 'Community')}${dateStr ? ' · ' + dateStr : ''}</p>
+                            </div>
+                            <span class="flex-shrink-0 px-2 py-1 bg-green-100 text-green-800 rounded-lg text-xs font-semibold">New</span>
+                        </div>
+                    </div>
+                `;
+            }).join('') + renderPaginationBar(total, currentPage, totalPages, 'communityFeed');
+        }
+
+        let myContributionsFilter = 'all';
+        function filterMyContributions(filter) {
+            myContributionsFilter = filter;
+            appState.pagination = appState.pagination || {};
+            appState.pagination.myContributions = 1;
+            ['mc-filter-all', 'mc-filter-pending', 'mc-filter-approved'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    const active = (id === 'mc-filter-all' && filter === 'all') || (id === 'mc-filter-pending' && filter === 'pending') || (id === 'mc-filter-approved' && filter === 'approved');
+                    btn.className = active ? 'px-4 py-2 rounded-lg font-semibold bg-amber-100 border-2 border-amber-400 text-amber-800' : 'px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50';
+                }
+            });
+            renderMyContributions();
+        }
+
+        function renderMyContributions() {
+            const container = document.getElementById('my-contributions-list');
+            if (!container) return;
+            const username = appState.currentUser?.username;
+            const attribution = appState.currentUser?.attributionName;
+            const isMe = s => (s.submittedBy && s.submittedBy === username) || (s.contributorAttribution && attribution && s.contributorAttribution === attribution);
+            const pendingWords = (appState.pendingSubmissions || []).filter(isMe);
+            const pendingPhrases = (appState.pendingPhrases || []).filter(isMe);
+            const approvedWords = (appState.words || []).filter(w => (w.submittedBy && w.submittedBy === username) || (w.contributorAttribution && attribution && w.contributorAttribution === attribution));
+            const approvedPhrases = (appState.phrases || []).filter(p => (p.submittedBy && p.submittedBy === username) || (p.contributorAttribution && attribution && p.contributorAttribution === attribution));
+            const pending = [...pendingWords.map(s => ({ ...s, status: 'pending', kind: 'word' })), ...pendingPhrases.map(s => ({ ...s, status: 'pending', kind: 'phrase' }))];
+            const approved = [...approvedWords.map(w => ({ ...w, status: 'approved', kind: 'word' })), ...approvedPhrases.map(p => ({ ...p, status: 'approved', kind: 'phrase' }))];
+            let items = [];
+            if (myContributionsFilter === 'pending') items = pending;
+            else if (myContributionsFilter === 'approved') items = approved;
+            else items = [...pending, ...approved].sort((a, b) => (b.dateAdded || '').localeCompare(a.dateAdded || ''));
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No contributions yet. <button onclick="showView(\'contribute\')" class="text-amber-600 font-semibold hover:underline">Contribute now</button></p>';
+                return;
+            }
+            const { slice: itemsSlice, currentPage, totalPages, total } = paginate(items, (appState.pagination || {}).myContributions);
+            container.innerHTML = itemsSlice.map(item => `
+                <div class="p-4 rounded-xl border-2 ${item.status === 'pending' ? 'border-amber-200 bg-amber-50' : 'border-green-200 bg-green-50'} fade-in">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-lg font-bold text-amber-700">${escapeHtml(item.dagbani)}</p>
+                            <p class="text-base font-semibold text-gray-700">${escapeHtml(item.english)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${item.dateAdded ? new Date(item.dateAdded).toLocaleDateString(undefined, { dateStyle: 'medium' }) : ''}${item.kind === 'phrase' ? ' · Phrase' : ''}</p>
+                        </div>
+                        <span class="flex-shrink-0 px-2 py-1 rounded-lg text-xs font-semibold ${item.status === 'pending' ? 'bg-amber-200 text-amber-800' : 'bg-green-200 text-green-800'}">${item.status === 'pending' ? 'Pending review' : 'Approved'}</span>
+                    </div>
+                </div>
+            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'myContributions');
+        }
+
         // Review System
         function renderPendingSubmissions() {
             const container = document.getElementById('pending-submissions');
@@ -2183,10 +3523,21 @@
             }
             
             noPending.classList.add('hidden');
-            container.innerHTML = appState.pendingSubmissions.map(submission => `
+            const { slice: submissionsSlice, currentPage, totalPages, total } = paginate(appState.pendingSubmissions, (appState.pagination || {}).pendingSubmissions);
+            container.innerHTML = `
+                <div class="flex gap-2 mb-4">
+                    <button onclick="bulkApproveSelected()" class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">✓ Approve selected</button>
+                    <button onclick="bulkRejectSelected()" class="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700">✗ Reject selected</button>
+                </div>
+            ` + submissionsSlice.map(submission => `
                 <div class="bg-gray-50 rounded-xl p-6 border-2 border-gray-200 fade-in">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <input type="checkbox" class="pending-check w-4 h-4" data-id="${submission.id}">
+                                ${submission.editOf ? '<span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Edit</span>' : ''}
+                                ${submission.isSuggestion ? '<span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded text-xs font-semibold">Suggestion</span>' : ''}
+                            </div>
                             <h3 class="text-xl font-bold text-gray-800 mb-2">${escapeHtml(submission.english)}</h3>
                             <p class="text-2xl font-semibold text-amber-700 mb-2">${escapeHtml(submission.dagbani)}</p>
                             <div class="flex flex-wrap gap-2 mb-2">
@@ -2203,60 +3554,157 @@
                                     <strong>Example:</strong> ${escapeHtml(submission.example)}
                                 </div>
                             ` : ''}
+                            ${submission.reportDescription ? `
+                                <div class="mt-2 p-2 bg-yellow-50 rounded text-sm text-gray-700">
+                                    <strong>Report/Suggestion:</strong> ${escapeHtml(submission.reportDescription)}
+                                </div>
+                            ` : ''}
                             ${submission.audio ? `
                                 <audio controls class="mt-3 w-full">
                                     <source src="${submission.audio}" type="audio/webm">
                                 </audio>
                             ` : ''}
                             <p class="text-xs text-gray-500 mt-2">Submitted by: ${submission.submittedBy}</p>
+                            ${submission.contributorAttribution ? `
+                                <div class="mt-2 p-2 bg-amber-50 rounded text-xs text-gray-700">
+                                    <strong>Contributor:</strong> ${escapeHtml(submission.contributorAttribution)}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button 
-                            onclick="approveSubmission(${submission.id})" 
-                            class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                        >
-                            ✓ Approve
-                        </button>
-                        <button 
-                            onclick="rejectSubmission(${submission.id})" 
-                            class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
-                        >
-                            ✗ Reject
-                        </button>
-                        <button 
-                            onclick="suggestEdit(${submission.id})" 
-                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
-                        >
-                            ✏ Edit
-                        </button>
+                        <button onclick="approveSubmission(${JSON.stringify(submission.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
+                        <button onclick="rejectSubmission(${JSON.stringify(submission.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
+                        <button onclick="suggestEdit(${JSON.stringify(submission.id)})" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">✏ Edit</button>
                     </div>
                 </div>
-            `).join('');
+            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'pendingSubmissions');
+        }
+
+        let reviewTab = 'words';
+        function setReviewTab(tab) {
+            reviewTab = tab;
+            const wordsPanel = document.getElementById('review-words-panel');
+            const phrasesPanel = document.getElementById('review-phrases-panel');
+            const wordsBtn = document.getElementById('review-tab-words');
+            const phrasesBtn = document.getElementById('review-tab-phrases');
+            if (tab === 'words') {
+                if (wordsPanel) wordsPanel.classList.remove('hidden');
+                if (phrasesPanel) phrasesPanel.classList.add('hidden');
+                if (wordsBtn) { wordsBtn.classList.add('border-amber-500', 'text-amber-700', 'border-b-2'); wordsBtn.classList.remove('text-gray-600'); }
+                if (phrasesBtn) { phrasesBtn.classList.remove('border-amber-500', 'text-amber-700', 'border-b-2'); phrasesBtn.classList.add('text-gray-600'); }
+            } else {
+                if (wordsPanel) wordsPanel.classList.add('hidden');
+                if (phrasesPanel) phrasesPanel.classList.remove('hidden');
+                if (wordsBtn) { wordsBtn.classList.remove('border-amber-500', 'text-amber-700', 'border-b-2'); wordsBtn.classList.add('text-gray-600'); }
+                if (phrasesBtn) { phrasesBtn.classList.add('border-amber-500', 'text-amber-700', 'border-b-2'); phrasesBtn.classList.remove('text-gray-600'); }
+            }
+        }
+
+        function renderPendingPhrases() {
+            const container = document.getElementById('pending-phrases');
+            const noPending = document.getElementById('no-pending-phrases');
+            if (!container) return;
+            const pending = appState.pendingPhrases || [];
+            if (pending.length === 0) {
+                container.innerHTML = '';
+                if (noPending) noPending.classList.remove('hidden');
+                return;
+            }
+            if (noPending) noPending.classList.add('hidden');
+            const { slice: pendingSlice, currentPage, totalPages, total } = paginate(pending, (appState.pagination || {}).pendingPhrases);
+            container.innerHTML = pendingSlice.map(p => `
+                <div class="bg-gray-50 rounded-xl p-6 border-2 border-gray-200 fade-in">
+                    <h3 class="text-xl font-bold text-amber-700 mb-2" lang="dag">${escapeHtml(p.dagbani)}</h3>
+                    <p class="text-lg text-gray-700 mb-2">${escapeHtml(p.english)}</p>
+                    ${p.audio ? `<audio controls class="mt-2 w-full h-10"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${escapeHtml(PHRASE_CATEGORY_LABELS[getCanonicalPhraseCategory(p.category || 'general')] || 'Other')}</span>
+                    <p class="text-xs text-gray-500 mt-2">Submitted by: ${escapeHtml(p.submittedBy)}</p>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="approvePhraseSubmission(${JSON.stringify(p.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
+                        <button onclick="rejectPhraseSubmission(${JSON.stringify(p.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
+                    </div>
+                </div>
+            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'pendingPhrases');
+        }
+
+        function approvePhraseSubmission(id) {
+            const p = appState.pendingPhrases.find(x => x.id === id);
+            if (!p) return;
+            appState.phrases.push({ ...p });
+            appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
+            appState.communityFeed.unshift({
+                id: Date.now(),
+                type: 'new_phrase',
+                dagbani: p.dagbani,
+                english: p.english,
+                contributorAttribution: p.contributorAttribution || p.submittedBy,
+                dateAdded: new Date().toISOString()
+            });
+            if (appState.communityFeed.length > 100) appState.communityFeed.pop();
+            saveData();
+            renderPendingPhrases();
+            updatePendingCount();
+            if (appState.currentView === 'phrases') renderPhraseList();
+            if (appState.currentView === 'community') renderCommunityFeed();
+            showToast('Phrase approved and added to phrase list!');
+        }
+
+        function rejectPhraseSubmission(id) {
+            if (!confirm('Reject this phrase submission?')) return;
+            appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
+            saveData();
+            renderPendingPhrases();
+            updatePendingCount();
+            showToast('Phrase rejected.');
         }
 
         function approveSubmission(id) {
             const submission = appState.pendingSubmissions.find(s => s.id === id);
-            if (submission) {
+            if (!submission) return;
+            const approver = appState.currentUser?.username || 'Admin';
+            if (submission.editOf) {
+                const idx = appState.words.findIndex(w => String(w.id) === String(submission.editOf));
+                if (idx >= 0) {
+                    const orig = appState.words[idx];
+                    appState.words[idx] = { ...orig, ...submission, id: orig.id, verified: true };
+                }
+            } else {
                 submission.verified = true;
+                submission.id = submission.id || Date.now();
                 appState.words.push(submission);
-                appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
-                saveData();
-                renderPendingSubmissions();
-                updatePendingCount();
-                updateWordOfTheDay();
-                showToast('Word approved and added to dictionary!');
             }
+            appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
+            appState.communityFeed.unshift({
+                id: Date.now(),
+                type: submission.editOf ? 'edit' : 'new_word',
+                dagbani: submission.dagbani,
+                english: submission.english,
+                contributorAttribution: submission.contributorAttribution || submission.submittedBy,
+                dateAdded: new Date().toISOString()
+            });
+            if (appState.communityFeed.length > 100) appState.communityFeed.pop();
+            (appState.activityLog || []).push({ type: 'approved', id: submission.id, dagbani: submission.dagbani, by: approver, at: new Date().toISOString() });
+            saveData();
+            renderPendingSubmissions();
+            updatePendingCount();
+            updateWordOfTheDay();
+            if (appState.currentView === 'community') renderCommunityFeed();
+            if (appState.currentView === 'leaderboard') renderLeaderboard();
+            renderCommunityAnnouncementBanner();
+            showToast(submission.editOf ? 'Edit approved!' : 'Word approved and added to dictionary!');
         }
 
         function rejectSubmission(id) {
-            if (confirm('Are you sure you want to reject this submission?')) {
-                appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
-                saveData();
-                renderPendingSubmissions();
-                updatePendingCount();
-                showToast('Submission rejected.');
-            }
+            if (!confirm('Are you sure you want to reject this submission?')) return;
+            const submission = appState.pendingSubmissions.find(s => s.id === id);
+            const approver = appState.currentUser?.username || 'Admin';
+            (appState.activityLog || []).push({ type: 'rejected', id, dagbani: submission?.dagbani, by: approver, at: new Date().toISOString() });
+            appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
+            saveData();
+            renderPendingSubmissions();
+            updatePendingCount();
+            showToast('Submission rejected.');
         }
 
         function suggestEdit(id) {
@@ -2272,8 +3720,92 @@
             }
         }
 
+        function openEditWordModal(wordId) {
+            const word = appState.words.find(w => w.id === wordId);
+            if (!word) return;
+            document.getElementById('edit-word-id').value = wordId;
+            document.getElementById('edit-dagbani').value = word.dagbani || '';
+            document.getElementById('edit-english').value = word.english || '';
+            document.getElementById('edit-grammar').value = word.grammar || '';
+            document.getElementById('edit-example').value = word.example || '';
+            document.getElementById('edit-word-modal').classList.remove('hidden');
+        }
+        function closeEditWordModal() { document.getElementById('edit-word-modal').classList.add('hidden'); }
+        function submitEditWord() {
+            const wordId = document.getElementById('edit-word-id').value;
+            const word = appState.words.find(w => String(w.id) === String(wordId));
+            if (!word) return;
+            const dagbani = document.getElementById('edit-dagbani').value.trim();
+            const english = document.getElementById('edit-english').value.trim();
+            if (!dagbani || !english) { showToast('Dagbani and English are required.', 'error'); return; }
+            const submission = {
+                id: 'edit-' + Date.now(),
+                editOf: wordId,
+                dagbani, english,
+                dialect: word.dialect,
+                category: word.category,
+                grammar: (document.getElementById('edit-grammar').value || '').trim() || null,
+                example: (document.getElementById('edit-example').value || '').trim() || null,
+                picture: word.picture, audio: word.audio,
+                verified: false, allowComments: word.allowComments !== false,
+                submittedBy: appState.currentUser?.username || 'Visitor',
+                contributorAttribution: appState.currentUser?.attributionName || null,
+                dateAdded: new Date().toISOString()
+            };
+            appState.pendingSubmissions.push(submission);
+            saveData();
+            closeEditWordModal();
+            updatePendingCount();
+            showToast('Edit submitted for review.');
+            applyFilters();
+        }
+
+        function openReportErrorModal(wordId) {
+            document.getElementById('report-word-id').value = wordId;
+            document.getElementById('report-description').value = '';
+            document.getElementById('report-error-modal').classList.remove('hidden');
+        }
+        function closeReportErrorModal() { document.getElementById('report-error-modal').classList.add('hidden'); }
+        function submitReportError() {
+            const wordId = document.getElementById('report-word-id').value;
+            const word = appState.words.find(w => String(w.id) === String(wordId));
+            const desc = (document.getElementById('report-description').value || '').trim();
+            if (!desc) { showToast('Please describe the error or your suggestion.', 'error'); return; }
+            const submission = {
+                id: 'report-' + Date.now(),
+                editOf: wordId,
+                dagbani: word?.dagbani || '',
+                english: word?.english || '',
+                reportDescription: desc,
+                dialect: word?.dialect || 'standard',
+                category: word?.category || 'general',
+                grammar: null, example: null, picture: null, audio: null,
+                verified: false, allowComments: true,
+                submittedBy: appState.currentUser?.username || 'Visitor',
+                isSuggestion: true,
+                dateAdded: new Date().toISOString()
+            };
+            appState.pendingSubmissions.push(submission);
+            saveData();
+            closeReportErrorModal();
+            updatePendingCount();
+            showToast('Report submitted. Admins will review it.');
+            applyFilters();
+        }
+
+        function bulkApproveSelected() {
+            const ids = [...document.querySelectorAll('.pending-check:checked')].map(el => el.dataset.id);
+            if (ids.length === 0) { showToast('Select submissions to approve.', 'error'); return; }
+            ids.forEach(id => approveSubmission(id));
+        }
+        function bulkRejectSelected() {
+            const ids = [...document.querySelectorAll('.pending-check:checked')].map(el => el.dataset.id);
+            if (ids.length === 0) { showToast('Select submissions to reject.', 'error'); return; }
+            ids.forEach(id => rejectSubmission(id));
+        }
+
         function updatePendingCount() {
-            const count = appState.pendingSubmissions.length;
+            const count = (appState.pendingSubmissions?.length || 0) + (appState.pendingPhrases?.length || 0);
             ['pending-count', 'pending-count-drawer'].forEach(id => {
                 const badge = document.getElementById(id);
                 if (badge) {
@@ -2313,6 +3845,12 @@
             const data = {
                 words: appState.words,
                 pendingSubmissions: appState.pendingSubmissions,
+                phrases: appState.phrases,
+                pendingPhrases: appState.pendingPhrases,
+                communityFeed: appState.communityFeed,
+                comments: appState.comments,
+                wordVotes: appState.wordVotes,
+                activityLog: appState.activityLog,
                 favorites: appState.favorites,
                 exportDate: new Date().toISOString()
             };
@@ -2330,11 +3868,21 @@
             if (!confirm('Clear ALL dictionary data? This cannot be undone.')) return;
             appState.words = [];
             appState.pendingSubmissions = [];
+            appState.phrases = [];
+            appState.pendingPhrases = [];
+            appState.communityFeed = [];
+            appState.comments = [];
+            appState.wordVotes = {};
             appState.favorites = [];
             appState.searchHistory = [];
             appState.browseLetterFilter = 'all';
             localStorage.removeItem('dagbaniWords');
             localStorage.removeItem('dagbaniPending');
+            localStorage.removeItem('dagbaniPhrases');
+            localStorage.removeItem('dagbaniPendingPhrases');
+            localStorage.removeItem('dagbaniCommunityFeed');
+            localStorage.removeItem('dagbaniComments');
+            localStorage.removeItem('dagbaniWordVotes');
             localStorage.removeItem('dagbaniFavorites');
             localStorage.removeItem('dagbaniSearchHistory');
             saveData();
@@ -2344,7 +3892,7 @@
                 document.getElementById('no-results').classList.add('hidden');
             }
             if (appState.currentView === 'favorites') renderFavorites();
-            if (appState.currentView === 'review') renderPendingSubmissions();
+            if (appState.currentView === 'review') { renderPendingSubmissions(); renderPendingPhrases(); }
             if (appState.currentView === 'browse') renderBrowseDictionary();
             renderSearchHistory();
             showToast('All data cleared.');
@@ -2437,13 +3985,19 @@
                     if (confirmed) {
                         if (!mergeMode) {
                             if (data.pendingSubmissions) appState.pendingSubmissions = data.pendingSubmissions;
+                            if (data.phrases) appState.phrases = data.phrases;
+                            if (data.pendingPhrases) appState.pendingPhrases = data.pendingPhrases;
+                            if (data.communityFeed) appState.communityFeed = data.communityFeed;
+                            if (data.comments) appState.comments = data.comments;
+                            if (data.wordVotes) appState.wordVotes = data.wordVotes;
+                            if (data.activityLog) appState.activityLog = data.activityLog;
                             if (data.favorites) appState.favorites = data.favorites;
                         }
                         saveData();
                         showToast(mergeMode ? `Added ${words.length || data.words?.length || 0} entries.` : 'Data imported successfully!');
                         updateWordOfTheDay();
                         if (appState.currentView === 'favorites') renderFavorites();
-                        if (appState.currentView === 'review') renderPendingSubmissions();
+                        if (appState.currentView === 'review') { renderPendingSubmissions(); renderPendingPhrases(); }
                         if (appState.currentView === 'browse') renderBrowseDictionary();
                     }
                 } catch (error) {
@@ -2461,9 +4015,19 @@
         }
 
         function toggleDarkMode() {
-            // Basic dark mode toggle - can be enhanced
-            document.body.classList.toggle('dark');
-            showToast('Dark mode toggled');
+            const cb = document.getElementById('dark-mode');
+            const on = cb?.checked || false;
+            localStorage.setItem('darkMode', on ? '1' : '0');
+            document.body.classList.toggle('dark', on);
+            document.documentElement.classList.toggle('dark', on);
+            showToast(on ? 'Dark mode on' : 'Dark mode off');
+        }
+        function applySavedDarkMode() {
+            const on = localStorage.getItem('darkMode') === '1';
+            document.body.classList.toggle('dark', on);
+            document.documentElement.classList.toggle('dark', on);
+            const cb = document.getElementById('dark-mode');
+            if (cb) cb.checked = on;
         }
 
         // Toast Notification
@@ -2489,7 +4053,11 @@
         let browseSearchDebounceTimer;
         function debouncedBrowseSearch() {
             clearTimeout(browseSearchDebounceTimer);
-            browseSearchDebounceTimer = setTimeout(renderBrowseDictionary, 200);
+            browseSearchDebounceTimer = setTimeout(() => {
+                appState.pagination = appState.pagination || {};
+                appState.pagination.browse = 1;
+                renderBrowseDictionary();
+            }, 200);
         }
         function renderBrowseDictionary() {
             const sortBy = document.getElementById('browse-sort').value;
@@ -2578,13 +4146,30 @@
             
             document.getElementById('browse-empty').classList.add('hidden');
             
+            // Flatten all words for pagination, then paginate
+            const allWordsFlat = keysToShow.flatMap(letter => (grouped[letter] || []).map(w => ({ ...w, _letter: letter })));
+            const browsePage = (appState.pagination || {}).browse || 1;
+            const { slice: wordsToRender, currentPage, totalPages, total } = paginate(allWordsFlat, browsePage);
+            const sliceByLetter = {};
+            wordsToRender.forEach(w => {
+                const L = w._letter;
+                if (!sliceByLetter[L]) sliceByLetter[L] = [];
+                sliceByLetter[L].push(w);
+            });
+            const keySort = (a, b) => {
+                if (a === '#') return 1; if (b === '#') return -1;
+                if (/[0-9]/.test(a) && /[A-Z]/.test(b)) return 1; if (/[A-Z]/.test(a) && /[0-9]/.test(b)) return -1;
+                return a.localeCompare(b);
+            };
+            const keysRendered = Object.keys(sliceByLetter).sort(keySort);
+            
             // Render grouped words
             const content = document.getElementById('browse-content');
             const isListView = viewMode === 'list';
             const headerEl = document.getElementById('browse-list-header');
             if (headerEl) headerEl.classList.toggle('hidden', !isListView);
-            content.innerHTML = keysToShow.map(letter => {
-                const letterWords = grouped[letter];
+            content.innerHTML = keysRendered.map(letter => {
+                const letterWords = sliceByLetter[letter];
                 if (isListView) {
                     return `
                     <div id="letter-${letter}" class="fade-in mb-12">
@@ -2673,6 +4258,9 @@
                                     ${word.grammar ? `
                                         <p class="text-xs text-gray-600 mt-2 line-clamp-2">${escapeHtml(word.grammar)}</p>
                                     ` : ''}
+                                    ${word.contributorAttribution ? `
+                                        <p class="text-xs text-gray-500 mt-1">Contributor: ${escapeHtml(word.contributorAttribution)}</p>
+                                    ` : ''}
                                     ${word.audio ? `
                                         <audio controls class="w-full mt-2 h-8">
                                             <source src="${word.audio}" type="audio/webm">
@@ -2687,7 +4275,7 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            }).join('') + renderPaginationBar(total, currentPage, totalPages, 'browse');
         }
 
         function extractPluralOrImpf(word) {
@@ -2778,6 +4366,8 @@
 
         function filterBrowseByLetter(letter) {
             appState.browseLetterFilter = letter;
+            appState.pagination = appState.pagination || {};
+            appState.pagination.browse = 1;
             renderBrowseDictionary();
         }
 
