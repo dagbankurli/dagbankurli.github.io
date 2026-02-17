@@ -292,7 +292,7 @@
 
     <!-- Edit Word Modal (contributors/admins) -->
     <div id="edit-word-modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeEditWordModal()">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in" onclick="event.stopPropagation()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <h2 id="edit-modal-title" class="text-xl font-bold text-gray-800 mb-4">Suggest edit</h2>
             <input type="hidden" id="edit-word-id">
             <div class="space-y-4">
@@ -300,11 +300,127 @@
                 <div><label for="edit-english" class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-english" aria-required="true" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">Grammar (optional)</label><textarea id="edit-grammar" rows="2" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></textarea></div>
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">Example (optional)</label><textarea id="edit-example" rows="2" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></textarea></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label>
+                    <input type="url" id="edit-word-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL">
+                    <label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm font-semibold text-amber-800 hover:bg-amber-200"><span>📷 Upload</span><input type="file" id="edit-word-picture-file" accept="image/*" class="hidden" onchange="handleEditWordImageUpload(event)"></label>
+                    <div id="edit-word-picture-preview" class="hidden mt-2"><img id="edit-word-preview-img" src="" alt="" class="max-h-24 rounded border"><button type="button" onclick="clearEditWordImage()" class="text-sm text-red-600 mt-1">Remove</button></div>
+                </div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional) — Add or replace</label>
+                    <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
+                        <button type="button" onclick="startEditWordRecording()" id="edit-word-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                        <div id="edit-word-recording-status" class="hidden flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                            <span class="text-red-600 font-medium text-sm">Recording</span>
+                            <button type="button" onclick="stopEditWordRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                        </div>
+                        <div id="edit-word-audio-wrap" class="hidden">
+                            <p class="text-xs font-semibold text-amber-700 mb-1">▶ Replay</p>
+                            <audio id="edit-word-audio" controls class="w-full h-10"></audio>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="flex gap-2 mt-4">
                 <button onclick="submitEditWord()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Submit for review</button>
                 <button onclick="closeEditWordModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Edit Pending Contribution Modal (contributors) -->
+    <div id="edit-pending-modal" role="dialog" aria-modal="true" aria-labelledby="edit-pending-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeEditPendingModal()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <h2 id="edit-pending-title" class="text-xl font-bold text-gray-800 mb-4">Edit pending contribution</h2>
+            <input type="hidden" id="edit-pending-id">
+            <input type="hidden" id="edit-pending-kind">
+            <div id="edit-pending-word-fields" class="space-y-4 hidden">
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani</label><input type="text" id="edit-pending-dagbani" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-pending-english" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Grammar (optional)</label><textarea id="edit-pending-grammar" rows="2" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></textarea></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Example (optional)</label><textarea id="edit-pending-example" rows="2" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></textarea></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label>
+                    <input type="url" id="edit-pending-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL">
+                    <label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm font-semibold text-amber-800 hover:bg-amber-200"><span>📷 Upload</span><input type="file" id="edit-pending-picture-file" accept="image/*" class="hidden" onchange="handleEditPendingImageUpload(event)"></label>
+                    <div id="edit-pending-picture-preview" class="hidden mt-2"><img id="edit-pending-preview-img" src="" alt="" class="max-h-24 rounded border"><button type="button" onclick="clearEditPendingImage()" class="text-sm text-red-600 mt-1">Remove</button></div>
+                </div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Audio — Add or replace</label>
+                    <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
+                        <button type="button" onclick="startEditPendingWordRecording()" id="edit-pending-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                        <div id="edit-pending-recording-status" class="hidden flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                            <span class="text-red-600 font-medium text-sm">Recording</span>
+                            <button type="button" onclick="stopEditPendingWordRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                        </div>
+                        <p class="text-xs text-gray-500">Existing audio (if any):</p>
+                        <audio id="edit-pending-audio" controls class="w-full h-10"></audio>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-pending-phrase-fields" class="space-y-4 hidden">
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani phrase</label><input type="text" id="edit-pending-phrase-dagbani" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-pending-phrase-english" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Category</label><select id="edit-pending-phrase-category" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></select></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label><input type="url" id="edit-pending-phrase-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL"><label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm"><span>📷 Upload</span><input type="file" id="edit-pending-phrase-picture-file" accept="image/*" class="hidden" onchange="handleEditPendingPhraseImage(event)"></label><div id="edit-pending-phrase-picture-preview" class="hidden mt-2"><img id="edit-pending-phrase-preview-img" src="" alt="" class="max-h-20 rounded border"><button type="button" onclick="clearEditPendingPhraseImage()" class="text-sm text-red-600 mt-1 block">Remove</button></div></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Audio — Replay</label><audio id="edit-pending-phrase-audio" controls class="w-full h-10"></audio></div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="saveEditPendingContribution()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Save</button>
+                <button onclick="closeEditPendingModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Phrase Modal (contributors/admins - suggest edit) -->
+    <div id="edit-phrase-modal" role="dialog" aria-modal="true" aria-labelledby="edit-phrase-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeEditPhraseModal()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <h2 id="edit-phrase-modal-title" class="text-xl font-bold text-gray-800 mb-4">Suggest edit (phrase)</h2>
+            <input type="hidden" id="edit-phrase-id">
+            <div class="space-y-4">
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani phrase</label><input type="text" id="edit-phrase-dagbani" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-phrase-english" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Category</label><select id="edit-phrase-category" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></select></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label>
+                    <input type="url" id="edit-phrase-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL">
+                    <label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm font-semibold text-amber-800 hover:bg-amber-200"><span>📷 Upload</span><input type="file" id="edit-phrase-picture-file" accept="image/*" class="hidden" onchange="handleEditPhraseImageUpload(event)"></label>
+                    <div id="edit-phrase-picture-preview" class="hidden mt-2"><img id="edit-phrase-preview-img" src="" alt="" class="max-h-24 rounded border"><button type="button" onclick="clearEditPhraseImage()" class="text-sm text-red-600 mt-1">Remove</button></div>
+                </div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional) — Add or replace</label>
+                    <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
+                        <button type="button" onclick="startEditPhraseRecording()" id="edit-phrase-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                        <div id="edit-phrase-recording-status" class="hidden flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                            <span class="text-red-600 font-medium text-sm">Recording</span>
+                            <button type="button" onclick="stopEditPhraseRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                        </div>
+                        <div id="edit-phrase-audio-wrap" class="hidden">
+                            <p class="text-xs font-semibold text-amber-700 mb-1">▶ Replay</p>
+                            <audio id="edit-phrase-audio" controls class="w-full h-10"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="submitEditPhrase()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Submit for review</button>
+                <button onclick="closeEditPhraseModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Phrase Modal -->
+    <div id="phrase-view-modal" role="dialog" aria-modal="true" aria-labelledby="phrase-view-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closePhraseViewModal()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in" onclick="event.stopPropagation()">
+            <h2 id="phrase-view-title" class="text-xl font-bold text-gray-800 mb-4">Phrase</h2>
+            <div id="phrase-view-content" class="space-y-3">
+                <p id="phrase-view-dagbani" class="text-xl font-bold text-amber-700" lang="dag"></p>
+                <p id="phrase-view-english" class="text-gray-700"></p>
+                <p id="phrase-view-category" class="text-sm text-gray-500"></p>
+                <div id="phrase-view-image" class="hidden"><img id="phrase-view-img" src="" alt="" class="max-h-40 rounded-lg border"></div>
+                <div id="phrase-view-audio-wrap" class="hidden">
+                    <p class="text-sm font-semibold text-amber-700 mb-1">▶ Replay</p>
+                    <audio id="phrase-view-audio" controls class="w-full h-10"></audio>
+                </div>
+            </div>
+            <button onclick="closePhraseViewModal()" class="mt-4 px-4 py-2 border border-gray-300 rounded-lg">Close</button>
         </div>
     </div>
 
@@ -328,13 +444,13 @@
         <div class="w-full max-w-[100vw] mx-auto px-3 sm:px-4 py-2 sm:py-3">
             <div class="flex items-center justify-between gap-2 w-full min-w-0">
                 <div class="flex items-center gap-2 flex-shrink-0 min-w-0 overflow-hidden">
-                    <h1 class="text-lg sm:text-xl font-bold truncate">Dagban Kurli</h1>
+                    <h1 class="text-lg sm:text-xl font-bold truncate m-0"><button onclick="closeNavDrawer(); showView('dictionary')" class="text-inherit font-inherit bg-transparent border-none text-white cursor-pointer hover:opacity-90 transition p-0 min-h-[44px] flex items-center" aria-label="Go to home (Search lexicon)">Dagban Kurli</button></h1>
                     <span id="user-badge" class="text-sm bg-amber-700 px-3 py-1 rounded-full hidden flex-shrink-0"></span>
                     <button id="nav-sign-in" onclick="showLoginModal('user')" class="px-3 py-1.5 text-sm font-semibold rounded-lg hover:bg-amber-700 transition border border-amber-500" style="display: none;">Sign In</button>
                 </div>
                 <!-- Desktop nav links: CSS controls visibility -->
                 <div class="desktop-nav-links gap-2 flex-shrink-0 items-center">
-                <button onclick="showView('dictionary')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="dictionary" aria-label="Open dictionary search">Dictionary</button>
+                <button onclick="showView('dictionary')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="dictionary" aria-label="Search lexicon or word">Search lexicon/word</button>
                 <button onclick="showView('browse')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="browse" aria-label="Browse dictionary A to Z">Browse A-Z</button>
                 <button onclick="showView('learn')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="learn" aria-label="Learn Dagbani">Learn</button>
                     <button onclick="showView('favorites')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="favorites">Favorites<span id="favorites-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
@@ -364,7 +480,7 @@
             </button>
             <div class="flex flex-col gap-2 pt-2">
                 <button id="nav-sign-in-drawer" onclick="closeNavDrawer(); showLoginModal('user')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" style="display: none;">Sign In</button>
-                <button onclick="navDrawerGo('dictionary')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="dictionary">Dictionary</button>
+                <button onclick="navDrawerGo('dictionary')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="dictionary">Search lexicon/word</button>
                 <button onclick="navDrawerGo('browse')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="browse">Browse A-Z</button>
                 <button onclick="navDrawerGo('learn')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="learn">Learn</button>
                 <button onclick="navDrawerGo('favorites')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="favorites">Favorites<span id="favorites-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
@@ -392,7 +508,7 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Digital Dictionary</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Search Lexicon / Word</h2>
             
             <!-- Search Bar -->
             <div class="flex flex-col sm:flex-row gap-2 mb-4">
@@ -401,7 +517,7 @@
                         type="search" 
                         id="search-input" 
                         placeholder="Search Dagbani or English..." 
-                        aria-label="Search dictionary in Dagbani or English"
+                        aria-label="Search lexicon or word in Dagbani or English"
                         aria-describedby="search-direction"
                         class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-base sm:text-lg min-h-[44px]"
                         onkeyup="handleSearch(event)"
@@ -417,25 +533,18 @@
                 </select>
             </div>
 
-            <!-- Advanced Filters -->
-            <div class="mb-4 space-y-3">
-                <div>
-                    <label class="text-sm font-semibold text-gray-600 mb-2 block">Dialect:</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="filterDialect('all')" class="dialect-filter px-4 py-2 rounded-lg bg-amber-100 border-2 border-amber-400 text-amber-800 font-semibold flex-shrink-0 min-h-[44px]" data-dialect="all" aria-pressed="true" aria-label="Show all dialects">All</button>
-                        <button onclick="filterDialect('standard')" class="dialect-filter px-4 py-2 rounded-lg bg-gray-100 border-2 border-gray-300 text-gray-700 flex-shrink-0 min-h-[44px]" data-dialect="standard" aria-pressed="false" aria-label="Show standard dialect only">Standard</button>
-                    </div>
-                </div>
-                <div class="flex flex-wrap gap-4 items-center">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="filter-audio" aria-label="Filter by words that have audio" onchange="applyFilters()" class="w-4 h-4">
-                        <span class="text-sm text-gray-700">Has Audio</span>
+            <!-- Advanced Filters (single row on mobile) -->
+            <div class="mb-4">
+                <div class="flex flex-nowrap sm:flex-wrap gap-2 sm:gap-4 items-center min-w-0">
+                    <label class="flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                        <input type="checkbox" id="filter-audio" aria-label="Filter by words that have audio" onchange="applyFilters()" class="w-4 h-4 flex-shrink-0">
+                        <span class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">Has Audio</span>
                     </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="filter-verified" aria-label="Show only verified words" checked onchange="applyFilters()" class="w-4 h-4">
-                        <span class="text-sm text-gray-700">Verified Only</span>
+                    <label class="flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                        <input type="checkbox" id="filter-verified" aria-label="Show only verified words" checked onchange="applyFilters()" class="w-4 h-4 flex-shrink-0">
+                        <span class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">Verified</span>
                     </label>
-                    <select id="filter-category" aria-label="Filter by category" onchange="applyFilters()" class="px-3 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-sm">
+                    <select id="filter-category" aria-label="Filter by category" onchange="applyFilters()" class="flex-1 min-w-0 max-w-[140px] sm:max-w-none px-2 py-1.5 sm:px-3 sm:py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 text-xs sm:text-sm">
                         <option value="all">All Categories</option>
                     </select>
                 </div>
@@ -841,9 +950,17 @@
                     <button onclick="openContributorSignup()" class="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign Up as Contributor</button>
                     <p class="text-sm text-gray-600 mt-3">Already a contributor? <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></p>
                 </div>
-                <div id="learn-phrase-form-wrapper" class="mb-6">
+                <div id="learn-phrase-add-btn-wrap" class="mb-6 hidden">
+                    <button type="button" onclick="toggleAddPhraseForm('learn')" id="learn-phrase-add-btn" class="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
+                        Add a phrase
+                    </button>
+                </div>
+                <div id="learn-phrase-form-wrapper" class="mb-6 hidden">
                     <form id="learn-phrase-form" onsubmit="submitPhrase(event)" data-form="learn" class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50 space-y-4">
-                        <h4 class="font-bold text-gray-800">Add a Phrase</h4>
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-bold text-gray-800">Add a Phrase</h4>
+                            <button type="button" onclick="toggleAddPhraseForm('learn')" class="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+                        </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Phrase</label>
                             <input type="text" name="phrase-dagbani" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Antire">
@@ -853,15 +970,27 @@
                             <input type="text" name="phrase-english" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Hello">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional)</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label>
+                            <label class="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 cursor-pointer transition text-sm mb-2">
+                                📷 Upload image
+                                <input type="file" name="phrase-picture-file" accept="image/*" class="hidden" onchange="handlePhraseImageUpload(event, this)">
+                            </label>
+                            <input type="url" name="phrase-picture-url" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Or paste image URL">
+                            <div class="phrase-picture-preview hidden mt-2"><img class="max-h-24 rounded border object-contain phrase-picture-preview-img" src="" alt=""><button type="button" onclick="clearPhraseImage(this)" class="text-sm text-red-600 mt-1 block">Remove</button></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional) — Record and replay before submitting</label>
                             <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
-                                <button type="button" onclick="startPhraseRecording()" id="phrase-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
-                                <div id="phrase-recording-status" class="hidden flex items-center gap-2">
+                                <button type="button" onclick="startPhraseRecording(this)" class="phrase-record-btn px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                                <div class="phrase-recording-status hidden flex items-center gap-2">
                                     <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
                                     <span class="text-red-600 font-medium text-sm">Recording</span>
-                                    <button type="button" onclick="stopPhraseRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                                    <button type="button" onclick="stopPhraseRecording(this)" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
                                 </div>
-                                <audio id="phrase-audio-playback" controls class="hidden w-full h-10 mt-2"></audio>
+                                <div class="phrase-audio-preview-wrap hidden">
+                                    <p class="text-sm font-semibold text-amber-700 mb-1">▶ Replay — Listen before posting</p>
+                                    <audio class="phrase-audio-playback w-full h-10 mt-2" controls></audio>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -895,34 +1024,40 @@
                         <button type="submit" class="px-6 py-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition">Submit for Review</button>
                     </form>
                 </div>
-                <div class="flex flex-wrap items-center gap-2 mb-4">
-                    <span class="text-sm font-semibold text-gray-700">Filter by category:</span>
-                    <select id="learn-phrase-filter-select" onchange="filterPhrases(this.value)" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[180px]">
-                        <option value="all">All categories</option>
-                        <option value="basics">Basics</option>
-                        <option value="common_signs">Common signs</option>
-                        <option value="problems">Problems</option>
-                        <option value="numbers">Numbers</option>
-                        <option value="time">Time</option>
-                        <option value="clock_time">Clock time</option>
-                        <option value="duration">Duration</option>
-                        <option value="days">Days</option>
-                        <option value="months">Months</option>
-                        <option value="writing_time_and_date">Writing time and date</option>
-                        <option value="colors">Colors</option>
-                        <option value="transportation">Transportation</option>
-                        <option value="bus_and_train">Bus and train</option>
-                        <option value="directions">Directions</option>
-                        <option value="taxi">Taxi</option>
-                        <option value="lodging">Lodging</option>
-                        <option value="money">Money</option>
-                        <option value="eating">Eating</option>
-                        <option value="bars">Bars</option>
-                        <option value="shopping">Shopping</option>
-                        <option value="driving">Driving</option>
-                        <option value="authority">Authority</option>
-                        <option value="general">Other</option>
-                    </select>
+                <div class="flex flex-row flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-gray-700">Filter by category:</span>
+                        <select id="learn-phrase-filter-select" onchange="filterPhrases(this.value)" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[180px]">
+                            <option value="all">All categories</option>
+                            <option value="basics">Basics</option>
+                            <option value="common_signs">Common signs</option>
+                            <option value="problems">Problems</option>
+                            <option value="numbers">Numbers</option>
+                            <option value="time">Time</option>
+                            <option value="clock_time">Clock time</option>
+                            <option value="duration">Duration</option>
+                            <option value="days">Days</option>
+                            <option value="months">Months</option>
+                            <option value="writing_time_and_date">Writing time and date</option>
+                            <option value="colors">Colors</option>
+                            <option value="transportation">Transportation</option>
+                            <option value="bus_and_train">Bus and train</option>
+                            <option value="directions">Directions</option>
+                            <option value="taxi">Taxi</option>
+                            <option value="lodging">Lodging</option>
+                            <option value="money">Money</option>
+                            <option value="eating">Eating</option>
+                            <option value="bars">Bars</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="driving">Driving</option>
+                            <option value="authority">Authority</option>
+                            <option value="general">Other</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="learn-phrase-search-input" placeholder="Search phrases…" class="px-3 py-2 rounded-lg border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[140px]" onkeydown="if(event.key==='Enter')searchPhrases()">
+                        <button type="button" onclick="searchPhrases()" class="px-4 py-2 rounded-lg font-semibold bg-amber-500 text-amber-900 hover:bg-amber-600 transition">Search</button>
+                    </div>
                 </div>
                 <div id="learn-phrase-list-container" class="space-y-4"></div>
             </div>
@@ -999,7 +1134,7 @@
     <div id="mycontributions-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">My Contributions</h2>
-            <p class="text-gray-600 mb-6">Track your submitted words and their status.</p>
+            <p class="text-gray-600 mb-6">View all your contributions, edit pending items, replay audio, and suggest edits for approved words.</p>
             <div class="flex flex-wrap items-center gap-2 mb-6">
                 <button onclick="filterMyContributions('all')" id="mc-filter-all" class="px-4 py-2 rounded-lg font-semibold bg-amber-100 border-2 border-amber-400 text-amber-800">All</button>
                 <button onclick="filterMyContributions('pending')" id="mc-filter-pending" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Pending</button>
@@ -1020,16 +1155,24 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Phrase List</h2>
             <p class="text-gray-600 mb-6">Community-contributed Dagbani phrases. Contributors and admins can add phrases (submit for review).</p>
             
-            <!-- Add Phrase (contributors/admins) - shown first so contributors see it prominently -->
+            <!-- Add Phrase: contributors/admins only -->
             <div id="phrase-list-gate" class="hidden bg-amber-50 border-2 border-amber-300 rounded-xl p-6 text-center mb-6">
                 <p class="text-gray-700 mb-4">Sign up as a Contributor to submit phrases.</p>
                 <button onclick="openContributorSignup()" class="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign Up as Contributor</button>
                 <p class="text-sm text-gray-600 mt-3">Already a contributor? <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></p>
             </div>
             
-            <div id="phrase-list-form-wrapper" class="mb-6">
+            <div id="phrase-list-add-btn-wrap" class="mb-6 hidden">
+                <button type="button" onclick="toggleAddPhraseForm('list')" id="phrase-list-add-btn" class="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
+                    Add a phrase
+                </button>
+            </div>
+            <div id="phrase-list-form-wrapper" class="mb-6 hidden">
                 <form id="phrase-form" onsubmit="submitPhrase(event)" class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50 space-y-4">
-                    <h3 class="font-bold text-gray-800">Add a Phrase</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-gray-800">Add a Phrase</h3>
+                        <button type="button" onclick="toggleAddPhraseForm('list')" class="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+                    </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Phrase</label>
                         <input type="text" id="phrase-dagbani" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Antire">
@@ -1039,15 +1182,27 @@
                         <input type="text" id="phrase-english" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Hello">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional)</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label>
+                        <label class="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 cursor-pointer transition text-sm mb-2">
+                            📷 Upload image
+                            <input type="file" name="phrase-picture-file" accept="image/*" class="hidden" onchange="handlePhraseImageUpload(event, this)">
+                        </label>
+                        <input type="url" name="phrase-picture-url" id="phrase-picture-url" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Or paste image URL">
+                        <div class="phrase-picture-preview hidden mt-2"><img class="max-h-24 rounded border object-contain phrase-picture-preview-img" src="" alt=""><button type="button" onclick="clearPhraseImage(this)" class="text-sm text-red-600 mt-1 block">Remove</button></div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Audio (optional) — Record and replay before submitting</label>
                         <div class="border-2 border-dashed border-amber-300 rounded-lg p-4 space-y-2">
-                            <button type="button" onclick="startPhraseRecording()" id="phrase-record-btn" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
-                            <div id="phrase-recording-status" class="hidden flex items-center gap-2">
+                            <button type="button" onclick="startPhraseRecording(this)" class="phrase-record-btn px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-sm">🎤 Record</button>
+                            <div class="phrase-recording-status hidden flex items-center gap-2">
                                 <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
                                 <span class="text-red-600 font-medium text-sm">Recording</span>
-                                <button type="button" onclick="stopPhraseRecording()" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
+                                <button type="button" onclick="stopPhraseRecording(this)" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Stop</button>
                             </div>
-                            <audio id="phrase-audio-playback" controls class="hidden w-full h-10 mt-2"></audio>
+                            <div class="phrase-audio-preview-wrap hidden">
+                                <p class="text-sm font-semibold text-amber-700 mb-1">▶ Replay — Listen before posting</p>
+                                <audio class="phrase-audio-playback w-full h-10 mt-2" controls></audio>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -1082,34 +1237,40 @@
                 </form>
             </div>
 
-            <div class="flex flex-wrap items-center gap-2 mb-4">
-                <span class="text-sm font-semibold text-gray-700">Filter by category:</span>
-                <select id="phrase-filter-select" onchange="filterPhrases(this.value)" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[180px]">
-                    <option value="all">All categories</option>
-                    <option value="basics">Basics</option>
-                    <option value="common_signs">Common signs</option>
-                    <option value="problems">Problems</option>
-                    <option value="numbers">Numbers</option>
-                    <option value="time">Time</option>
-                    <option value="clock_time">Clock time</option>
-                    <option value="duration">Duration</option>
-                    <option value="days">Days</option>
-                    <option value="months">Months</option>
-                    <option value="writing_time_and_date">Writing time and date</option>
-                    <option value="colors">Colors</option>
-                    <option value="transportation">Transportation</option>
-                    <option value="bus_and_train">Bus and train</option>
-                    <option value="directions">Directions</option>
-                    <option value="taxi">Taxi</option>
-                    <option value="lodging">Lodging</option>
-                    <option value="money">Money</option>
-                    <option value="eating">Eating</option>
-                    <option value="bars">Bars</option>
-                    <option value="shopping">Shopping</option>
-                    <option value="driving">Driving</option>
-                    <option value="authority">Authority</option>
-                    <option value="general">Other</option>
-                </select>
+            <div class="flex flex-row flex-wrap items-center justify-between gap-2 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-gray-700">Filter by category:</span>
+                    <select id="phrase-filter-select" onchange="filterPhrases(this.value)" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[180px]">
+                        <option value="all">All categories</option>
+                        <option value="basics">Basics</option>
+                        <option value="common_signs">Common signs</option>
+                        <option value="problems">Problems</option>
+                        <option value="numbers">Numbers</option>
+                        <option value="time">Time</option>
+                        <option value="clock_time">Clock time</option>
+                        <option value="duration">Duration</option>
+                        <option value="days">Days</option>
+                        <option value="months">Months</option>
+                        <option value="writing_time_and_date">Writing time and date</option>
+                        <option value="colors">Colors</option>
+                        <option value="transportation">Transportation</option>
+                        <option value="bus_and_train">Bus and train</option>
+                        <option value="directions">Directions</option>
+                        <option value="taxi">Taxi</option>
+                        <option value="lodging">Lodging</option>
+                        <option value="money">Money</option>
+                        <option value="eating">Eating</option>
+                        <option value="bars">Bars</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="driving">Driving</option>
+                        <option value="authority">Authority</option>
+                        <option value="general">Other</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="phrase-search-input" placeholder="Search phrases…" class="px-3 py-2 rounded-lg border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[140px]" onkeydown="if(event.key==='Enter')searchPhrases()">
+                    <button type="button" onclick="searchPhrases()" class="px-4 py-2 rounded-lg font-semibold bg-amber-500 text-amber-900 hover:bg-amber-600 transition">Search</button>
+                </div>
             </div>
             <div id="phrase-list-container" class="space-y-4">
                 <!-- Filled by renderPhraseList -->
@@ -1206,12 +1367,23 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Image URL (Optional)</label>
-                    <input type="url" id="word-picture" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="https://example.com/image.jpg">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Image (optional) — Upload or paste URL</label>
+                    <div class="space-y-2">
+                        <label class="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-semibold hover:bg-amber-200 cursor-pointer transition">
+                            📷 Upload image
+                            <input type="file" id="word-picture-file" accept="image/*" class="hidden" onchange="handleWordImageUpload(event)">
+                        </label>
+                        <span class="text-sm text-gray-500 mx-2">or</span>
+                        <input type="url" id="word-picture" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="Paste image URL">
+                        <div id="word-picture-preview" class="hidden mt-2">
+                            <img id="word-picture-preview-img" src="" alt="Preview" class="max-h-32 rounded-lg border border-amber-200 object-contain">
+                            <button type="button" onclick="clearWordImageUpload()" class="mt-1 text-sm text-red-600 hover:underline">Remove image</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Audio Pronunciation</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Audio Pronunciation (optional) — Record and replay before submitting</label>
                     <div class="border-2 border-dashed border-amber-300 rounded-lg p-6 text-center">
                         <div id="audio-controls" class="space-y-4">
                             <button 
@@ -1233,7 +1405,10 @@
                                     Stop
                                 </button>
                             </div>
-                            <audio id="audio-playback" controls class="hidden w-full mt-4"></audio>
+                            <div id="audio-playback-wrap" class="hidden">
+                                <p class="text-sm font-semibold text-amber-700 mb-2">▶ Replay — Listen before posting</p>
+                                <audio id="audio-playback" controls class="w-full mt-2"></audio>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1517,12 +1692,17 @@
             favorites: [],
             searchHistory: [],
             currentView: 'dictionary',
-            currentDialect: 'all',
             mediaRecorder: null,
             audioChunks: [],
             phraseMediaRecorder: null,
             phraseAudioChunks: [],
             recording: false,
+            wordUploadedImage: null,
+            editWordUploadedImage: null,
+            editWordAudioChunks: [],
+            editPendingWordAudioChunks: [],
+            editPhraseUploadedImage: null,
+            editPhraseAudioChunks: [],
             quizState: null,
             numbersQuizState: null,
             selectedPracticeWords: [],
@@ -2181,12 +2361,15 @@
                 renderMyContributions();
             } else if (viewName === 'phrases') {
                 const gate = document.getElementById('phrase-list-gate');
+                const addBtnWrap = document.getElementById('phrase-list-add-btn-wrap');
                 const formWrap = document.getElementById('phrase-list-form-wrapper');
                 if (isContributor()) {
                     if (gate) gate.classList.add('hidden');
-                    if (formWrap) formWrap.classList.remove('hidden');
+                    if (addBtnWrap) addBtnWrap.classList.remove('hidden');
+                    if (formWrap) formWrap.classList.add('hidden');
                 } else {
                     if (gate) { gate.classList.remove('hidden'); gate.style.display = 'block'; }
+                    if (addBtnWrap) addBtnWrap.classList.add('hidden');
                     if (formWrap) formWrap.classList.add('hidden');
                 }
                 renderPhraseList();
@@ -2240,12 +2423,15 @@
             if (section === 'phrasebook') renderPhrasebook();
             if (section === 'phrases') {
                 const gate = document.getElementById('learn-phrase-gate');
+                const addBtnWrap = document.getElementById('learn-phrase-add-btn-wrap');
                 const formWrap = document.getElementById('learn-phrase-form-wrapper');
                 if (isContributor()) {
                     if (gate) gate.classList.add('hidden');
-                    if (formWrap) formWrap.classList.remove('hidden');
+                    if (addBtnWrap) addBtnWrap.classList.remove('hidden');
+                    if (formWrap) formWrap.classList.add('hidden');
                 } else {
                     if (gate) { gate.classList.remove('hidden'); gate.style.display = 'block'; }
+                    if (addBtnWrap) addBtnWrap.classList.add('hidden');
                     if (formWrap) formWrap.classList.add('hidden');
                 }
                 filterPhrases(phraseFilter || 'all');
@@ -2429,10 +2615,10 @@
                     return;
                 }
                 
-                // Add to search history
+                // Add to search history (max 3 most recent)
                 if (!appState.searchHistory.includes(query)) {
                     appState.searchHistory.unshift(query);
-                    appState.searchHistory = appState.searchHistory.slice(0, 10);
+                    appState.searchHistory = appState.searchHistory.slice(0, 3);
                     saveData();
                     renderSearchHistory();
                 }
@@ -2450,22 +2636,39 @@
                 return;
             }
             
-            const matches = appState.words
+            const wordMatches = (appState.words || [])
                 .filter(w => w.verified && (
-                    w.english.toLowerCase().includes(query) || 
-                    w.dagbani.toLowerCase().includes(query)
+                    (w.english || '').toLowerCase().includes(query) || 
+                    (w.dagbani || '').toLowerCase().includes(query)
                 ))
-                .slice(0, 5);
+                .slice(0, 4);
+            const allPhrases = [...(typeof BUILTIN_PHRASES !== 'undefined' ? BUILTIN_PHRASES : []), ...(typeof SEED_PHRASES !== 'undefined' ? SEED_PHRASES : []), ...(appState.phrases || [])];
+            const phraseMatches = allPhrases
+                .filter(p => (p.english || '').toLowerCase().includes(query) || (p.dagbani || '').toLowerCase().includes(query))
+                .slice(0, 3);
+            const combined = [...wordMatches.map(w => ({ ...w, _type: 'word' })), ...phraseMatches.map(p => ({ ...p, _type: 'phrase' }))].slice(0, 6);
             
-            if (matches.length > 0) {
+            if (combined.length > 0) {
                 suggestions.setAttribute('role', 'listbox');
                 suggestions.setAttribute('aria-label', 'Search suggestions');
-                suggestions.innerHTML = matches.map(word => `
-                    <div role="option" class="p-3 hover:bg-amber-50 cursor-pointer border-b border-gray-100" onclick="selectSuggestion('${escapeHtml(word.dagbani)}')" aria-label="${escapeHtml(word.dagbani)}, ${escapeHtml(word.english)}">
-                        <div class="font-semibold text-amber-700">${escapeHtml(word.dagbani)}</div>
-                        <div class="text-sm text-gray-600">${escapeHtml(word.english)}</div>
-                    </div>
-                `).join('');
+                suggestions.innerHTML = combined.map(item => {
+                    const dag = item.dagbani || '';
+                    const eng = item.english || '';
+                    const safeDag = JSON.stringify(dag);
+                    if (item._type === 'word') {
+                        return `<div role="option" class="p-3 hover:bg-amber-50 cursor-pointer border-b border-gray-100" onclick="selectSuggestion(${safeDag})" aria-label="${escapeHtml(dag)}, ${escapeHtml(eng)}">
+                            <div class="font-semibold text-amber-700">${escapeHtml(dag)}</div>
+                            <div class="text-sm text-gray-600">${escapeHtml(eng)}</div>
+                        </div>`;
+                    }
+                    return `<div role="option" class="p-3 hover:bg-amber-50 cursor-pointer border-b border-gray-100" onclick="selectSuggestion(${safeDag})" aria-label="Phrase: ${escapeHtml(dag)}, ${escapeHtml(eng)}">
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-amber-700">${escapeHtml(dag)}</span>
+                            <span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Phrase</span>
+                        </div>
+                        <div class="text-sm text-gray-600">${escapeHtml(eng)}</div>
+                    </div>`;
+                }).join('');
                 suggestions.classList.remove('hidden');
             } else {
                 suggestions.classList.add('hidden');
@@ -2491,21 +2694,31 @@
                 return;
             }
             
-            let results = appState.words.filter(word => {
+            let wordResults = appState.words.filter(word => {
                 if (verifiedOnly && !word.verified) return false;
-                if (appState.currentDialect !== 'all' && word.dialect !== appState.currentDialect) return false;
                 if (hasAudio && !word.audio) return false;
                 if (category !== 'all' && word.category !== category) return false;
-                
                 const matchesEnglish = word.english.toLowerCase().includes(query);
                 const matchesDagbani = word.dagbani.toLowerCase().includes(query);
-                
                 if (direction === 'en-dag') return matchesEnglish;
                 if (direction === 'dag-en') return matchesDagbani;
                 return matchesEnglish || matchesDagbani;
-            });
-            
-            appState.searchResults = results;
+            }).map(w => ({ ...w, _type: 'word' }));
+
+            const allPhrases = [...(typeof BUILTIN_PHRASES !== 'undefined' ? BUILTIN_PHRASES : []), ...(typeof SEED_PHRASES !== 'undefined' ? SEED_PHRASES : []), ...(appState.phrases || [])];
+            const phrasesByKey = {};
+            allPhrases.forEach(p => { phrasesByKey[(p.dagbani || '').toLowerCase()] = p; });
+            const phraseResults = Object.values(phrasesByKey).filter(phrase => {
+                if (hasAudio && !phrase.audio) return false;
+                if (category !== 'all' && getCanonicalPhraseCategory(phrase.category || 'general') !== getCanonicalPhraseCategory(category)) return false;
+                const matchesEnglish = (phrase.english || '').toLowerCase().includes(query);
+                const matchesDagbani = (phrase.dagbani || '').toLowerCase().includes(query);
+                if (direction === 'en-dag') return matchesEnglish;
+                if (direction === 'dag-en') return matchesDagbani;
+                return matchesEnglish || matchesDagbani;
+            }).map(p => ({ ...p, _type: 'phrase', _id: p.id || ('phrase-' + (p.dagbani || '').toLowerCase()) }));
+
+            const results = [...wordResults, ...phraseResults];
             appState.pagination = appState.pagination || {};
             if (results.length !== (appState._prevSearchCount || 0)) appState.pagination.searchResults = 1;
             appState._prevSearchCount = results.length;
@@ -2525,7 +2738,10 @@
             
             noResults.classList.add('hidden');
             const { slice: resultsSlice, currentPage, totalPages, total } = paginate(results, (appState.pagination || {}).searchResults);
-            container.innerHTML = resultsSlice.map(word => {
+            container.innerHTML = resultsSlice.map(item => {
+                const isWord = item._type === 'word';
+                if (isWord) {
+                const word = item;
                 const isFavorite = appState.favorites.includes(word.id);
                 const cardLabel = `Word: ${escapeHtml(word.dagbani)} - ${escapeHtml(word.english)}`;
                 return `
@@ -2610,6 +2826,31 @@
                     </div>
                 </article>
             `;
+                } else {
+                const phrase = item;
+                const pid = phrase._id || phrase.id;
+                const getLabel = c => (typeof PHRASE_CATEGORY_LABELS !== 'undefined' ? PHRASE_CATEGORY_LABELS : {})[c || 'general'] || (c || 'general');
+                const categoryLabel = getLabel(phrase.category);
+                const cardLabel = `Phrase: ${escapeHtml(phrase.dagbani)} - ${escapeHtml(phrase.english)}`;
+                return `
+                <article class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 fade-in" aria-label="${cardLabel}" data-phrase-id="${escapeHtml(String(pid))}">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                <span class="text-xs font-semibold text-amber-600 bg-amber-100 px-2 py-0.5 rounded">Phrase</span>
+                                <h3 class="text-xl sm:text-2xl font-bold text-amber-700 break-words" lang="dag">${escapeHtml(phrase.dagbani)}</h3>
+                                ${isContributor() ? `<button onclick="openEditPhraseModal(${JSON.stringify(pid)})" class="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-amber-600 transition touch-manipulation" title="Suggest edit" aria-label="Suggest edit">✏️</button>` : ''}
+                            </div>
+                            <p class="text-lg sm:text-xl font-semibold text-gray-700 mb-2 break-words">${escapeHtml(phrase.english)}</p>
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">${escapeHtml(categoryLabel)}</span>
+                        </div>
+                        ${phrase.audio ? `<audio controls class="w-full sm:ml-4 sm:w-48 h-10 flex-shrink-0"><source src="${(phrase.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
+                    </div>
+                    ${phrase.picture ? `<div class="mt-3"><img src="${(phrase.picture||'').replace(/"/g,'&quot;')}" alt="${escapeHtml(phrase.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain"></div>` : ''}
+                    ${phrase.contributorAttribution ? `<p class="text-xs text-gray-500 mt-3">Contributor: ${escapeHtml(phrase.contributorAttribution)}</p>` : ''}
+                </article>
+            `;
+                }
             }).join('') + renderPaginationBar(total, currentPage, totalPages, 'searchResults');
             document.querySelectorAll('[id^="comments-list-"]').forEach(el => {
                 const wid = el.id.replace('comments-list-','');
@@ -2695,7 +2936,7 @@
             const historyContainer = document.getElementById('search-history');
             
             if (appState.searchHistory.length > 0 && document.getElementById('show-history').checked) {
-                historyContainer.innerHTML = appState.searchHistory.slice(0, 5).map(term => `
+                historyContainer.innerHTML = appState.searchHistory.slice(0, 3).map(term => `
                     <button onclick="searchFromHistory('${escapeHtml(term)}')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-amber-100 hover:text-amber-800 transition">
                         ${escapeHtml(term)}
                     </button>
@@ -2719,26 +2960,6 @@
                 option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
                 select.appendChild(option);
             });
-        }
-
-        // Dialect Filter
-        function filterDialect(dialect) {
-            appState.currentDialect = dialect;
-            
-            document.querySelectorAll('.dialect-filter').forEach(btn => {
-                if (btn.dataset.dialect === dialect) {
-                    btn.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-700');
-                    btn.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800', 'font-semibold');
-                } else {
-                    btn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800', 'font-semibold');
-                    btn.classList.add('bg-gray-100', 'border-gray-300', 'text-gray-700');
-                }
-            });
-            
-            const query = document.getElementById('search-input').value;
-            if (query) {
-                applyFilters();
-            }
         }
 
         // Favorites
@@ -3098,7 +3319,7 @@
             const category = document.getElementById('word-category').value;
             const grammar = document.getElementById('grammar-notes').value.trim();
             const example = document.getElementById('example-sentence').value.trim();
-            const picture = (document.getElementById('word-picture')?.value || '').trim() || null;
+            let picture = appState.wordUploadedImage || (document.getElementById('word-picture')?.value || '').trim() || null;
             const audioBlob = appState.audioChunks.length > 0 ? 
                 URL.createObjectURL(new Blob(appState.audioChunks, { type: 'audio/webm' })) : null;
             
@@ -3124,13 +3345,72 @@
             saveData();
             
             document.getElementById('word-form').reset();
-            document.getElementById('audio-playback').classList.add('hidden');
+            const playWrap = document.getElementById('audio-playback-wrap');
+            if (playWrap) playWrap.classList.add('hidden');
+            const ap = document.getElementById('audio-playback');
+            if (ap) { ap.src = ''; }
             document.getElementById('recording-status').classList.add('hidden');
             document.getElementById('record-btn').classList.remove('hidden');
             appState.audioChunks = [];
+            appState.wordUploadedImage = null;
+            clearWordImageUpload();
             
             showToast('Word submitted successfully! It will be reviewed by the community.');
             updatePendingCount();
+        }
+
+        function handleWordImageUpload(event) {
+            const file = event.target?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('Please select an image file (jpg, png, etc.)', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                appState.wordUploadedImage = reader.result;
+                const preview = document.getElementById('word-picture-preview');
+                const img = document.getElementById('word-picture-preview-img');
+                const urlInput = document.getElementById('word-picture');
+                if (preview) preview.classList.remove('hidden');
+                if (img) img.src = reader.result;
+                if (urlInput) urlInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+        function handlePhraseImageUpload(event, inputEl) {
+            const file = inputEl?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = () => {
+                const form = inputEl.closest('form');
+                appState.phraseUploadedImage = reader.result;
+                const preview = form?.querySelector('.phrase-picture-preview');
+                const img = form?.querySelector('.phrase-picture-preview-img');
+                if (preview) preview.classList.remove('hidden');
+                if (img) img.src = reader.result;
+                const urlIn = form?.querySelector('[name="phrase-picture-url"]');
+                if (urlIn) urlIn.value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+        function clearPhraseImage(btn) {
+            const form = btn.closest('form');
+            appState.phraseUploadedImage = null;
+            const preview = form?.querySelector('.phrase-picture-preview');
+            const img = form?.querySelector('.phrase-picture-preview-img');
+            const urlIn = form?.querySelector('[name="phrase-picture-url"]');
+            if (preview) preview.classList.add('hidden');
+            if (img) img.src = '';
+            if (urlIn) urlIn.value = '';
+        }
+        function clearWordImageUpload() {
+            appState.wordUploadedImage = null;
+            const preview = document.getElementById('word-picture-preview');
+            const img = document.getElementById('word-picture-preview-img');
+            const fileInput = document.getElementById('word-picture-file');
+            if (preview) preview.classList.add('hidden');
+            if (img) img.src = '';
+            if (fileInput) fileInput.value = '';
         }
 
         function switchContributeMode(mode) {
@@ -3211,6 +3491,7 @@
             const dagbani = (form.querySelector('[name="phrase-dagbani"]') || form.querySelector('#phrase-dagbani'))?.value?.trim() || '';
             const english = (form.querySelector('[name="phrase-english"]') || form.querySelector('#phrase-english'))?.value?.trim() || '';
             const category = (form.querySelector('[name="phrase-category"]') || form.querySelector('#phrase-category'))?.value || 'general';
+            const picture = appState.phraseUploadedImage || (form.querySelector('[name="phrase-picture-url"]') || form.querySelector('#phrase-picture-url'))?.value?.trim() || null;
             const chunks = appState.phraseAudioChunks || [];
             const doSubmit = (audio) => {
                 const phrase = {
@@ -3218,6 +3499,7 @@
                     dagbani,
                     english,
                     category: category || 'general',
+                    picture: picture || null,
                     audio: audio || null,
                     submittedBy: appState.currentUser?.username || 'Visitor',
                     contributorAttribution: appState.currentUser?.attributionName || null,
@@ -3227,15 +3509,22 @@
                 appState.phraseAudioChunks = [];
                 saveData();
                 form.reset();
-                const rec = form.querySelector('[id="phrase-recording-status"]');
-                const play = form.querySelector('[id="phrase-audio-playback"]');
-                const recBtn = form.querySelector('[id="phrase-record-btn"]');
+                appState.phraseUploadedImage = null;
+                const rec = form.querySelector('.phrase-recording-status');
+                const play = form.querySelector('.phrase-audio-playback');
+                const wrap = form.querySelector('.phrase-audio-preview-wrap');
+                const picPreview = form.querySelector('.phrase-picture-preview');
                 if (rec) rec.classList.add('hidden');
-                if (play) { play.classList.add('hidden'); play.src = ''; }
+                if (play) { play.src = ''; }
+                if (wrap) wrap.classList.add('hidden');
+                if (picPreview) picPreview.classList.add('hidden');
+                const recBtn = form.querySelector('.phrase-record-btn');
                 if (recBtn) recBtn.classList.remove('hidden');
                 showToast('Phrase submitted for review!');
                 updatePendingCount();
                 if (appState.currentView === 'mycontributions') renderMyContributions();
+                const ctx = (form.id === 'learn-phrase-form' || form.dataset?.form === 'learn') ? 'learn' : 'list';
+                toggleAddPhraseForm(ctx);
             };
             if (chunks.length > 0) {
                 const blob = new Blob(chunks, { type: 'audio/webm' });
@@ -3270,6 +3559,31 @@
         const PHRASE_CATEGORY_LABELS = { basics: 'Basics', common_signs: 'Common signs', problems: 'Problems', numbers: 'Numbers', time: 'Time', clock_time: 'Clock time', duration: 'Duration', days: 'Days', months: 'Months', writing_time_and_date: 'Writing time and date', colors: 'Colors', transportation: 'Transportation', bus_and_train: 'Bus and train', directions: 'Directions', taxi: 'Taxi', lodging: 'Lodging', money: 'Money', eating: 'Eating', bars: 'Bars', shopping: 'Shopping', driving: 'Driving', authority: 'Authority', general: 'Other', greetings: 'Basics', courtesy: 'Basics', travel: 'Transportation', food: 'Eating', family: 'Other', other: 'Other' };
 
         let phraseFilter = 'all';
+        let phraseSearchQuery = '';
+        function searchPhrases() {
+            const inp1 = document.getElementById('phrase-search-input');
+            const inp2 = document.getElementById('learn-phrase-search-input');
+            const v1 = inp1 ? inp1.value.trim() : '';
+            const v2 = inp2 ? inp2.value.trim() : '';
+            phraseSearchQuery = (v1 || v2).toLowerCase();
+            appState.pagination = appState.pagination || {};
+            appState.pagination.phraseList = 1;
+            renderPhraseList();
+        }
+        function toggleAddPhraseForm(context) {
+            const isList = context === 'list';
+            const addWrap = document.getElementById(isList ? 'phrase-list-add-btn-wrap' : 'learn-phrase-add-btn-wrap');
+            const formWrap = document.getElementById(isList ? 'phrase-list-form-wrapper' : 'learn-phrase-form-wrapper');
+            const isFormVisible = formWrap && !formWrap.classList.contains('hidden');
+            if (isFormVisible) {
+                if (formWrap) formWrap.classList.add('hidden');
+                if (addWrap) addWrap.classList.remove('hidden');
+            } else {
+                if (formWrap) formWrap.classList.remove('hidden');
+                if (addWrap) addWrap.classList.add('hidden');
+            }
+        }
+
         function filterPhrases(cat) {
             phraseFilter = cat || 'all';
             document.querySelectorAll('#phrase-filter-select, #learn-phrase-filter-select').forEach(sel => { if (sel) sel.value = phraseFilter; });
@@ -3334,9 +3648,14 @@
             if (phraseFilter !== 'all') {
                 phrases = phrases.filter(p => getCanonicalPhraseCategory(p.category || 'general') === phraseFilter);
             }
+            if (phraseSearchQuery) {
+                phrases = phrases.filter(p => (p.dagbani || '').toLowerCase().includes(phraseSearchQuery) || (p.english || '').toLowerCase().includes(phraseSearchQuery));
+            }
             phrases.sort((a, b) => (a.dagbani || '').localeCompare(b.dagbani || ''));
             if (phrases.length === 0) {
-                const msg = phraseFilter === 'all' ? 'No phrases yet. Use the form above to add phrases (contributors and admins).' : 'No phrases in this category yet. Try "All categories" or add one using the form above.';
+                let msg = 'No phrases yet. Contributors can add phrases using the Add a phrase button.';
+                if (phraseFilter !== 'all') msg = 'No phrases in this category yet. Try "All categories" or add one using the Add a phrase button.';
+                if (phraseSearchQuery) msg = `No phrases match "${phraseSearchQuery}". Try different search terms or clear the search.`;
                 const emptyHtml = `<p class="text-gray-500 text-center py-8">${msg}</p>`;
                 containers.forEach(c => { c.innerHTML = emptyHtml; });
                 return;
@@ -3344,17 +3663,19 @@
             const { slice, currentPage, totalPages, total } = paginate(phrases, (appState.pagination || {}).phraseList);
             const getLabel = c => PHRASE_CATEGORY_LABELS[getCanonicalPhraseCategory(c || 'general')] || 'Other';
             const listHtml = slice.map(p => {
-                const dagJson = JSON.stringify(p.dagbani || '');
+                const pid = p.id || ('phrase-' + (p.dagbani || '').toLowerCase());
                 const audioHtml = p.audio ? `<audio controls class="h-8 w-32 mt-1" preload="metadata"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : '';
-                const ttsHtml = `<button onclick="speakPhrase(${dagJson})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-200 text-amber-800 hover:bg-amber-300 transition text-sm font-medium" aria-label="Play pronunciation" title="Listen">🔊 Play</button>`;
+                const picHtml = p.picture ? `<img src="${(p.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-20 rounded border border-amber-200 object-contain mt-2" onerror="this.style.display='none'">` : '';
+                const editBtn = isContributor() ? `<button onclick="openEditPhraseModal(${JSON.stringify(pid)})" class="text-lg text-gray-400 hover:text-amber-600 transition" title="Suggest edit">✏️</button>` : '';
                 return `
                 <div class="p-4 border-l-4 border-amber-400 bg-amber-50 rounded-r-lg fade-in">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="text-xs font-semibold text-amber-700 bg-amber-200 px-2 py-0.5 rounded">${escapeHtml(getLabel(p.category))}</span>
-                        <div class="flex items-center gap-2">${audioHtml}${ttsHtml}</div>
+                        <div class="flex items-center gap-2">${audioHtml}${editBtn}</div>
                     </div>
                     <p class="font-bold text-amber-800 mt-1" lang="dag">${escapeHtml(p.dagbani)}</p>
                     <p class="text-gray-700">${escapeHtml(p.english)}</p>
+                    ${picHtml}
                     ${p.contributorAttribution ? `<p class="text-xs text-gray-500 mt-1">By ${escapeHtml(p.contributorAttribution)}</p>` : ''}
                 </div>
             `}).join('') + renderPaginationBar(total, currentPage, totalPages, 'phraseList');
@@ -3379,8 +3700,9 @@
                         const audioBlob = new Blob(appState.audioChunks, { type: 'audio/webm' });
                         const audioUrl = URL.createObjectURL(audioBlob);
                         const audioPlayback = document.getElementById('audio-playback');
-                        audioPlayback.src = audioUrl;
-                        audioPlayback.classList.remove('hidden');
+                        const wrap = document.getElementById('audio-playback-wrap');
+                        if (audioPlayback) { audioPlayback.src = audioUrl; audioPlayback.classList.remove('hidden'); }
+                        if (wrap) wrap.classList.remove('hidden');
                     }
                     stream.getTracks().forEach(track => track.stop());
                 };
@@ -3405,7 +3727,9 @@
             }
         }
 
-        async function startPhraseRecording() {
+        async function startPhraseRecording(btn) {
+            const form = btn?.closest('form');
+            if (!form) return;
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 appState.phraseMediaRecorder = new MediaRecorder(stream);
@@ -3414,23 +3738,33 @@
                 appState.phraseMediaRecorder.onstop = () => {
                     if (appState.phraseAudioChunks.length > 0) {
                         const blob = new Blob(appState.phraseAudioChunks, { type: 'audio/webm' });
-                        const play = document.getElementById('phrase-audio-playback');
-                        if (play) { play.src = URL.createObjectURL(blob); play.classList.remove('hidden'); }
+                        const url = URL.createObjectURL(blob);
+                        const wrap = form.querySelector('.phrase-audio-preview-wrap');
+                        const play = form.querySelector('.phrase-audio-playback');
+                        if (wrap) wrap.classList.remove('hidden');
+                        if (play) { play.src = url; }
                     }
                     stream.getTracks().forEach(t => t.stop());
                 };
                 appState.phraseMediaRecorder.start();
-                document.getElementById('phrase-record-btn').classList.add('hidden');
-                document.getElementById('phrase-recording-status').classList.remove('hidden');
+                const recBtn = form.querySelector('.phrase-record-btn');
+                const recStatus = form.querySelector('.phrase-recording-status');
+                if (recBtn) recBtn.classList.add('hidden');
+                if (recStatus) recStatus.classList.remove('hidden');
             } catch (err) {
                 showToast('Microphone access denied.', 'error');
             }
         }
-        function stopPhraseRecording() {
+        function stopPhraseRecording(btn) {
+            const form = btn?.closest('form');
             if (appState.phraseMediaRecorder && appState.phraseMediaRecorder.state === 'recording') {
                 appState.phraseMediaRecorder.stop();
-                document.getElementById('phrase-recording-status').classList.add('hidden');
-                document.getElementById('phrase-record-btn').classList.remove('hidden');
+                if (form) {
+                    const recStatus = form.querySelector('.phrase-recording-status');
+                    const recBtn = form.querySelector('.phrase-record-btn');
+                    if (recStatus) recStatus.classList.add('hidden');
+                    if (recBtn) recBtn.classList.remove('hidden');
+                }
             }
         }
 
@@ -3542,18 +3876,171 @@
                 return;
             }
             const { slice: itemsSlice, currentPage, totalPages, total } = paginate(items, (appState.pagination || {}).myContributions);
-            container.innerHTML = itemsSlice.map(item => `
+            container.innerHTML = itemsSlice.map(item => {
+                const pic = (item.picture || '').replace(/"/g, '&quot;');
+                const picHtml = item.picture ? `<img src="${pic}" alt="" class="w-16 h-16 object-cover rounded-lg border border-amber-200 mt-2" onerror="this.style.display='none'">` : '';
+                const audioHtml = item.audio ? `<div class="flex-1 min-w-[140px]"><p class="text-xs font-semibold text-amber-700 mb-1">▶ Replay</p><audio controls class="h-8 w-full"><source src="${(item.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio></div>` : '';
+                const editBtn = item.status === 'pending' ? `<button onclick="openEditPendingContribution(${JSON.stringify(item.id)}, ${JSON.stringify(item.kind)})" class="px-3 py-1.5 text-sm font-semibold bg-amber-200 text-amber-800 rounded-lg hover:bg-amber-300 transition">✏ Edit</button>` : '';
+                const grammarHtml = item.grammar ? `<p class="text-xs text-gray-600 mt-1"><strong>Grammar:</strong> ${escapeHtml(String(item.grammar).slice(0, 80))}${String(item.grammar).length > 80 ? '...' : ''}</p>` : '';
+                const exampleHtml = item.example ? `<p class="text-xs text-gray-600 mt-1"><strong>Example:</strong> ${escapeHtml(String(item.example).slice(0, 80))}${String(item.example).length > 80 ? '...' : ''}</p>` : '';
+                const viewBtn = item.status === 'approved' && item.kind === 'word' ? `<button onclick="viewWordDetails(${JSON.stringify(item.id)})" class="px-3 py-1.5 text-sm font-semibold bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition">View</button>` : '';
+                const suggestEditBtn = item.status === 'approved' && item.kind === 'word' && isContributor() ? `<button onclick="openEditWordModal(${JSON.stringify(item.id)})" class="px-3 py-1.5 text-sm font-semibold bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition">Suggest edit</button>` : '';
+                const viewPhraseBtn = item.status === 'approved' && item.kind === 'phrase' ? `<button onclick="viewPhraseDetails(${JSON.stringify(item.id)})" class="px-3 py-1.5 text-sm font-semibold bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition">View</button>` : '';
+                return `
                 <div class="p-4 rounded-xl border-2 ${item.status === 'pending' ? 'border-amber-200 bg-amber-50' : 'border-green-200 bg-green-50'} fade-in">
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex-1 min-w-0">
                             <p class="text-lg font-bold text-amber-700">${escapeHtml(item.dagbani)}</p>
                             <p class="text-base font-semibold text-gray-700">${escapeHtml(item.english)}</p>
+                            ${grammarHtml}
+                            ${exampleHtml}
                             <p class="text-xs text-gray-500 mt-1">${item.dateAdded ? new Date(item.dateAdded).toLocaleDateString(undefined, { dateStyle: 'medium' }) : ''}${item.kind === 'phrase' ? ' · Phrase' : ''}</p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                ${picHtml ? `<div>${picHtml}</div>` : ''}
+                                ${audioHtml}
+                            </div>
                         </div>
-                        <span class="flex-shrink-0 px-2 py-1 rounded-lg text-xs font-semibold ${item.status === 'pending' ? 'bg-amber-200 text-amber-800' : 'bg-green-200 text-green-800'}">${item.status === 'pending' ? 'Pending review' : 'Approved'}</span>
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="flex-shrink-0 px-2 py-1 rounded-lg text-xs font-semibold ${item.status === 'pending' ? 'bg-amber-200 text-amber-800' : 'bg-green-200 text-green-800'}">${item.status === 'pending' ? 'Pending review' : 'Approved'}</span>
+                            ${editBtn}
+                            ${viewBtn}
+                            ${suggestEditBtn}
+                            ${viewPhraseBtn}
+                        </div>
                     </div>
                 </div>
-            `).join('') + renderPaginationBar(total, currentPage, totalPages, 'myContributions');
+            `}).join('') + renderPaginationBar(total, currentPage, totalPages, 'myContributions');
+        }
+
+        function openEditPendingContribution(id, kind) {
+            const modal = document.getElementById('edit-pending-modal');
+            document.getElementById('edit-pending-id').value = id;
+            document.getElementById('edit-pending-kind').value = kind;
+            document.getElementById('edit-pending-word-fields').classList.add('hidden');
+            document.getElementById('edit-pending-phrase-fields').classList.add('hidden');
+            if (kind === 'word') {
+                const item = appState.pendingSubmissions.find(s => s.id == id);
+                if (!item) { showToast('Item not found', 'error'); return; }
+                document.getElementById('edit-pending-word-fields').classList.remove('hidden');
+                document.getElementById('edit-pending-dagbani').value = item.dagbani || '';
+                document.getElementById('edit-pending-english').value = item.english || '';
+                document.getElementById('edit-pending-grammar').value = item.grammar || '';
+                document.getElementById('edit-pending-example').value = item.example || '';
+                document.getElementById('edit-pending-picture').value = (typeof item.picture === 'string' && item.picture.startsWith('http')) ? item.picture : '';
+                appState.editPendingUploadedImage = (typeof item.picture === 'string' && item.picture.startsWith('data:')) ? item.picture : null;
+                const preview = document.getElementById('edit-pending-picture-preview');
+                const img = document.getElementById('edit-pending-preview-img');
+                if (item.picture) {
+                    img.src = item.picture;
+                    preview.classList.remove('hidden');
+                } else preview.classList.add('hidden');
+                const aud = document.getElementById('edit-pending-audio');
+                aud.src = item.audio || '';
+            } else {
+                const item = appState.pendingPhrases.find(p => p.id == id);
+                if (!item) { showToast('Item not found', 'error'); return; }
+                document.getElementById('edit-pending-phrase-fields').classList.remove('hidden');
+                document.getElementById('edit-pending-phrase-dagbani').value = item.dagbani || '';
+                document.getElementById('edit-pending-phrase-english').value = item.english || '';
+                const picUrl = (typeof item.picture === 'string' && item.picture.startsWith('http')) ? item.picture : '';
+                document.getElementById('edit-pending-phrase-picture').value = picUrl;
+                appState.editPendingPhraseImage = (typeof item.picture === 'string' && item.picture.startsWith('data:')) ? item.picture : null;
+                const picPrev = document.getElementById('edit-pending-phrase-picture-preview');
+                const picImg = document.getElementById('edit-pending-phrase-preview-img');
+                if (item.picture) { picImg.src = item.picture; picPrev.classList.remove('hidden'); } else picPrev.classList.add('hidden');
+                const catSel = document.getElementById('edit-pending-phrase-category');
+                if (catSel && typeof PHRASE_CATEGORY_LABELS !== 'undefined') {
+                    const mainCats = ['basics','common_signs','problems','numbers','time','clock_time','duration','days','months','colors','transportation','bus_and_train','directions','taxi','lodging','money','eating','bars','shopping','driving','authority','general'];
+                    catSel.innerHTML = mainCats.map(k => `<option value="${k}" ${(item.category||'general')===k?'selected':''}>${PHRASE_CATEGORY_LABELS[k] || k}</option>`).join('');
+                }
+                document.getElementById('edit-pending-phrase-audio').src = item.audio || '';
+            }
+            appState.editPendingWordAudioChunks = [];
+            const recBtn = document.getElementById('edit-pending-record-btn');
+            const recStatus = document.getElementById('edit-pending-recording-status');
+            if (recBtn) recBtn.classList.remove('hidden');
+            if (recStatus) recStatus.classList.add('hidden');
+            modal.classList.remove('hidden');
+        }
+        function closeEditPendingModal() { document.getElementById('edit-pending-modal').classList.add('hidden'); appState.editPendingUploadedImage = null; appState.editPendingPhraseImage = null; appState.editPendingWordAudioChunks = []; }
+        function handleEditPendingImageUpload(event) {
+            const file = event.target?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const r = new FileReader();
+            r.onload = () => { appState.editPendingUploadedImage = r.result; document.getElementById('edit-pending-preview-img').src = r.result; document.getElementById('edit-pending-picture-preview').classList.remove('hidden'); };
+            r.readAsDataURL(file);
+        }
+        function handleEditPendingPhraseImage(event) {
+            const file = event.target?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const r = new FileReader();
+            r.onload = () => { appState.editPendingPhraseImage = r.result; document.getElementById('edit-pending-phrase-preview-img').src = r.result; document.getElementById('edit-pending-phrase-picture-preview').classList.remove('hidden'); };
+            r.readAsDataURL(file);
+        }
+        function clearEditPendingImage() { appState.editPendingUploadedImage = null; document.getElementById('edit-pending-picture').value = ''; document.getElementById('edit-pending-picture-preview').classList.add('hidden'); document.getElementById('edit-pending-picture-file').value = ''; }
+        function clearEditPendingPhraseImage() { appState.editPendingPhraseImage = null; document.getElementById('edit-pending-phrase-picture').value = ''; document.getElementById('edit-pending-phrase-picture-preview').classList.add('hidden'); const f = document.getElementById('edit-pending-phrase-picture-file'); if (f) f.value = ''; }
+        async function startEditPendingWordRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                appState.editPendingWordMediaRecorder = new MediaRecorder(stream);
+                appState.editPendingWordAudioChunks = [];
+                appState.editPendingWordMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) appState.editPendingWordAudioChunks.push(e.data); };
+                appState.editPendingWordMediaRecorder.onstop = () => {
+                    if (appState.editPendingWordAudioChunks.length > 0) {
+                        const blob = new Blob(appState.editPendingWordAudioChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(blob);
+                        document.getElementById('edit-pending-audio').src = url;
+                    }
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                appState.editPendingWordMediaRecorder.start();
+                document.getElementById('edit-pending-record-btn').classList.add('hidden');
+                document.getElementById('edit-pending-recording-status').classList.remove('hidden');
+            } catch (err) { showToast('Microphone access denied.', 'error'); }
+        }
+        function stopEditPendingWordRecording() {
+            if (appState.editPendingWordMediaRecorder && appState.editPendingWordMediaRecorder.state === 'recording') {
+                appState.editPendingWordMediaRecorder.stop();
+                document.getElementById('edit-pending-record-btn').classList.remove('hidden');
+                document.getElementById('edit-pending-recording-status').classList.add('hidden');
+            }
+        }
+        function saveEditPendingContribution() {
+            const id = document.getElementById('edit-pending-id').value;
+            const kind = document.getElementById('edit-pending-kind').value;
+            if (kind === 'word') {
+                const item = appState.pendingSubmissions.find(s => s.id == id);
+                if (!item) { closeEditPendingModal(); return; }
+                item.dagbani = document.getElementById('edit-pending-dagbani').value.trim();
+                item.english = document.getElementById('edit-pending-english').value.trim();
+                item.grammar = document.getElementById('edit-pending-grammar').value.trim() || null;
+                item.example = document.getElementById('edit-pending-example').value.trim() || null;
+                item.picture = appState.editPendingUploadedImage || (document.getElementById('edit-pending-picture').value.trim() || null) || item.picture;
+                if (appState.editPendingWordAudioChunks && appState.editPendingWordAudioChunks.length > 0) {
+                    const blob = new Blob(appState.editPendingWordAudioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        item.audio = reader.result;
+                        saveData();
+                        closeEditPendingModal();
+                        renderMyContributions();
+                        showToast('Changes saved.');
+                    };
+                    reader.readAsDataURL(blob);
+                    return;
+                }
+            } else {
+                const item = appState.pendingPhrases.find(p => p.id == id);
+                if (!item) { closeEditPendingModal(); return; }
+                item.dagbani = document.getElementById('edit-pending-phrase-dagbani').value.trim();
+                item.english = document.getElementById('edit-pending-phrase-english').value.trim();
+                item.category = document.getElementById('edit-pending-phrase-category').value || 'general';
+                item.picture = appState.editPendingPhraseImage || (document.getElementById('edit-pending-phrase-picture').value.trim() || null);
+            }
+            saveData();
+            closeEditPendingModal();
+            renderMyContributions();
+            showToast('Changes saved.');
         }
 
         function exportPendingForAdmin() {
@@ -3735,6 +4222,7 @@
                 <div class="bg-gray-50 rounded-xl p-6 border-2 border-gray-200 fade-in">
                     <h3 class="text-xl font-bold text-amber-700 mb-2" lang="dag">${escapeHtml(p.dagbani)}</h3>
                     <p class="text-lg text-gray-700 mb-2">${escapeHtml(p.english)}</p>
+                    ${p.picture ? `<img src="${(p.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display='none'">` : ''}
                     ${p.audio ? `<audio controls class="mt-2 w-full h-10"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
                     <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${escapeHtml(PHRASE_CATEGORY_LABELS[getCanonicalPhraseCategory(p.category || 'general')] || 'Other')}</span>
                     <p class="text-xs text-gray-500 mt-2">Submitted by: ${escapeHtml(p.submittedBy)}</p>
@@ -3749,7 +4237,17 @@
         function approvePhraseSubmission(id) {
             const p = appState.pendingPhrases.find(x => x.id === id);
             if (!p) return;
-            appState.phrases.push({ ...p });
+            if (p.editOf) {
+                const editId = p.editOf;
+                const idx = appState.phrases.findIndex(x => String(x.id) === String(editId));
+                if (idx >= 0) {
+                    appState.phrases[idx] = { ...appState.phrases[idx], dagbani: p.dagbani, english: p.english, category: p.category || 'general', picture: p.picture || appState.phrases[idx].picture, audio: p.audio !== undefined ? p.audio : appState.phrases[idx].audio };
+                } else {
+                    appState.phrases.push({ id: Date.now(), ...p, editOf: undefined });
+                }
+            } else {
+                appState.phrases.push({ id: p.id || Date.now(), ...p });
+            }
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
             appState.communityFeed.unshift({
                 id: Date.now(),
@@ -3765,7 +4263,7 @@
             updatePendingCount();
             if (appState.currentView === 'phrases') renderPhraseList();
             if (appState.currentView === 'community') renderCommunityFeed();
-            showToast('Phrase approved and added to phrase list!');
+            showToast(p.editOf ? 'Phrase edit approved!' : 'Phrase approved and added to phrase list!');
         }
 
         function rejectPhraseSubmission(id) {
@@ -3841,14 +4339,78 @@
         function openEditWordModal(wordId) {
             const word = appState.words.find(w => w.id === wordId);
             if (!word) return;
+            appState.editWordUploadedImage = null;
+            appState.editWordAudioChunks = [];
             document.getElementById('edit-word-id').value = wordId;
             document.getElementById('edit-dagbani').value = word.dagbani || '';
             document.getElementById('edit-english').value = word.english || '';
             document.getElementById('edit-grammar').value = word.grammar || '';
             document.getElementById('edit-example').value = word.example || '';
+            const picUrl = (typeof word.picture === 'string' && word.picture.startsWith('http')) ? word.picture : '';
+            document.getElementById('edit-word-picture').value = picUrl;
+            if (typeof word.picture === 'string' && word.picture.startsWith('data:')) {
+                appState.editWordUploadedImage = word.picture;
+            }
+            const picPrev = document.getElementById('edit-word-picture-preview');
+            const picImg = document.getElementById('edit-word-preview-img');
+            if (word.picture) { picImg.src = word.picture; picPrev.classList.remove('hidden'); } else { picPrev.classList.add('hidden'); }
+            const audEl = document.getElementById('edit-word-audio');
+            const audWrap = document.getElementById('edit-word-audio-wrap');
+            if (word.audio) { audEl.src = word.audio; audWrap.classList.remove('hidden'); } else { audEl.src = ''; audWrap.classList.add('hidden'); }
+            document.getElementById('edit-word-record-btn').classList.remove('hidden');
+            document.getElementById('edit-word-recording-status').classList.add('hidden');
             document.getElementById('edit-word-modal').classList.remove('hidden');
         }
-        function closeEditWordModal() { document.getElementById('edit-word-modal').classList.add('hidden'); }
+        function closeEditWordModal() {
+            document.getElementById('edit-word-modal').classList.add('hidden');
+            appState.editWordUploadedImage = null;
+            appState.editWordAudioChunks = [];
+        }
+        function handleEditWordImageUpload(event) {
+            const file = event.target?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const r = new FileReader();
+            r.onload = () => {
+                appState.editWordUploadedImage = r.result;
+                document.getElementById('edit-word-preview-img').src = r.result;
+                document.getElementById('edit-word-picture-preview').classList.remove('hidden');
+                document.getElementById('edit-word-picture').value = '';
+            };
+            r.readAsDataURL(file);
+        }
+        function clearEditWordImage() {
+            appState.editWordUploadedImage = null;
+            document.getElementById('edit-word-picture').value = '';
+            document.getElementById('edit-word-picture-preview').classList.add('hidden');
+            document.getElementById('edit-word-picture-file').value = '';
+        }
+        async function startEditWordRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                appState.editWordMediaRecorder = new MediaRecorder(stream);
+                appState.editWordAudioChunks = [];
+                appState.editWordMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) appState.editWordAudioChunks.push(e.data); };
+                appState.editWordMediaRecorder.onstop = () => {
+                    if (appState.editWordAudioChunks.length > 0) {
+                        const blob = new Blob(appState.editWordAudioChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(blob);
+                        document.getElementById('edit-word-audio').src = url;
+                        document.getElementById('edit-word-audio-wrap').classList.remove('hidden');
+                    }
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                appState.editWordMediaRecorder.start();
+                document.getElementById('edit-word-record-btn').classList.add('hidden');
+                document.getElementById('edit-word-recording-status').classList.remove('hidden');
+            } catch (err) { showToast('Microphone access denied.', 'error'); }
+        }
+        function stopEditWordRecording() {
+            if (appState.editWordMediaRecorder && appState.editWordMediaRecorder.state === 'recording') {
+                appState.editWordMediaRecorder.stop();
+                document.getElementById('edit-word-record-btn').classList.remove('hidden');
+                document.getElementById('edit-word-recording-status').classList.add('hidden');
+            }
+        }
         function submitEditWord() {
             const wordId = document.getElementById('edit-word-id').value;
             const word = appState.words.find(w => String(w.id) === String(wordId));
@@ -3856,26 +4418,161 @@
             const dagbani = document.getElementById('edit-dagbani').value.trim();
             const english = document.getElementById('edit-english').value.trim();
             if (!dagbani || !english) { showToast('Dagbani and English are required.', 'error'); return; }
-            const submission = {
-                id: 'edit-' + Date.now(),
-                editOf: wordId,
-                dagbani, english,
-                dialect: word.dialect,
-                category: word.category,
-                grammar: (document.getElementById('edit-grammar').value || '').trim() || null,
-                example: (document.getElementById('edit-example').value || '').trim() || null,
-                picture: word.picture, audio: word.audio,
-                verified: false, allowComments: word.allowComments !== false,
-                submittedBy: appState.currentUser?.username || 'Visitor',
-                contributorAttribution: appState.currentUser?.attributionName || null,
-                dateAdded: new Date().toISOString()
+            const picture = appState.editWordUploadedImage || (document.getElementById('edit-word-picture').value.trim() || null) || word.picture;
+            const chunks = appState.editWordAudioChunks || [];
+            const doSubmit = (audio) => {
+                const submission = {
+                    id: 'edit-' + Date.now(),
+                    editOf: wordId,
+                    dagbani, english,
+                    dialect: word.dialect,
+                    category: word.category,
+                    grammar: (document.getElementById('edit-grammar').value || '').trim() || null,
+                    example: (document.getElementById('edit-example').value || '').trim() || null,
+                    picture,
+                    audio: audio !== undefined ? audio : word.audio,
+                    verified: false, allowComments: word.allowComments !== false,
+                    submittedBy: appState.currentUser?.username || 'Visitor',
+                    contributorAttribution: appState.currentUser?.attributionName || null,
+                    dateAdded: new Date().toISOString()
+                };
+                appState.pendingSubmissions.push(submission);
+                saveData();
+                closeEditWordModal();
+                updatePendingCount();
+                showToast('Edit submitted for review.');
+                applyFilters();
             };
-            appState.pendingSubmissions.push(submission);
-            saveData();
-            closeEditWordModal();
-            updatePendingCount();
-            showToast('Edit submitted for review.');
-            applyFilters();
+            if (chunks.length > 0) {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onload = () => { doSubmit(reader.result); };
+                reader.readAsDataURL(blob);
+            } else {
+                doSubmit(word.audio);
+            }
+        }
+
+        function findPhraseByIdOrKey(phraseId) {
+            if (typeof phraseId === 'number' || /^\d+$/.test(String(phraseId)))
+                return (appState.phrases || []).find(p => String(p.id) === String(phraseId));
+            const key = String(phraseId).replace(/^phrase-/, '').toLowerCase();
+            const all = [...(typeof BUILTIN_PHRASES !== 'undefined' ? BUILTIN_PHRASES : []), ...(typeof SEED_PHRASES !== 'undefined' ? SEED_PHRASES : []), ...(appState.phrases || [])];
+            return all.find(p => (p.dagbani || '').toLowerCase() === key) || appState.phrases?.find(p => String(p.id) === String(phraseId));
+        }
+        function openEditPhraseModal(phraseId) {
+            const phrase = findPhraseByIdOrKey(phraseId);
+            if (!phrase) { showToast('Phrase not found', 'error'); return; }
+            appState.editPhraseUploadedImage = null;
+            appState.editPhraseAudioChunks = [];
+            document.getElementById('edit-phrase-id').value = phraseId;
+            document.getElementById('edit-phrase-dagbani').value = phrase.dagbani || '';
+            document.getElementById('edit-phrase-english').value = phrase.english || '';
+            const catSel = document.getElementById('edit-phrase-category');
+            const mainCats = ['basics','common_signs','problems','numbers','time','clock_time','duration','days','months','colors','transportation','bus_and_train','directions','taxi','lodging','money','eating','bars','shopping','driving','authority','general'];
+            if (catSel && typeof PHRASE_CATEGORY_LABELS !== 'undefined')
+                catSel.innerHTML = mainCats.map(k => `<option value="${k}" ${(phrase.category||'general')===k?'selected':''}>${PHRASE_CATEGORY_LABELS[k] || k}</option>`).join('');
+            const picUrl = (typeof phrase.picture === 'string' && phrase.picture.startsWith('http')) ? phrase.picture : '';
+            document.getElementById('edit-phrase-picture').value = picUrl;
+            if (typeof phrase.picture === 'string' && phrase.picture.startsWith('data:'))
+                appState.editPhraseUploadedImage = phrase.picture;
+            const picPrev = document.getElementById('edit-phrase-picture-preview');
+            const picImg = document.getElementById('edit-phrase-preview-img');
+            if (phrase.picture) { picImg.src = phrase.picture; picPrev.classList.remove('hidden'); } else { picPrev.classList.add('hidden'); }
+            const audEl = document.getElementById('edit-phrase-audio');
+            const audWrap = document.getElementById('edit-phrase-audio-wrap');
+            if (phrase.audio) { audEl.src = phrase.audio; audWrap.classList.remove('hidden'); } else { audEl.src = ''; audWrap.classList.add('hidden'); }
+            document.getElementById('edit-phrase-record-btn').classList.remove('hidden');
+            document.getElementById('edit-phrase-recording-status').classList.add('hidden');
+            document.getElementById('edit-phrase-modal').classList.remove('hidden');
+        }
+        function closeEditPhraseModal() {
+            document.getElementById('edit-phrase-modal').classList.add('hidden');
+            appState.editPhraseUploadedImage = null;
+            appState.editPhraseAudioChunks = [];
+        }
+        function handleEditPhraseImageUpload(event) {
+            const file = event.target?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const r = new FileReader();
+            r.onload = () => {
+                appState.editPhraseUploadedImage = r.result;
+                document.getElementById('edit-phrase-preview-img').src = r.result;
+                document.getElementById('edit-phrase-picture-preview').classList.remove('hidden');
+                document.getElementById('edit-phrase-picture').value = '';
+            };
+            r.readAsDataURL(file);
+        }
+        function clearEditPhraseImage() {
+            appState.editPhraseUploadedImage = null;
+            document.getElementById('edit-phrase-picture').value = '';
+            document.getElementById('edit-phrase-picture-preview').classList.add('hidden');
+            document.getElementById('edit-phrase-picture-file').value = '';
+        }
+        async function startEditPhraseRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                appState.editPhraseMediaRecorder = new MediaRecorder(stream);
+                appState.editPhraseAudioChunks = [];
+                appState.editPhraseMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) appState.editPhraseAudioChunks.push(e.data); };
+                appState.editPhraseMediaRecorder.onstop = () => {
+                    if (appState.editPhraseAudioChunks.length > 0) {
+                        const blob = new Blob(appState.editPhraseAudioChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(blob);
+                        document.getElementById('edit-phrase-audio').src = url;
+                        document.getElementById('edit-phrase-audio-wrap').classList.remove('hidden');
+                    }
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                appState.editPhraseMediaRecorder.start();
+                document.getElementById('edit-phrase-record-btn').classList.add('hidden');
+                document.getElementById('edit-phrase-recording-status').classList.remove('hidden');
+            } catch (err) { showToast('Microphone access denied.', 'error'); }
+        }
+        function stopEditPhraseRecording() {
+            if (appState.editPhraseMediaRecorder && appState.editPhraseMediaRecorder.state === 'recording') {
+                appState.editPhraseMediaRecorder.stop();
+                document.getElementById('edit-phrase-record-btn').classList.remove('hidden');
+                document.getElementById('edit-phrase-recording-status').classList.add('hidden');
+            }
+        }
+        function submitEditPhrase() {
+            const phraseId = document.getElementById('edit-phrase-id').value;
+            const phrase = findPhraseByIdOrKey(phraseId);
+            if (!phrase) { closeEditPhraseModal(); return; }
+            const dagbani = document.getElementById('edit-phrase-dagbani').value.trim();
+            const english = document.getElementById('edit-phrase-english').value.trim();
+            if (!dagbani || !english) { showToast('Dagbani and English are required.', 'error'); return; }
+            const picture = appState.editPhraseUploadedImage || (document.getElementById('edit-phrase-picture').value.trim() || null) || phrase.picture;
+            const category = document.getElementById('edit-phrase-category').value || phrase.category || 'general';
+            const chunks = appState.editPhraseAudioChunks || [];
+            const doSubmit = (audio) => {
+                const submission = {
+                    id: 'edit-p-' + Date.now(),
+                    editOf: phraseId,
+                    dagbani, english, category,
+                    picture,
+                    audio: audio !== undefined ? audio : phrase.audio,
+                    submittedBy: appState.currentUser?.username || 'Visitor',
+                    contributorAttribution: appState.currentUser?.attributionName || null,
+                    dateAdded: new Date().toISOString()
+                };
+                appState.pendingPhrases.push(submission);
+                saveData();
+                closeEditPhraseModal();
+                updatePendingCount();
+                showToast('Phrase edit submitted for review.');
+                applyFilters();
+                renderPhraseList();
+            };
+            if (chunks.length > 0) {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onload = () => { doSubmit(reader.result); };
+                reader.readAsDataURL(blob);
+            } else {
+                doSubmit(phrase.audio);
+            }
         }
 
         function openReportErrorModal(wordId) {
@@ -4340,6 +5037,7 @@
                                             <th class="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Comment</th>
                                             <th class="py-4 px-3 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Image</th>
                                             <th class="py-4 px-3 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Voice</th>
+                                            ${isContributor() ? '<th class="py-4 px-3 text-xs font-semibold uppercase tracking-wider text-amber-700/70">Edit</th>' : ''}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -4356,6 +5054,7 @@
                                             const audioCell = word.audio 
                                                 ? `<audio preload="none" controls class="h-8 w-24" onclick="event.stopPropagation()"><source src="${audioUrl}" type="audio/webm"></audio>`
                                                 : '';
+                                            const editCell = isContributor() ? `<td class="py-3.5 px-3 align-middle" onclick="event.stopPropagation()"><button onclick="openEditWordModal(${wid})" class="px-2 py-1 text-sm font-semibold bg-amber-100 text-amber-800 rounded hover:bg-amber-200" title="Suggest edit">✏️</button></td>` : '';
                                             return `
                                         <tr class="hover:bg-amber-50/60 transition-colors cursor-pointer group" onclick="viewWordDetails(${wid})">
                                             <td class="py-3.5 px-5 align-top font-medium text-gray-900 group-hover:text-amber-700">${escapeHtml(word.dagbani || '')}</td>
@@ -4366,6 +5065,7 @@
                                             <td class="py-3.5 px-5 align-top text-gray-500 text-xs leading-relaxed">${comment}</td>
                                             <td class="py-3.5 px-3 align-middle">${imgCell}</td>
                                             <td class="py-3.5 px-3 align-middle">${audioCell}</td>
+                                            ${editCell}
                                         </tr>
                                     `;
                                     }).join('')}
@@ -4393,9 +5093,12 @@
                                             <h4 class="text-xl font-bold text-amber-700">${escapeHtml(word.dagbani)}</h4>
                                             <p class="text-lg font-semibold text-gray-700 mt-1">${escapeHtml(word.english)}</p>
                                         </div>
-                                        <button onclick="event.stopPropagation(); toggleFavorite(${wid})" class="text-xl ${isFavorite ? 'text-red-500' : 'text-gray-300'} hover:text-red-500 transition ml-2">
-                                            ${isFavorite ? '❤️' : '🤍'}
-                                        </button>
+                                        <div class="flex items-center gap-1 ml-2">
+                                            ${isContributor() ? `<button onclick="event.stopPropagation(); openEditWordModal(${wid})" class="text-xl text-gray-400 hover:text-amber-600 transition" title="Suggest edit">✏️</button>` : ''}
+                                            <button onclick="event.stopPropagation(); toggleFavorite(${wid})" class="text-xl ${isFavorite ? 'text-red-500' : 'text-gray-300'} hover:text-red-500 transition">
+                                                ${isFavorite ? '❤️' : '🤍'}
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="flex flex-wrap gap-2 mb-2">
                                         <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded text-xs font-semibold">
@@ -4537,6 +5240,23 @@
                 }, 100);
             }
         }
+
+        function viewPhraseDetails(phraseId) {
+            const phrase = (appState.phrases || []).find(p => p.id == phraseId) || (appState.pendingPhrases || []).find(p => p.id == phraseId);
+            if (!phrase) return;
+            document.getElementById('phrase-view-dagbani').textContent = phrase.dagbani || '';
+            document.getElementById('phrase-view-english').textContent = phrase.english || '';
+            const catLabel = (typeof PHRASE_CATEGORY_LABELS !== 'undefined' && phrase.category) ? PHRASE_CATEGORY_LABELS[phrase.category] : phrase.category || '';
+            document.getElementById('phrase-view-category').textContent = catLabel ? `Category: ${catLabel}` : '';
+            const imgWrap = document.getElementById('phrase-view-image');
+            const imgEl = document.getElementById('phrase-view-img');
+            if (phrase.picture) { imgEl.src = phrase.picture; imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
+            const audWrap = document.getElementById('phrase-view-audio-wrap');
+            const audEl = document.getElementById('phrase-view-audio');
+            if (phrase.audio) { audEl.src = phrase.audio; audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
+            document.getElementById('phrase-view-modal').classList.remove('hidden');
+        }
+        function closePhraseViewModal() { document.getElementById('phrase-view-modal').classList.add('hidden'); }
 
         // Utility Functions
         function escapeHtml(text) {
