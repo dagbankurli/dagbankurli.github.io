@@ -6464,7 +6464,7 @@
         }
 
         function viewWordDetails(wordId) {
-            const word = appState.words.find(w => w.id === wordId);
+            const word = appState.words.find(w => String(w.id) === String(wordId));
             if (!word) return;
             // If already on dictionary view with search results, open modal directly
             if (appState.currentView === 'dictionary' && document.getElementById('search-results')?.children?.length) {
@@ -6482,7 +6482,7 @@
         }
 
         function openWordDetailModal(wordId) {
-            const word = appState.words.find(w => w.id === wordId);
+            const word = appState.words.find(w => String(w.id) === String(wordId));
             if (!word) return;
             appState.currentViewedWordId = wordId;
             document.getElementById('word-view-dagbani').textContent = word.dagbani || '';
