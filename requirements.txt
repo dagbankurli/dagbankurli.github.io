@@ -1,2 +1,0 @@
-# For PDF dictionary extraction (extract_dagbani_dictionary.py)
-pymupdf>=1.23.0
