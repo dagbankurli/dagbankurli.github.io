@@ -3,7 +3,6 @@
  * Convert CSV templates to JSON for Import Data.
  * Usage: node csv_to_json.js [mode]
  *        node csv_to_json.js          -> all (words, phrases, idioms from CSVs)
- *        node csv_to_json.js seed     -> create dictionary_import.json from dictionary_data.json
  *        node csv_to_json.js words    -> words only from CSV
  *        node csv_to_json.js phrases  -> phrases only from CSV
  *        node csv_to_json.js idioms   -> idioms only from CSV
@@ -13,27 +12,6 @@ const fs = require('fs');
 const mode = process.argv[2] || 'all';
 const output = (mode === 'words' || mode === 'phrases' || mode === 'idioms')
   ? `dictionary_import_${mode}.json` : 'dictionary_import.json';
-
-// seed: create dictionary_import.json from dictionary_data.json (app's main data source)
-if (mode === 'seed') {
-  try {
-    const data = JSON.parse(fs.readFileSync('dictionary_data.json', 'utf8'));
-    const result = {
-      words: Array.isArray(data.words) ? data.words : [],
-      phrases: Array.isArray(data.phrases) ? data.phrases : [],
-      idioms: Array.isArray(data.idioms) ? data.idioms : []
-    };
-    fs.writeFileSync('dictionary_import.json', JSON.stringify(result, null, 2));
-    console.log('Wrote to dictionary_import.json from dictionary_data.json:');
-    if (result.words.length) console.log('  - ' + result.words.length + ' words');
-    if (result.phrases.length) console.log('  - ' + result.phrases.length + ' phrases');
-    if (result.idioms.length) console.log('  - ' + result.idioms.length + ' idioms');
-    process.exit(0);
-  } catch (e) {
-    console.error('Seed failed:', e.message);
-    process.exit(1);
-  }
-}
 
 function parseCSV(csv) {
   const lines = csv.trim().split(/\r?\n/);

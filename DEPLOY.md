@@ -61,7 +61,7 @@ Replace `YOUR_USERNAME` and `dagban-kurli` with your actual GitHub username and 
 Make sure these are included (they should be by default):
 
 - `index.html` – main app
-- `dictionary_data.json` – dictionary content (auto-loads on first visit)
+- `dictionary_import.json` – dictionary content (auto-loads on first visit)
 - `images/` folder – king photos, boy/girl images, etc.
 
 ## Updating the live site

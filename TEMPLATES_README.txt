@@ -36,9 +36,6 @@ node csv_to_json.js
     node csv_to_json.js phrases
     node csv_to_json.js idioms
 
-  To create dictionary_import.json from existing dictionary_data.json (keeps your current data):
-    node csv_to_json.js seed
-
   Output: dictionary_import.json (or dictionary_import_words.json etc. for single-type)
 
 UPLOAD: Profile -> Preferences & Data -> Import Data (Restore) -> select dictionary_import.json
