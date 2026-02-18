@@ -3301,7 +3301,7 @@
                 const isWord = item._type === 'word';
                 if (isWord) {
                 const word = item;
-                const isFavorite = appState.favorites.includes(word.id);
+                const isFavorite = appState.favorites.some(f => String(f) === String(word.id));
                 const cardLabel = `Word: ${escapeHtml(word.dagbani)} - ${escapeHtml(word.english)}`;
                 const isSelected = appState.currentViewedWordId === word.id;
                 const wid = String(word.id);
@@ -3745,7 +3745,7 @@
 
         // Favorites
         function toggleFavorite(wordId) {
-            const index = appState.favorites.indexOf(wordId);
+            const index = appState.favorites.findIndex(f => String(f) === String(wordId));
             if (index > -1) {
                 appState.favorites.splice(index, 1);
                 showToast('Removed from favorites');
@@ -3764,7 +3764,7 @@
 
         function renderFavorites() {
             const container = document.getElementById('favorites-list');
-            const favoriteWords = appState.words.filter(w => appState.favorites.includes(w.id) && w.verified);
+            const favoriteWords = appState.words.filter(w => appState.favorites.some(f => String(f) === String(w.id)) && w.verified);
             
             if (favoriteWords.length === 0) {
                 container.innerHTML = '<p class="text-gray-500 text-center py-8">No favorites yet. Start adding words to your favorites!</p>';
@@ -3791,7 +3791,14 @@
         }
 
         function updateFavoritesCount() {
-            const count = appState.favorites.length;
+            // Count only favorites that exist in the dictionary (match renderFavorites logic)
+            const displayableFavorites = appState.words.filter(w => appState.favorites.some(f => String(f) === String(w.id)) && w.verified);
+            const count = displayableFavorites.length;
+            // Prune orphaned favorites (IDs no longer in dictionary) to keep data clean
+            if (appState.favorites.length !== count) {
+                appState.favorites = appState.words.filter(w => appState.favorites.some(f => String(f) === String(w.id)) && w.verified).map(w => w.id);
+                saveData();
+            }
             ['favorites-count', 'favorites-count-drawer'].forEach(id => {
                 const badge = document.getElementById(id);
                 if (badge) {
@@ -6320,7 +6327,7 @@
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                             ${letterWords.map(word => {
-                                const isFavorite = appState.favorites.includes(word.id);
+                                const isFavorite = appState.favorites.some(f => String(f) === String(word.id));
                                 const wid = JSON.stringify(word.id);
                                 return `
                                 <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-amber-400 hover:shadow-md transition browse-grid-card" data-word-id="${escapeHtml(String(word.id))}">
@@ -6506,7 +6513,7 @@
             const editBtn = document.getElementById('word-view-edit-btn');
             if (editBtn) editBtn.classList.toggle('hidden', !isContributor());
             const favBtn = document.getElementById('word-view-favorite-btn');
-            if (favBtn) { favBtn.classList.remove('hidden'); favBtn.textContent = appState.favorites.includes(wordId) ? '❤️ Favorited' : '🤍 Add to Favorites'; }
+            if (favBtn) { favBtn.classList.remove('hidden'); favBtn.textContent = appState.favorites.some(f => String(f) === String(wordId)) ? '❤️ Favorited' : '🤍 Add to Favorites'; }
             // Highlight selected card in results
             document.querySelectorAll('[data-word-id]').forEach(el => {
                 el.classList.toggle('ring-2', el.getAttribute('data-word-id') === String(wordId));
