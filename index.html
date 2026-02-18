@@ -2755,7 +2755,7 @@
                 hideLoading();
             } else {
                 appState.words = [];
-                fetch('dictionary_data.json').then(r=>r.ok?r.json():{}).then(data=>{
+                fetch('dictionary_import.json').then(r=>r.ok?r.json():{}).then(data=>{
                     if (data && Array.isArray(data.words) && data.words.length > 0) {
                         appState.words = data.words;
                         saveData();

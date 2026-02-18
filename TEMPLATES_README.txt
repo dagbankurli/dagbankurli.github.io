@@ -1,5 +1,6 @@
 Dagban Kurli - Excel/CSV templates for bulk entry
 
+The app loads its dictionary data from dictionary_import.json (not dictionary_data.json).
 These CSV files open in Excel. Use them to add words, phrases, and idioms.
 Match the column headers exactly when adding rows.
 
@@ -34,6 +35,9 @@ node csv_to_json.js
     node csv_to_json.js words
     node csv_to_json.js phrases
     node csv_to_json.js idioms
+
+  To create dictionary_import.json from existing dictionary_data.json (keeps your current data):
+    node csv_to_json.js seed
 
   Output: dictionary_import.json (or dictionary_import_words.json etc. for single-type)
 
