@@ -485,7 +485,7 @@
     <!-- View Idiom Modal -->
     <div id="idiom-view-modal" role="dialog" aria-modal="true" aria-labelledby="idiom-view-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeIdiomViewModal()">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in" onclick="event.stopPropagation()">
-            <h2 id="idiom-view-title" class="text-xl font-bold text-gray-800 mb-4">Idiom</h2>
+            <h2 id="idiom-view-title" class="text-xl font-bold text-gray-800 mb-4">Idiom or Proverb</h2>
             <div id="idiom-view-content" class="space-y-3">
                 <p id="idiom-view-dagbani" class="text-xl font-bold text-amber-700" lang="dag"></p>
                 <p id="idiom-view-english" class="text-gray-700"></p>
@@ -544,13 +544,13 @@
     <!-- Edit Idiom Modal -->
     <div id="edit-idiom-modal" role="dialog" aria-modal="true" aria-labelledby="edit-idiom-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeEditIdiomModal()">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <h2 id="edit-idiom-modal-title" class="text-xl font-bold text-gray-800 mb-4">Suggest edit (idiom)</h2>
+            <h2 id="edit-idiom-modal-title" class="text-xl font-bold text-gray-800 mb-4">Suggest edit (idiom or proverb)</h2>
             <input type="hidden" id="edit-idiom-id">
             <div class="space-y-4">
-                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani idiom</label><input type="text" id="edit-idiom-dagbani" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani idiom or proverb</label><input type="text" id="edit-idiom-dagbani" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-idiom-english" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">Category</label><select id="edit-idiom-category" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></select></div>
-                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Usage (optional)</label><textarea id="edit-idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="When is this idiom used?"></textarea></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Usage (optional)</label><textarea id="edit-idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="When is this idiom or proverb used?"></textarea></div>
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional)</label>
                     <input type="url" id="edit-idiom-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL">
                     <label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm font-semibold text-amber-800 hover:bg-amber-200"><span>📷 Upload</span><input type="file" id="edit-idiom-picture-file" accept="image/*" class="hidden" onchange="handleEditIdiomImageUpload(event)"></label>
@@ -813,7 +813,7 @@
                 <button onclick="showLearnSection('names')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="names">Names</button>
                 <button onclick="showLearnSection('history')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="history">History</button>
                 <button onclick="showLearnSection('phrases')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="phrases">Phrases</button>
-                <button onclick="showLearnSection('idioms')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="idioms">Idioms</button>
+                <button onclick="showLearnSection('idioms')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="idioms">Idioms & Proverbs</button>
                 <button onclick="showLearnSection('short-stories')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="short-stories">Short Stories</button>
                 <button onclick="showLearnSection('media')" class="learn-section-btn flex-shrink-0 px-4 py-2.5 min-h-[44px] rounded-lg border-2 border-gray-300 text-gray-700 hover:border-amber-400 hover:bg-amber-50 transition text-sm font-semibold touch-manipulation" data-section="media">Media</button>
             </div>
@@ -1210,6 +1210,7 @@
                             <option value="authority">Authority</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -1230,22 +1231,22 @@
         <div id="learn-idioms" class="learn-section-content hidden">
             <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                    <h3 class="text-xl font-bold text-gray-800">Idioms</h3>
+                    <h3 class="text-xl font-bold text-gray-800">Idioms & Proverbs</h3>
                     <div class="flex items-center gap-2">
                         <div id="learn-idiom-gate" class="hidden text-xs text-gray-500">Want to add? <button onclick="openContributorSignup()" class="text-amber-600 font-semibold hover:underline">Sign Up</button> · <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></div>
                         <div id="learn-idiom-add-btn-wrap" class="hidden">
-                    <button type="button" onclick="toggleAddIdiomForm('learn')" id="learn-idiom-add-btn" class="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Add an idiom</button>
+                    <button type="button" onclick="toggleAddIdiomForm('learn')" id="learn-idiom-add-btn" class="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Add Idiom or Proverb</button>
                         </div>
                     </div>
                 </div>
                 <div id="learn-idiom-form-wrapper" class="mb-6 hidden">
                     <form id="learn-idiom-form" onsubmit="submitIdiom(event)" data-form="learn" class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50 space-y-4">
                         <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-bold text-gray-800">Add an Idiom</h4>
+                            <h4 class="font-bold text-gray-800">Add an Idiom or Proverb</h4>
                             <button type="button" onclick="toggleAddIdiomForm('learn')" class="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Idiom</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Idiom or Proverb</label>
                             <input type="text" name="idiom-dagbani" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Naa kpi">
                         </div>
                         <div>
@@ -1278,7 +1279,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Usage (optional)</label>
-                            <textarea name="idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="When is this idiom used? e.g., When something has ended with no hope of return"></textarea>
+                            <textarea name="idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="When is this idiom or proverb used? e.g., When something has ended with no hope of return"></textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
@@ -1317,6 +1318,7 @@
                             <option value="authority">Authority</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -1326,7 +1328,7 @@
                         </select>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input type="text" id="learn-idiom-search-input" placeholder="Search idioms…" class="px-3 py-2 rounded-lg border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[140px]" onkeydown="if(event.key==='Enter')searchIdioms()">
+                        <input type="text" id="learn-idiom-search-input" placeholder="Search idioms & proverbs…" class="px-3 py-2 rounded-lg border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[140px]" onkeydown="if(event.key==='Enter')searchIdioms()">
                         <button type="button" onclick="searchIdioms()" class="px-4 py-2 rounded-lg font-semibold bg-amber-500 text-amber-900 hover:bg-amber-600 transition">Search</button>
                     </div>
                 </div>
@@ -1434,7 +1436,7 @@
                 <div class="flex gap-2 mb-6 border-b border-gray-200">
                     <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
                     <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
-                    <button type="button" onclick="setReviewTab('idioms')" id="review-tab-idioms" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Idioms</button>
+                    <button type="button" onclick="setReviewTab('idioms')" id="review-tab-idioms" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Idioms & Proverbs</button>
                 </div>
                 <div id="review-words-panel">
                     <div id="pending-submissions" class="space-y-4"></div>
@@ -1451,7 +1453,7 @@
                 <div id="review-idioms-panel" class="hidden">
                     <div id="pending-idioms" class="space-y-4"></div>
                     <div id="no-pending-idioms" class="hidden text-center py-8 text-gray-500">
-                        <p class="text-lg">No pending idiom submissions.</p>
+                        <p class="text-lg">No pending idiom or proverb submissions.</p>
                     </div>
                 </div>
             </div>
@@ -1481,7 +1483,7 @@
                         <option value="">All types</option>
                         <option value="word">Words</option>
                         <option value="phrase">Phrases</option>
-                        <option value="idiom">Idioms</option>
+                        <option value="idiom">Idioms & Proverbs</option>
                     </select>
                     <select id="audit-filter-admin" onchange="renderAuditTrail()" class="px-3 py-1.5 border border-amber-300 rounded-lg text-sm">
                         <option value="">All admins</option>
@@ -1522,10 +1524,24 @@
                                 <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
                                 <span class="block w-full px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-center cursor-pointer">📤 Import Data (Restore)</span>
                             </label>
-                            <label class="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                            <div class="text-sm text-gray-700 space-y-1 pl-1">
+                                <p class="font-semibold">Import:</p>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="import-words" class="w-4 h-4 rounded border-gray-300" checked> Words</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="import-phrases" class="w-4 h-4 rounded border-gray-300" checked> Phrases</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="import-idioms" class="w-4 h-4 rounded border-gray-300" checked> Idioms & Proverbs</label>
+                            </div>
+                            <label class="flex items-center gap-2 text-sm text-gray-600">
                                 <input type="checkbox" id="import-merge" class="w-4 h-4 rounded border-gray-300"> Merge (add to existing) instead of replace
                             </label>
-                            <button onclick="clearAllData()" class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">🗑️ Clear All Data</button>
+                            <div class="border-t border-gray-200 pt-3 mt-3">
+                                <p class="text-sm font-semibold text-gray-700 mb-2">Clear:</p>
+                                <div class="text-sm text-gray-700 space-y-1 mb-2">
+                                    <label class="flex items-center gap-2"><input type="checkbox" id="clear-words" class="w-4 h-4 rounded border-gray-300"> Words</label>
+                                    <label class="flex items-center gap-2"><input type="checkbox" id="clear-phrases" class="w-4 h-4 rounded border-gray-300"> Phrases</label>
+                                    <label class="flex items-center gap-2"><input type="checkbox" id="clear-idioms" class="w-4 h-4 rounded border-gray-300"> Idioms & Proverbs</label>
+                                </div>
+                                <button onclick="clearSelectedData()" class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">🗑️ Clear Selected Data</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1624,6 +1640,7 @@
                             <option value="authority">Authority</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -1666,6 +1683,7 @@
                             <option value="authority">Authority</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -1690,22 +1708,22 @@
     <div id="idioms-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                <h2 class="text-2xl font-bold text-gray-800">Idiom List</h2>
+                <h2 class="text-2xl font-bold text-gray-800">Idioms & Proverbs</h2>
                 <div class="flex items-center gap-2">
                     <div id="idiom-list-gate" class="hidden text-xs text-gray-500">Want to add? <button onclick="openContributorSignup()" class="text-amber-600 font-semibold hover:underline">Sign Up</button> · <button onclick="openSignIn()" class="text-amber-600 font-semibold hover:underline">Sign In</button></div>
                     <div id="idiom-list-add-btn-wrap" class="hidden">
-                <button type="button" onclick="toggleAddIdiomForm('list')" id="idiom-list-add-btn" class="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Add an idiom</button>
+                <button type="button" onclick="toggleAddIdiomForm('list')" id="idiom-list-add-btn" class="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Add Idiom or Proverb</button>
                     </div>
                 </div>
             </div>
             <div id="idiom-list-form-wrapper" class="mb-6 hidden">
                 <form id="idiom-form" onsubmit="submitIdiom(event)" class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50 space-y-4">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-gray-800">Add an Idiom</h3>
+                        <h3 class="font-bold text-gray-800">Add an Idiom or Proverb</h3>
                         <button type="button" onclick="toggleAddIdiomForm('list')" class="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Idiom</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani Idiom or Proverb</label>
                         <input type="text" id="idiom-dagbani" required class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="e.g., Naa kpi">
                     </div>
                     <div>
@@ -1738,7 +1756,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Usage (optional)</label>
-                        <textarea id="idiom-usage" name="idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="When is this idiom used? e.g., When something has ended with no hope of return"></textarea>
+                        <textarea id="idiom-usage" name="idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500" placeholder="When is this idiom or proverb used? e.g., When something has ended with no hope of return"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
@@ -1752,6 +1770,7 @@
                             <option value="authority">Authority</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -1777,6 +1796,7 @@
                             <option value="authority">Authority</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -1786,7 +1806,7 @@
                     </select>
                 </div>
                 <div class="flex items-center gap-2">
-                    <input type="text" id="idiom-search-input" placeholder="Search idioms…" class="px-3 py-2 rounded-lg border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[140px]" onkeydown="if(event.key==='Enter')searchIdioms()">
+                    <input type="text" id="idiom-search-input" placeholder="Search idioms & proverbs…" class="px-3 py-2 rounded-lg border-2 border-amber-300 bg-amber-50 focus:outline-none focus:border-amber-500 text-amber-800 min-w-[140px]" onkeydown="if(event.key==='Enter')searchIdioms()">
                     <button type="button" onclick="searchIdioms()" class="px-4 py-2 rounded-lg font-semibold bg-amber-500 text-amber-900 hover:bg-amber-600 transition">Search</button>
                 </div>
             </div>
@@ -1852,6 +1872,7 @@
                             <option value="nouns">Nouns</option>
                             <option value="provision">Provision</option>
                             <option value="idioms">Idioms</option>
+                            <option value="proverbs">Proverbs</option>
                             <option value="phrases">Phrases</option>
                             <option value="animals">Animals</option>
                             <option value="names">Names</option>
@@ -2509,7 +2530,7 @@
             if (!actList || !isAdmin()) return;
             const log = (appState.activityLog || []).slice().reverse();
             const { slice: logSlice, currentPage, totalPages, total } = paginate(log, (appState.pagination || {}).activityLog);
-            const kindLabel = k => ({ word: 'Word', phrase: 'Phrase', idiom: 'Idiom' }[k] || 'Word');
+            const kindLabel = k => ({ word: 'Word', phrase: 'Phrase', idiom: 'Idiom or Proverb' }[k] || 'Word');
             actList.innerHTML = logSlice.length ? logSlice.map(e => `<p class="text-gray-600">${e.type === 'approved' ? '✓' : '✗'} <span class="text-amber-700 font-medium">[${kindLabel(e.kind)}]</span> <strong>${escapeHtml(e.dagbani || '')}</strong> <span class="text-gray-500">by ${escapeHtml(e.by || '')}</span> • ${e.at ? new Date(e.at).toLocaleString() : ''}</p>`).join('') : '<p class="text-gray-500">No activity yet.</p>';
             if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'activityLog');
         }
@@ -2533,7 +2554,7 @@
                 const current = adminSel.value;
                 adminSel.innerHTML = '<option value="">All admins</option>' + admins.map(a => `<option value="${escapeHtml(a)}" ${a === current ? 'selected' : ''}>${escapeHtml(a)}</option>`).join('');
             }
-            const kindLabel = k => ({ word: 'Word', phrase: 'Phrase', idiom: 'Idiom' }[k] || 'Word');
+            const kindLabel = k => ({ word: 'Word', phrase: 'Phrase', idiom: 'Idiom or Proverb' }[k] || 'Word');
             const { slice: logSlice, currentPage, totalPages, total } = paginate(log, (appState.pagination || {}).auditTrail);
             list.innerHTML = logSlice.length ? logSlice.map(e => `<p class="text-gray-600 py-1 border-b border-gray-100">${e.type === 'approved' ? '<span class="text-green-600">✓</span>' : '<span class="text-red-600">✗</span>'} <span class="font-medium text-amber-700">${escapeHtml(e.by || 'Unknown')}</span> ${e.type === 'approved' ? 'approved' : 'rejected'} <span class="font-medium">[${kindLabel(e.kind || 'word')}]</span> <strong>${escapeHtml(e.dagbani || '')}</strong> <span class="text-gray-400 text-xs">${e.at ? new Date(e.at).toLocaleString() : ''}</span></p>`).join('') : '<p class="text-gray-500">No matching entries.</p>';
             if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'auditTrail');
@@ -4485,7 +4506,7 @@
         }
 
         // Idioms (parity with phrases)
-        const IDIOM_CATEGORY_LABELS = { general: 'General', basics: 'Basics', common_signs: 'Common signs', problems: 'Problems', eating: 'Eating', money: 'Money', authority: 'Authority', provision: 'Provision', idioms: 'Idioms', phrases: 'Phrases', animals: 'Animals', names: 'Names', plants: 'Plants', nouns: 'Nouns', verbs: 'Verbs' };
+        const IDIOM_CATEGORY_LABELS = { general: 'General', basics: 'Basics', common_signs: 'Common signs', problems: 'Problems', eating: 'Eating', money: 'Money', authority: 'Authority', provision: 'Provision', idioms: 'Idioms', proverbs: 'Proverbs', phrases: 'Phrases', animals: 'Animals', names: 'Names', plants: 'Plants', nouns: 'Nouns', verbs: 'Verbs' };
         let idiomFilter = 'all';
         let idiomSearchQuery = '';
 
@@ -4549,9 +4570,9 @@
             }
             idioms.sort((a, b) => (a.dagbani || '').localeCompare(b.dagbani || ''));
             if (idioms.length === 0) {
-                let msg = 'No idioms yet. Contributors can add idioms using the Add an idiom button.';
-                if (idiomFilter !== 'all') msg = 'No idioms in this category yet. Try "All categories" or add one using the Add an idiom button.';
-                if (idiomSearchQuery) msg = `No idioms match "${idiomSearchQuery}". Try different search terms or clear the search.`;
+                let msg = 'No idioms & proverbs yet. Contributors can add them using the Add Idiom or Proverb button.';
+                if (idiomFilter !== 'all') msg = 'No idioms & proverbs in this category yet. Try "All categories" or add one using the Add Idiom or Proverb button.';
+                if (idiomSearchQuery) msg = `No idioms & proverbs match "${idiomSearchQuery}". Try different search terms or clear the search.`;
                 const emptyHtml = `<p class="text-gray-500 text-center py-8">${msg}</p>`;
                 containers.forEach(c => { c.innerHTML = emptyHtml; });
                 return;
@@ -4626,7 +4647,7 @@
             document.getElementById('edit-idiom-english').value = idiom.english || '';
             document.getElementById('edit-idiom-usage').value = idiom.usage || '';
             const catSel = document.getElementById('edit-idiom-category');
-            const mainCats = ['general', 'basics', 'common_signs', 'problems', 'eating', 'money', 'authority', 'provision', 'idioms', 'phrases', 'animals', 'names', 'plants', 'nouns', 'verbs'];
+            const mainCats = ['general', 'basics', 'common_signs', 'problems', 'eating', 'money', 'authority', 'provision', 'idioms', 'proverbs', 'phrases', 'animals', 'names', 'plants', 'nouns', 'verbs'];
             if (catSel) catSel.innerHTML = mainCats.map(k => `<option value="${k}" ${(idiom.category || 'general') === k ? 'selected' : ''}>${IDIOM_CATEGORY_LABELS[k] || k}</option>`).join('');
             document.getElementById('edit-idiom-picture').value = (typeof idiom.picture === 'string' && idiom.picture.startsWith('http')) ? idiom.picture : '';
             appState.editIdiomUploadedImage = (typeof idiom.picture === 'string' && idiom.picture.startsWith('data:')) ? idiom.picture : null;
@@ -5926,44 +5947,76 @@
             showToast('Data exported successfully!');
         }
 
-        function clearAllData() {
-            if (!confirm('Clear ALL dictionary data? This cannot be undone.')) return;
-            appState.words = [];
-            appState.pendingSubmissions = [];
-            appState.phrases = [];
-            appState.pendingPhrases = [];
-            appState.communityFeed = [];
-            appState.comments = [];
-            appState.wordVotes = {};
-            appState.favorites = [];
-            appState.searchHistory = [];
-            appState.browseLetterFilter = 'all';
-            localStorage.removeItem('dagbaniWords');
-            localStorage.removeItem('dagbaniPending');
-            localStorage.removeItem('dagbaniPhrases');
-            localStorage.removeItem('dagbaniPendingPhrases');
-            localStorage.removeItem('dagbaniCommunityFeed');
-            localStorage.removeItem('dagbaniComments');
-            localStorage.removeItem('dagbaniWordVotes');
-            localStorage.removeItem('dagbaniFavorites');
-            localStorage.removeItem('dagbaniSearchHistory');
+        function clearSelectedData() {
+            const clearWords = document.getElementById('clear-words')?.checked ?? false;
+            const clearPhrases = document.getElementById('clear-phrases')?.checked ?? false;
+            const clearIdioms = document.getElementById('clear-idioms')?.checked ?? false;
+            if (!clearWords && !clearPhrases && !clearIdioms) {
+                showToast('Select at least one type to clear.', 'error');
+                return;
+            }
+            const parts = [];
+            if (clearWords) parts.push('words');
+            if (clearPhrases) parts.push('phrases');
+            if (clearIdioms) parts.push('idioms');
+            if (!confirm(`Clear ${parts.join(', ')}? This cannot be undone.`)) return;
+            if (clearWords) {
+                appState.words = [];
+                appState.pendingSubmissions = [];
+                appState.favorites = [];
+                appState.searchHistory = [];
+                localStorage.removeItem('dagbaniWords');
+                localStorage.removeItem('dagbaniPending');
+                localStorage.removeItem('dagbaniFavorites');
+                localStorage.removeItem('dagbaniSearchHistory');
+            }
+            if (clearPhrases) {
+                appState.phrases = [];
+                appState.pendingPhrases = [];
+                localStorage.removeItem('dagbaniPhrases');
+                localStorage.removeItem('dagbaniPendingPhrases');
+            }
+            if (clearIdioms) {
+                appState.idioms = [];
+                appState.pendingIdioms = [];
+                localStorage.removeItem('dagbaniIdioms');
+                localStorage.removeItem('dagbaniPendingIdioms');
+            }
+            if (clearWords) {
+                appState.communityFeed = [];
+                appState.comments = [];
+                appState.wordVotes = {};
+                appState.browseLetterFilter = 'all';
+                localStorage.removeItem('dagbaniCommunityFeed');
+                localStorage.removeItem('dagbaniComments');
+                localStorage.removeItem('dagbaniWordVotes');
+            }
             saveData();
             updateWordOfTheDay();
+            updateFavoritesCount();
             if (appState.currentView === 'dictionary') {
                 document.getElementById('search-results').innerHTML = '';
                 document.getElementById('no-results').classList.add('hidden');
             }
             if (appState.currentView === 'favorites') renderFavorites();
-            if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); }
+            if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); renderPendingIdioms(); }
             if (appState.currentView === 'browse') renderBrowseDictionary();
             renderSearchHistory();
-            showToast('All data cleared.');
+            showToast('Selected data cleared.');
         }
 
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
             const mergeMode = document.getElementById('import-merge')?.checked ?? false;
+            const importWords = document.getElementById('import-words')?.checked ?? true;
+            const importPhrases = document.getElementById('import-phrases')?.checked ?? true;
+            const importIdioms = document.getElementById('import-idioms')?.checked ?? true;
+            if (!importWords && !importPhrases && !importIdioms) {
+                showToast('Select at least one type to import.', 'error');
+                event.target.value = '';
+                return;
+            }
             
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -6016,77 +6069,134 @@
                                 appState.words = words;
                             }
                         }
-                    } else if (data.words) {
+                    } else if (data.words || data.phrases || data.idioms) {
+                        const what = [];
+                        if (importWords && data.words) what.push(`${data.words.length} words`);
+                        if (importPhrases && data.phrases) what.push(`${data.phrases.length} phrases`);
+                        if (importIdioms && data.idioms) what.push(`${data.idioms.length} idioms`);
                         const msg = mergeMode
-                            ? `Add ${data.words.length} entries to existing dictionary?`
-                            : 'This will replace all current data. Are you sure?';
+                            ? `Add ${what.join(', ')} to existing data?`
+                            : `This will replace selected types: ${what.join(', ')}. Continue?`;
                         confirmed = confirm(msg);
                         if (confirmed) {
                             if (mergeMode) {
-                                const existingIds = new Set(appState.words.map(w => w.id));
-                                let nextId = 1;
-                                const ensureId = (w) => {
-                                    const wid = w.id;
-                                    if (!wid || existingIds.has(wid)) {
-                                        while (existingIds.has('merge-' + nextId)) nextId++;
-                                        w.id = 'merge-' + nextId++;
-                                    } else {
-                                        existingIds.add(wid);
-                                    }
-                                    existingIds.add(w.id);
-                                    return w;
-                                };
-                                appState.words = [...appState.words, ...data.words.map(w => ({ ...w })).map(ensureId)];
+                                if (importWords && data.words && data.words.length > 0) {
+                                    const existingIds = new Set(appState.words.map(w => w.id));
+                                    let nextId = 1;
+                                    const ensureId = (w) => {
+                                        const wid = w.id;
+                                        if (!wid || existingIds.has(wid)) {
+                                            while (existingIds.has('merge-' + nextId)) nextId++;
+                                            w.id = 'merge-' + nextId++;
+                                        } else { existingIds.add(wid); }
+                                        existingIds.add(w.id);
+                                        return w;
+                                    };
+                                    appState.words = [...appState.words, ...data.words.map(w => ({ ...w })).map(ensureId)];
+                                }
+                                if (importPhrases && data.pendingPhrases && data.pendingPhrases.length > 0) {
+                                    const existingIds = new Set((appState.pendingPhrases || []).map(p => p.id));
+                                    data.pendingPhrases.forEach(p => {
+                                        if (p.id && !existingIds.has(p.id)) { appState.pendingPhrases.push(p); existingIds.add(p.id); }
+                                        else if (!existingIds.has(p.id)) { p.id = p.id || Date.now() + Math.random(); appState.pendingPhrases.push(p); existingIds.add(p.id); }
+                                    });
+                                }
+                                if (importPhrases && data.phrases && data.phrases.length > 0) {
+                                    const existingIds = new Set((appState.phrases || []).map(p => p.id));
+                                    data.phrases.forEach(p => {
+                                        if (!p.id || existingIds.has(p.id)) p.id = Date.now() + Math.random();
+                                        existingIds.add(p.id);
+                                        appState.phrases.push(p);
+                                    });
+                                }
+                                if (importIdioms && data.idioms && data.idioms.length > 0) {
+                                    const existingIds = new Set((appState.idioms || []).map(i => i.id));
+                                    data.idioms.forEach(i => {
+                                        if (!i.id || existingIds.has(i.id)) i.id = Date.now() + Math.random();
+                                        existingIds.add(i.id);
+                                        appState.idioms.push(i);
+                                    });
+                                }
+                                if (importIdioms && data.pendingIdioms && data.pendingIdioms.length > 0) {
+                                    const existingIds = new Set((appState.pendingIdioms || []).map(p => p.id));
+                                    data.pendingIdioms.forEach(p => {
+                                        if (p.id && !existingIds.has(p.id)) { appState.pendingIdioms.push(p); existingIds.add(p.id); }
+                                        else if (!existingIds.has(p.id)) { p.id = p.id || Date.now() + Math.random(); appState.pendingIdioms.push(p); existingIds.add(p.id); }
+                                    });
+                                }
+                                if (importWords && data.pendingSubmissions && data.pendingSubmissions.length > 0) {
+                                    const existingIds = new Set((appState.pendingSubmissions || []).map(s => s.id));
+                                    data.pendingSubmissions.forEach(s => {
+                                        if (s.id && !existingIds.has(s.id)) { appState.pendingSubmissions.push(s); existingIds.add(s.id); }
+                                        else if (!existingIds.has(s.id)) { s.id = s.id || Date.now() + Math.random(); appState.pendingSubmissions.push(s); existingIds.add(s.id); }
+                                    });
+                                }
                             } else {
-                                appState.words = data.words;
+                                if (importWords && data.words) appState.words = data.words;
+                                if (importWords && data.pendingSubmissions) appState.pendingSubmissions = data.pendingSubmissions;
+                                if (importPhrases && data.phrases) appState.phrases = data.phrases;
+                                if (importPhrases && data.pendingPhrases) appState.pendingPhrases = data.pendingPhrases;
+                                if (importIdioms && data.idioms) appState.idioms = data.idioms;
+                                if (importIdioms && data.pendingIdioms) appState.pendingIdioms = data.pendingIdioms;
+                                if (importWords && (data.communityFeed || data.comments || data.wordVotes || data.favorites)) {
+                                    if (data.communityFeed) appState.communityFeed = data.communityFeed;
+                                    if (data.comments) appState.comments = data.comments;
+                                    if (data.wordVotes) appState.wordVotes = data.wordVotes;
+                                    if (data.favorites) appState.favorites = data.favorites;
+                                }
                             }
                         }
                     } else {
-                        showToast('Unknown file format. Need "entries" or "words" array.', 'error');
+                        showToast('Unknown file format. Need "entries", "words", "phrases", or "idioms" array.', 'error');
                     }
+                    const handledInBranch = !!(data.words || data.phrases || data.idioms) && !(data.metadata && data.entries);
                     if (confirmed) {
-                        if (mergeMode) {
-                            if (data.pendingSubmissions && data.pendingSubmissions.length > 0) {
-                                const existingIds = new Set((appState.pendingSubmissions || []).map(s => s.id));
-                                data.pendingSubmissions.forEach(s => {
-                                    if (s.id && !existingIds.has(s.id)) {
-                                        appState.pendingSubmissions.push(s);
-                                        existingIds.add(s.id);
-                                    } else if (!existingIds.has(s.id)) {
-                                        s.id = s.id || Date.now() + Math.random();
-                                        appState.pendingSubmissions.push(s);
-                                        existingIds.add(s.id);
-                                    }
-                                });
+                        if (!handledInBranch) {
+                            if (mergeMode) {
+                                if (data.pendingSubmissions && data.pendingSubmissions.length > 0) {
+                                    const existingIds = new Set((appState.pendingSubmissions || []).map(s => s.id));
+                                    data.pendingSubmissions.forEach(s => {
+                                        if (s.id && !existingIds.has(s.id)) { appState.pendingSubmissions.push(s); existingIds.add(s.id); }
+                                        else if (!existingIds.has(s.id)) { s.id = s.id || Date.now() + Math.random(); appState.pendingSubmissions.push(s); existingIds.add(s.id); }
+                                    });
+                                }
+                                if (data.pendingPhrases && data.pendingPhrases.length > 0) {
+                                    const existingIds = new Set((appState.pendingPhrases || []).map(p => p.id));
+                                    data.pendingPhrases.forEach(p => {
+                                        if (p.id && !existingIds.has(p.id)) { appState.pendingPhrases.push(p); existingIds.add(p.id); }
+                                        else if (!existingIds.has(p.id)) { p.id = p.id || Date.now() + Math.random(); appState.pendingPhrases.push(p); existingIds.add(p.id); }
+                                    });
+                                }
+                                if (data.idioms && data.idioms.length > 0) {
+                                    const existingIds = new Set((appState.idioms || []).map(i => i.id));
+                                    data.idioms.forEach(i => { if (!i.id || existingIds.has(i.id)) i.id = Date.now() + Math.random(); existingIds.add(i.id); appState.idioms.push(i); });
+                                }
+                                if (data.pendingIdioms && data.pendingIdioms.length > 0) {
+                                    const existingIds = new Set((appState.pendingIdioms || []).map(p => p.id));
+                                    data.pendingIdioms.forEach(p => {
+                                        if (p.id && !existingIds.has(p.id)) { appState.pendingIdioms.push(p); existingIds.add(p.id); }
+                                        else if (!existingIds.has(p.id)) { p.id = p.id || Date.now() + Math.random(); appState.pendingIdioms.push(p); existingIds.add(p.id); }
+                                    });
+                                }
+                            } else {
+                                if (data.pendingSubmissions) appState.pendingSubmissions = data.pendingSubmissions;
+                                if (data.phrases) appState.phrases = data.phrases;
+                                if (data.pendingPhrases) appState.pendingPhrases = data.pendingPhrases;
+                                if (data.idioms) appState.idioms = data.idioms;
+                                if (data.pendingIdioms) appState.pendingIdioms = data.pendingIdioms;
+                                if (data.communityFeed) appState.communityFeed = data.communityFeed;
+                                if (data.comments) appState.comments = data.comments;
+                                if (data.wordVotes) appState.wordVotes = data.wordVotes;
+                                if (data.activityLog) appState.activityLog = data.activityLog;
+                                if (data.favorites) appState.favorites = data.favorites;
                             }
-                            if (data.pendingPhrases && data.pendingPhrases.length > 0) {
-                                const existingIds = new Set((appState.pendingPhrases || []).map(p => p.id));
-                                data.pendingPhrases.forEach(p => {
-                                    if (p.id && !existingIds.has(p.id)) {
-                                        appState.pendingPhrases.push(p);
-                                        existingIds.add(p.id);
-                                    } else if (!existingIds.has(p.id)) {
-                                        p.id = p.id || Date.now() + Math.random();
-                                        appState.pendingPhrases.push(p);
-                                        existingIds.add(p.id);
-                                    }
-                                });
-                            }
-                        } else {
-                            if (data.pendingSubmissions) appState.pendingSubmissions = data.pendingSubmissions;
-                            if (data.phrases) appState.phrases = data.phrases;
-                            if (data.pendingPhrases) appState.pendingPhrases = data.pendingPhrases;
-                            if (data.communityFeed) appState.communityFeed = data.communityFeed;
-                            if (data.comments) appState.comments = data.comments;
-                            if (data.wordVotes) appState.wordVotes = data.wordVotes;
-                            if (data.activityLog) appState.activityLog = data.activityLog;
-                            if (data.favorites) appState.favorites = data.favorites;
                         }
                         saveData();
-                        showToast(mergeMode ? `Added ${words.length || data.words?.length || 0} entries.` : 'Data imported successfully!');
+                        const added = words.length || (data.words?.length || 0) + (data.phrases?.length || 0) + (data.idioms?.length || 0);
+                        showToast(mergeMode ? `Added ${added} entries.` : 'Data imported successfully!');
                         updateWordOfTheDay();
                         if (appState.currentView === 'favorites') renderFavorites();
-                        if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); }
+                        if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); renderPendingIdioms(); }
                         if (appState.currentView === 'browse') renderBrowseDictionary();
                     }
                 } catch (error) {
