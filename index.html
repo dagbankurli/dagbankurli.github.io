@@ -1468,9 +1468,34 @@
             <!-- Activity Log (admin) -->
             <div id="activity-log-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
                 <h3 class="text-lg font-semibold text-gray-700 mb-3">Activity Log</h3>
-                <p class="text-sm text-gray-600 mb-3">Recent approvals and rejections.</p>
+                <p class="text-sm text-gray-600 mb-3">Recent approvals and rejections. Who did what.</p>
                 <div id="activity-log-list" class="space-y-2 max-h-48 overflow-y-auto text-sm"></div>
                 <div id="activity-log-pagination" class="mt-2 min-h-[2rem]"></div>
+            </div>
+
+            <!-- Super Admin Audit Trail (master admin only) -->
+            <div id="audit-trail-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
+                <h3 class="text-lg font-semibold text-gray-700 mb-3">Admin Audit Trail</h3>
+                <p class="text-sm text-gray-600 mb-3">Full history of admin actions: which admin approved/rejected what.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <label class="text-sm font-medium text-gray-600">Filter:</label>
+                    <select id="audit-filter-kind" onchange="renderAuditTrail()" class="px-3 py-1.5 border border-amber-300 rounded-lg text-sm">
+                        <option value="">All types</option>
+                        <option value="word">Words</option>
+                        <option value="phrase">Phrases</option>
+                        <option value="idiom">Idioms</option>
+                    </select>
+                    <select id="audit-filter-admin" onchange="renderAuditTrail()" class="px-3 py-1.5 border border-amber-300 rounded-lg text-sm">
+                        <option value="">All admins</option>
+                    </select>
+                    <select id="audit-filter-action" onchange="renderAuditTrail()" class="px-3 py-1.5 border border-amber-300 rounded-lg text-sm">
+                        <option value="">Approved + Rejected</option>
+                        <option value="approved">Approved only</option>
+                        <option value="rejected">Rejected only</option>
+                    </select>
+                </div>
+                <div id="audit-trail-list" class="space-y-1 max-h-64 overflow-y-auto text-sm"></div>
+                <div id="audit-trail-pagination" class="mt-2 min-h-[2rem]"></div>
             </div>
 
             <!-- Preferences & Data -->
@@ -2486,8 +2511,34 @@
             if (!actList || !isAdmin()) return;
             const log = (appState.activityLog || []).slice().reverse();
             const { slice: logSlice, currentPage, totalPages, total } = paginate(log, (appState.pagination || {}).activityLog);
-            actList.innerHTML = logSlice.length ? logSlice.map(e => `<p class="text-gray-600">${e.type === 'approved' ? '✓' : '✗'} <strong>${escapeHtml(e.dagbani || '')}</strong> by ${escapeHtml(e.by || '')} • ${e.at ? new Date(e.at).toLocaleString() : ''}</p>`).join('') : '<p class="text-gray-500">No activity yet.</p>';
+            const kindLabel = k => ({ word: 'Word', phrase: 'Phrase', idiom: 'Idiom' }[k] || 'Word');
+            actList.innerHTML = logSlice.length ? logSlice.map(e => `<p class="text-gray-600">${e.type === 'approved' ? '✓' : '✗'} <span class="text-amber-700 font-medium">[${kindLabel(e.kind)}]</span> <strong>${escapeHtml(e.dagbani || '')}</strong> <span class="text-gray-500">by ${escapeHtml(e.by || '')}</span> • ${e.at ? new Date(e.at).toLocaleString() : ''}</p>`).join('') : '<p class="text-gray-500">No activity yet.</p>';
             if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'activityLog');
+        }
+
+        function renderAuditTrail() {
+            const list = document.getElementById('audit-trail-list');
+            const paginationEl = document.getElementById('audit-trail-pagination');
+            const kindSel = document.getElementById('audit-filter-kind');
+            const adminSel = document.getElementById('audit-filter-admin');
+            const actionSel = document.getElementById('audit-filter-action');
+            if (!list || !isMasterAdmin()) return;
+            let log = (appState.activityLog || []).slice().reverse();
+            const kindFilter = kindSel?.value || '';
+            const adminFilter = adminSel?.value || '';
+            const actionFilter = actionSel?.value || '';
+            if (kindFilter) log = log.filter(e => (e.kind || 'word') === kindFilter);
+            if (adminFilter) log = log.filter(e => (e.by || '') === adminFilter);
+            if (actionFilter) log = log.filter(e => (e.type || '') === actionFilter);
+            const admins = [...new Set((appState.activityLog || []).map(e => e.by).filter(Boolean))].sort();
+            if (adminSel) {
+                const current = adminSel.value;
+                adminSel.innerHTML = '<option value="">All admins</option>' + admins.map(a => `<option value="${escapeHtml(a)}" ${a === current ? 'selected' : ''}>${escapeHtml(a)}</option>`).join('');
+            }
+            const kindLabel = k => ({ word: 'Word', phrase: 'Phrase', idiom: 'Idiom' }[k] || 'Word');
+            const { slice: logSlice, currentPage, totalPages, total } = paginate(log, (appState.pagination || {}).auditTrail);
+            list.innerHTML = logSlice.length ? logSlice.map(e => `<p class="text-gray-600 py-1 border-b border-gray-100">${e.type === 'approved' ? '<span class="text-green-600">✓</span>' : '<span class="text-red-600">✗</span>'} <span class="font-medium text-amber-700">${escapeHtml(e.by || 'Unknown')}</span> ${e.type === 'approved' ? 'approved' : 'rejected'} <span class="font-medium">[${kindLabel(e.kind || 'word')}]</span> <strong>${escapeHtml(e.dagbani || '')}</strong> <span class="text-gray-400 text-xs">${e.at ? new Date(e.at).toLocaleString() : ''}</span></p>`).join('') : '<p class="text-gray-500">No matching entries.</p>';
+            if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'auditTrail');
         }
 
         function renderUserManagement() {
@@ -2619,6 +2670,15 @@
                         actSection.classList.add('hidden');
                     }
                 }
+                const auditSection = document.getElementById('audit-trail-section');
+                if (auditSection) {
+                    if (isMasterAdmin()) {
+                        auditSection.classList.remove('hidden');
+                        renderAuditTrail();
+                    } else {
+                        auditSection.classList.add('hidden');
+                    }
+                }
             } else {
                 if (su) su.textContent = 'Visitor';
                 if (umSection) umSection.classList.add('hidden');
@@ -2745,7 +2805,7 @@
             localStorage.setItem('dagbaniCommunityFeed', JSON.stringify(appState.communityFeed));
             localStorage.setItem('dagbaniComments', JSON.stringify(appState.comments));
             localStorage.setItem('dagbaniWordVotes', JSON.stringify(appState.wordVotes));
-            localStorage.setItem('dagbaniActivityLog', JSON.stringify((appState.activityLog || []).slice(-200)));
+            localStorage.setItem('dagbaniActivityLog', JSON.stringify((appState.activityLog || []).slice(-500)));
         }
 
         // View Navigation
@@ -4311,7 +4371,10 @@
             renderPhraseList();
         }
 
-        const BUILTIN_IDIOMS = [];
+        const BUILTIN_IDIOMS = [
+            { dagbani: "Dabiɛm kani kabo n zibiyuŋ", english: "There is no fear, what has caused darkness", category: "general", usage: "There is no fear; it is what has caused the darkness." },
+            { dagbani: "Naɣ'so ŋun ka zuli, Naawuni n-kariti o zɔhi", english: "It is only God who drives away the flies that worry the tailless cow", category: "animals", usage: "When you seem to be hopeless and have no one to rely upon, still have faith in God that he is still in charge and will handle your affairs. Remain steadfast in all circumstances." }
+        ];
         const BUILTIN_PHRASES = [
             { dagbani: 'Antire', english: 'Hello', category: 'basics' },
             { dagbani: 'Naawuni salaam alaikum', english: 'Peace be upon you (greeting)', category: 'basics' },
@@ -4813,6 +4876,8 @@
                 appState.idioms.push({ id: p.id || Date.now(), ...p });
             }
             appState.pendingIdioms = (appState.pendingIdioms || []).filter(x => x.id !== id);
+            const approver = appState.currentUser?.username || 'Admin';
+            (appState.activityLog || []).push({ type: 'approved', kind: 'idiom', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
             saveData();
             renderPendingIdioms();
             updatePendingCount();
@@ -4822,6 +4887,9 @@
 
         function rejectIdiomSubmission(id) {
             if (!confirm('Reject this idiom submission?')) return;
+            const p = (appState.pendingIdioms || []).find(x => x.id === id);
+            const approver = appState.currentUser?.username || 'Admin';
+            if (p) (appState.activityLog || []).push({ type: 'rejected', kind: 'idiom', id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
             appState.pendingIdioms = (appState.pendingIdioms || []).filter(x => x.id !== id);
             saveData();
             renderPendingIdioms();
@@ -5408,6 +5476,8 @@
                 appState.phrases.push({ id: p.id || Date.now(), ...p });
             }
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
+            const approver = appState.currentUser?.username || 'Admin';
+            (appState.activityLog || []).push({ type: 'approved', kind: 'phrase', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
             appState.communityFeed.unshift({
                 id: Date.now(),
                 type: 'new_phrase',
@@ -5427,6 +5497,9 @@
 
         function rejectPhraseSubmission(id) {
             if (!confirm('Reject this phrase submission?')) return;
+            const p = appState.pendingPhrases.find(x => x.id === id);
+            const approver = appState.currentUser?.username || 'Admin';
+            if (p) (appState.activityLog || []).push({ type: 'rejected', kind: 'phrase', id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
             saveData();
             renderPendingPhrases();
@@ -5459,7 +5532,7 @@
                 dateAdded: new Date().toISOString()
             });
             if (appState.communityFeed.length > 100) appState.communityFeed.pop();
-            (appState.activityLog || []).push({ type: 'approved', id: submission.id, dagbani: submission.dagbani, by: approver, at: new Date().toISOString() });
+            (appState.activityLog || []).push({ type: 'approved', kind: 'word', id: submission.id, dagbani: submission.dagbani, by: approver, at: new Date().toISOString() });
             saveData();
             renderPendingSubmissions();
             updatePendingCount();
@@ -5474,7 +5547,7 @@
             if (!confirm('Are you sure you want to reject this submission?')) return;
             const submission = appState.pendingSubmissions.find(s => s.id === id);
             const approver = appState.currentUser?.username || 'Admin';
-            (appState.activityLog || []).push({ type: 'rejected', id, dagbani: submission?.dagbani, by: approver, at: new Date().toISOString() });
+            (appState.activityLog || []).push({ type: 'rejected', kind: 'word', id, dagbani: submission?.dagbani, by: approver, at: new Date().toISOString() });
             appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
             saveData();
             renderPendingSubmissions();
