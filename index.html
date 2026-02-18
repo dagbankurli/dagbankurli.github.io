@@ -457,10 +457,8 @@
                     <button onclick="showView('community')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="community">Community</button>
                     <button onclick="showView('leaderboard')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="leaderboard">Leaderboard</button>
                     <button onclick="showView('contribute')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="contribute">Contribute</button>
-                    <button id="nav-mycontributions" onclick="showView('mycontributions')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="mycontributions" style="display: none;">My Contributions</button>
-                    <button onclick="showView('review')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="review">Review<span id="pending-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
+                    <button onclick="showView('profile')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="profile">Profile<span id="profile-pending-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
                     <button onclick="showView('donate')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="donate">Donate</button>
-                    <button onclick="showView('settings')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="settings">Settings</button>
                     <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" id="logout-btn" style="display: none;">Logout</button>
                 </div>
                 <!-- Hamburger: CSS controls visibility (shown below 1280px) -->
@@ -487,10 +485,8 @@
                 <button onclick="navDrawerGo('community')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="community">Community</button>
                 <button onclick="navDrawerGo('leaderboard')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="leaderboard">Leaderboard</button>
                 <button onclick="navDrawerGo('contribute')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="contribute">Contribute</button>
-                <button id="nav-mycontributions-drawer" onclick="navDrawerGo('mycontributions')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="mycontributions" style="display: none;">My Contributions</button>
-                <button onclick="navDrawerGo('review')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="review">Review<span id="pending-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
+                <button onclick="navDrawerGo('profile')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="profile">Profile<span id="pending-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
                     <button onclick="navDrawerGo('donate')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="donate">Donate</button>
-                <button onclick="navDrawerGo('settings')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="settings">Settings</button>
                 <button onclick="navDrawerLogout()" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" id="logout-btn-drawer" style="display: none;">Logout</button>
             </div>
         </div>
@@ -1120,32 +1116,129 @@
         </div>
     </div>
 
-    <!-- Contributor Profile View -->
-    <div id="contributor-profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
-        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-            <button onclick="showView('leaderboard')" class="text-amber-600 font-semibold hover:underline mb-4">← Back to Leaderboard</button>
-            <h2 id="contributor-profile-name" class="text-2xl font-bold text-gray-800 mb-2"></h2>
-            <p id="contributor-profile-stats" class="text-gray-600 mb-6"></p>
-            <div id="contributor-profile-words" class="space-y-3"></div>
+    <!-- Profile View (consolidates account, my contributions, review, user management, settings) -->
+    <div id="profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+        <div id="profile-gate" class="bg-white rounded-2xl shadow-xl p-8 text-center slide-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Profile</h2>
+            <p class="text-gray-600 mb-6">Sign in to access your profile, contributions, and settings.</p>
+            <button onclick="closeNavDrawer(); showLoginModal('user')" class="px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign In</button>
+        </div>
+        <div id="profile-content" class="hidden space-y-6">
+            <!-- Account -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Account</h2>
+                <div id="user-info" class="space-y-2 text-gray-700">
+                    <p><strong>Username:</strong> <span id="settings-username">-</span></p>
+                    <p><strong>Email:</strong> <span id="settings-email">-</span></p>
+                    <p><strong>Role:</strong> <span id="settings-role">-</span></p>
+                    <p><strong>Member Since:</strong> <span id="settings-date">-</span></p>
+                </div>
+                <p id="settings-visitor-prompt" class="hidden text-amber-700 font-medium mt-2">Sign in to save your progress and favorites across devices.</p>
+            </div>
+
+            <!-- My Contributions (contributor+) -->
+            <div id="profile-mc-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">My Contributions</h2>
+                <p class="text-gray-600 mb-6">View all your contributions, edit pending items, replay audio, and suggest edits for approved words.</p>
+                <div class="flex flex-wrap items-center gap-2 mb-6">
+                    <button onclick="filterMyContributions('all')" id="mc-filter-all" class="px-4 py-2 rounded-lg font-semibold bg-amber-100 border-2 border-amber-400 text-amber-800">All</button>
+                    <button onclick="filterMyContributions('pending')" id="mc-filter-pending" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Pending</button>
+                    <button onclick="filterMyContributions('approved')" id="mc-filter-approved" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Approved</button>
+                    <div id="mc-export-pending-wrap" class="hidden md:ml-auto">
+                        <button onclick="exportPendingForAdmin()" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-400 bg-amber-100 text-amber-800 hover:bg-amber-200 transition">📤 Export pending for admin</button>
+                    </div>
+                </div>
+                <div id="my-contributions-list" class="space-y-4"></div>
+            </div>
+
+            <!-- Review (admin+) -->
+            <div id="profile-review-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
+                <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
+                <div id="review-import-tip" class="mb-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
+                    <p class="text-sm text-gray-700"><strong>Contributors on another device?</strong> Have them use Profile → My Contributions → "Export pending for admin", then send you the file. Import it here:</p>
+                    <label class="inline-flex items-center gap-2 mt-2 cursor-pointer px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
+                        <span>📥 Import contributor submissions</span>
+                        <input type="file" accept=".json" class="hidden" onchange="importContributorSubmissions(event)">
+                    </label>
+                </div>
+                <div class="flex gap-2 mb-6 border-b border-gray-200">
+                    <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
+                    <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
+                </div>
+                <div id="review-words-panel">
+                    <div id="pending-submissions" class="space-y-4"></div>
+                    <div id="no-pending" class="hidden text-center py-8 text-gray-500">
+                        <p class="text-lg">No pending word submissions. Great work keeping the lexicon up to date! 🎉</p>
+                    </div>
+                </div>
+                <div id="review-phrases-panel" class="hidden">
+                    <div id="pending-phrases" class="space-y-4"></div>
+                    <div id="no-pending-phrases" class="hidden text-center py-8 text-gray-500">
+                        <p class="text-lg">No pending phrase submissions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management / View users' words (master admin) -->
+            <div id="user-management-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">User Management</h2>
+                <p class="text-sm text-gray-600 mb-4">As a master admin, you can promote contributors to admin and view their contributed words.</p>
+                <div id="user-management-list" class="space-y-2"></div>
+            </div>
+
+            <!-- Activity Log (admin) -->
+            <div id="activity-log-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
+                <h3 class="text-lg font-semibold text-gray-700 mb-3">Activity Log</h3>
+                <p class="text-sm text-gray-600 mb-3">Recent approvals and rejections.</p>
+                <div id="activity-log-list" class="space-y-2 max-h-48 overflow-y-auto text-sm"></div>
+                <div id="activity-log-pagination" class="mt-2 min-h-[2rem]"></div>
+            </div>
+
+            <!-- Preferences & Data -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Preferences & Data</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">App Preferences</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between cursor-pointer">
+                                <span class="text-gray-700">Dark Mode</span>
+                                <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()" class="w-4 h-4">
+                            </label>
+                            <label class="flex items-center justify-between">
+                                <span class="text-gray-700">Show Search History</span>
+                                <input type="checkbox" id="show-history" checked onchange="saveSettings()" class="w-4 h-4">
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Data Management</h3>
+                        <div class="space-y-3">
+                            <button onclick="exportData()" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">📥 Export Data (Backup)</button>
+                            <label class="block">
+                                <span class="sr-only">Import Data</span>
+                                <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
+                                <span class="block w-full px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-center cursor-pointer">📤 Import Data (Restore)</span>
+                            </label>
+                            <label class="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                                <input type="checkbox" id="import-merge" class="w-4 h-4 rounded border-gray-300"> Merge (add to existing) instead of replace
+                            </label>
+                            <button onclick="clearAllData()" class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">🗑️ Clear All Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- My Contributions View (Contributors only) -->
-    <div id="mycontributions-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+    <!-- Contributor Profile View -->
+    <div id="contributor-profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">My Contributions</h2>
-            <p class="text-gray-600 mb-6">View all your contributions, edit pending items, replay audio, and suggest edits for approved words.</p>
-            <div class="flex flex-wrap items-center gap-2 mb-6">
-                <button onclick="filterMyContributions('all')" id="mc-filter-all" class="px-4 py-2 rounded-lg font-semibold bg-amber-100 border-2 border-amber-400 text-amber-800">All</button>
-                <button onclick="filterMyContributions('pending')" id="mc-filter-pending" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Pending</button>
-                <button onclick="filterMyContributions('approved')" id="mc-filter-approved" class="px-4 py-2 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-50">Approved</button>
-                <div id="mc-export-pending-wrap" class="hidden md:ml-auto">
-                    <button onclick="exportPendingForAdmin()" class="px-4 py-2 rounded-lg font-semibold border-2 border-amber-400 bg-amber-100 text-amber-800 hover:bg-amber-200 transition">📤 Export pending for admin</button>
-                </div>
-            </div>
-            <div id="my-contributions-list" class="space-y-4">
-                <!-- Filled by renderMyContributions -->
-            </div>
+            <button id="contributor-profile-back-btn" onclick="(function(){const v=appState.contributorProfileReturnTo||'leaderboard';appState.contributorProfileReturnTo=null;showView(v);})()" class="text-amber-600 font-semibold hover:underline mb-4">← Back to Leaderboard</button>
+            <h2 id="contributor-profile-name" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+            <p id="contributor-profile-stats" class="text-gray-600 mb-6"></p>
+            <div id="contributor-profile-words" class="space-y-3"></div>
         </div>
     </div>
 
@@ -1458,39 +1551,6 @@
         </div>
     </div>
 
-    <!-- Review View -->
-    <div id="review-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
-        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
-            <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
-            <div id="review-import-tip" class="mb-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
-                <p class="text-sm text-gray-700"><strong>Contributors on another device?</strong> Have them use My Contributions → "Export pending for admin", then send you the file. Import it here:</p>
-                <label class="inline-flex items-center gap-2 mt-2 cursor-pointer px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
-                    <span>📥 Import contributor submissions</span>
-                    <input type="file" accept=".json" class="hidden" onchange="importContributorSubmissions(event)">
-                </label>
-            </div>
-            <div class="flex gap-2 mb-6 border-b border-gray-200">
-                <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
-                <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
-            </div>
-
-            <div id="review-words-panel">
-                <div id="pending-submissions" class="space-y-4"></div>
-                <div id="no-pending" class="hidden text-center py-8 text-gray-500">
-                    <p class="text-lg">No pending word submissions. Great work keeping the lexicon up to date! 🎉</p>
-                </div>
-            </div>
-
-            <div id="review-phrases-panel" class="hidden">
-                <div id="pending-phrases" class="space-y-4"></div>
-                <div id="no-pending-phrases" class="hidden text-center py-8 text-gray-500">
-                    <p class="text-lg">No pending phrase submissions.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Donate View -->
     <div id="donate-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="space-y-6">
@@ -1576,80 +1636,6 @@
                 <div class="text-center text-sm text-gray-600">
                     <p>All donations are processed securely. We accept major credit cards and PayPal.</p>
                     <p class="mt-2">For alternative payment methods, please contact: support@dagbanikorli.org</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings View -->
-    <div id="settings-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
-        <div class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Settings</h2>
-                
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Data Management</h3>
-                        <div class="space-y-3">
-                            <button onclick="exportData()" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
-                                📥 Export Data (Backup)
-                            </button>
-                            <label class="block">
-                                <span class="sr-only">Import Data</span>
-                                <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
-                                <span class="block w-full px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-center cursor-pointer">
-                                    📤 Import Data (Restore)
-                                </span>
-                            </label>
-                            <label class="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                                <input type="checkbox" id="import-merge" class="w-4 h-4 rounded border-gray-300">
-                                Merge (add to existing) instead of replace
-                            </label>
-                            <button onclick="clearAllData()" class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">
-                                🗑️ Clear All Data
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Preferences</h3>
-                        <div class="space-y-3">
-                            <label class="flex items-center justify-between cursor-pointer">
-                                <span class="text-gray-700">Dark Mode</span>
-                                <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()" class="w-4 h-4">
-                            </label>
-                            <label class="flex items-center justify-between">
-                                <span class="text-gray-700">Show Search History</span>
-                                <input type="checkbox" id="show-history" checked onchange="saveSettings()" class="w-4 h-4">
-                            </label>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Account</h3>
-                        <div id="user-info" class="space-y-2 text-gray-700">
-                            <p><strong>Username:</strong> <span id="settings-username">-</span></p>
-                            <p><strong>Email:</strong> <span id="settings-email">-</span></p>
-                            <p><strong>Role:</strong> <span id="settings-role">-</span></p>
-                            <p><strong>Member Since:</strong> <span id="settings-date">-</span></p>
-                        </div>
-                        <p id="settings-visitor-prompt" class="hidden text-amber-700 font-medium mt-2">Sign in to save your progress and favorites across devices.</p>
-                    </div>
-
-                    <div id="activity-log-section" class="hidden">
-                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Activity Log</h3>
-                        <p class="text-sm text-gray-600 mb-3">Recent approvals and rejections.</p>
-                        <div id="activity-log-list" class="space-y-2 max-h-48 overflow-y-auto text-sm"></div>
-                        <div id="activity-log-pagination" class="mt-2 min-h-[2rem]"></div>
-                    </div>
-
-                    <div id="user-management-section" class="hidden">
-                        <h3 class="text-lg font-semibold text-gray-700 mb-3">User Management</h3>
-                        <p class="text-sm text-gray-600 mb-3">As a master admin, you can promote contributors to admin. Only master admins can create new admins.</p>
-                        <div id="user-management-list" class="space-y-2">
-                            <!-- Filled by renderUserManagement -->
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1941,7 +1927,6 @@
             const signInDrawer = document.getElementById('nav-sign-in-drawer');
             const logoutBtn = document.getElementById('logout-btn');
             const logoutBtnDrawer = document.getElementById('logout-btn-drawer');
-            const reviewBtns = document.querySelectorAll('[data-view="review"]');
             if (isLoggedIn()) {
                 badge.textContent = appState.currentUser.username + (isMasterAdmin() ? ' (Master Admin)' : role === ROLES.admin ? ' (Admin)' : role === ROLES.contributor ? ' (Contributor)' : '');
                 badge.classList.remove('hidden');
@@ -1957,11 +1942,6 @@
                 logoutBtn.style.display = 'none';
                 logoutBtnDrawer.style.display = 'none';
             }
-            reviewBtns.forEach(el => { el.style.display = isAdmin() ? '' : 'none'; });
-            ['nav-mycontributions', 'nav-mycontributions-drawer'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = isContributor() ? '' : 'none';
-            });
             showView('dictionary');
             updateFavoritesCount();
             updatePendingCount();
@@ -2080,6 +2060,7 @@
                 appState.currentUser = getVisitorUser();
                 showToast('Logged out successfully');
                 showMainApp();
+                if (appState.currentView === 'profile') renderProfile();
             }
         }
 
@@ -2111,9 +2092,13 @@
             if (contribsOnPage.length > 0) {
                 html += '<p class="text-sm font-semibold text-gray-600 mb-2">Contributors (promote to admin):</p>';
                 contribsOnPage.forEach(u => {
-                    html += `<div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 mb-2">
+                    const attr = u.attributionName || u.username;
+                    html += `<div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200 mb-2">
                         <span>${escapeHtml(u.username)} ${u.attributionName ? '(' + escapeHtml(u.attributionName) + ')' : ''}</span>
-                        <button onclick="promoteToAdmin(${JSON.stringify(u.username)})" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Make admin</button>
+                        <div class="flex gap-2">
+                            <button onclick="showContributorProfileFromAdmin(${JSON.stringify(attr)})" class="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold hover:bg-blue-200">View words</button>
+                            <button onclick="promoteToAdmin(${JSON.stringify(u.username)})" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Make admin</button>
+                        </div>
                     </div>`;
                 });
             }
@@ -2156,6 +2141,34 @@
             localStorage.setItem('users', JSON.stringify(users));
             renderUserManagement();
             showToast(`${username} is now an admin.`);
+        }
+
+        function renderProfile() {
+            const gate = document.getElementById('profile-gate');
+            const content = document.getElementById('profile-content');
+            const mcSection = document.getElementById('profile-mc-section');
+            const reviewSection = document.getElementById('profile-review-section');
+            if (!gate || !content) return;
+            if (!appState.currentUser || !isLoggedIn()) {
+                gate.classList.remove('hidden');
+                gate.style.display = 'block';
+                content.classList.add('hidden');
+                content.style.display = 'none';
+                return;
+            }
+            gate.classList.add('hidden');
+            gate.style.display = 'none';
+            content.classList.remove('hidden');
+            content.style.display = 'block';
+            updateUserInfo();
+            if (mcSection) {
+                if (isContributor()) { mcSection.classList.remove('hidden'); mcSection.style.display = 'block'; renderMyContributions(); }
+                else { mcSection.classList.add('hidden'); mcSection.style.display = 'none'; }
+            }
+            if (reviewSection) {
+                if (isAdmin()) { reviewSection.classList.remove('hidden'); reviewSection.style.display = 'block'; setReviewTab('words'); renderPendingSubmissions(); renderPendingPhrases(); }
+                else { reviewSection.classList.add('hidden'); reviewSection.style.display = 'none'; }
+            }
         }
 
         function updateUserInfo() {
@@ -2340,15 +2353,13 @@
                     if (gate) { gate.classList.remove('hidden'); gate.style.display = 'block'; }
                     if (form) form.classList.add('hidden');
                 }
-            } else if (viewName === 'review') {
-                if (!isAdmin()) { showView('dictionary'); return; }
-                setReviewTab('words');
-                renderPendingSubmissions();
-                renderPendingPhrases();
+            } else if (viewName === 'mycontributions' || viewName === 'review' || viewName === 'settings') {
+                showView('profile');
+                return;
+            } else if (viewName === 'profile') {
+                renderProfile();
             } else if (viewName === 'favorites') {
                 renderFavorites();
-            } else if (viewName === 'settings') {
-                updateUserInfo();
             } else if (viewName === 'browse') {
                 renderBrowseDictionary();
             } else if (viewName === 'learn') {
@@ -2357,8 +2368,6 @@
                 renderCommunityFeed();
             } else if (viewName === 'leaderboard') {
                 renderLeaderboard();
-            } else if (viewName === 'mycontributions') {
-                renderMyContributions();
             } else if (viewName === 'phrases') {
                 const gate = document.getElementById('phrase-list-gate');
                 const addBtnWrap = document.getElementById('phrase-list-add-btn-wrap');
@@ -2936,11 +2945,13 @@
             const historyContainer = document.getElementById('search-history');
             
             if (appState.searchHistory.length > 0 && document.getElementById('show-history').checked) {
-                historyContainer.innerHTML = appState.searchHistory.slice(0, 3).map(term => `
-                    <button onclick="searchFromHistory('${escapeHtml(term)}')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-amber-100 hover:text-amber-800 transition">
-                        ${escapeHtml(term)}
-                    </button>
-                `).join('');
+                historyContainer.innerHTML = appState.searchHistory.slice(0, 3).map(term => {
+                    const safeTerm = JSON.stringify(term);
+                    return `<span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm group">
+                        <button onclick="searchFromHistory(${safeTerm})" class="hover:text-amber-800 transition">${escapeHtml(term)}</button>
+                        <button onclick="event.stopPropagation(); removeFromSearchHistory(${safeTerm});" class="text-gray-400 hover:text-red-600 transition text-xs leading-none p-0.5" aria-label="Remove ${escapeHtml(term)} from history">×</button>
+                    </span>`;
+                }).join('');
                 historySection.classList.remove('hidden');
             } else {
                 historySection.classList.add('hidden');
@@ -2950,6 +2961,15 @@
         function searchFromHistory(term) {
             document.getElementById('search-input').value = term;
             handleSearch({ key: 'Enter' });
+        }
+
+        function removeFromSearchHistory(term) {
+            const idx = appState.searchHistory.indexOf(term);
+            if (idx >= 0) {
+                appState.searchHistory.splice(idx, 1);
+                saveData();
+                renderSearchHistory();
+            }
         }
 
         function populateCategories() {
@@ -3477,7 +3497,7 @@
                 saveData();
                 document.getElementById('bulk-words-input').value = '';
                 updatePendingCount();
-                if (isContributor() && appState.currentView === 'mycontributions') renderMyContributions();
+                if (isContributor() && appState.currentView === 'profile') renderMyContributions();
                 showToast(`${count} word${count !== 1 ? 's' : ''} submitted for review!`);
             }
             if (errors.length > 0 && count === 0) {
@@ -3522,7 +3542,7 @@
                 if (recBtn) recBtn.classList.remove('hidden');
                 showToast('Phrase submitted for review!');
                 updatePendingCount();
-                if (appState.currentView === 'mycontributions') renderMyContributions();
+                if (appState.currentView === 'profile') renderMyContributions();
                 const ctx = (form.id === 'learn-phrase-form' || form.dataset?.form === 'learn') ? 'learn' : 'list';
                 toggleAddPhraseForm(ctx);
             };
@@ -3535,7 +3555,7 @@
                 doSubmit(null);
             }
             updatePendingCount();
-            if (appState.currentView === 'mycontributions') renderMyContributions();
+            if (appState.currentView === 'profile') renderMyContributions();
         }
 
         function speakPhrase(text, lang) {
@@ -3796,6 +3816,10 @@
             `).join('') || '<p class="text-gray-500 text-sm">No voted words yet.</p>';
         }
 
+        function showContributorProfileFromAdmin(attribution) {
+            appState.contributorProfileReturnTo = 'profile';
+            showContributorProfile(attribution);
+        }
         function showContributorProfile(attribution) {
             appState.contributorProfileName = attribution;
             const words = appState.words.filter(w => w.verified && (w.contributorAttribution === attribution || w.submittedBy === attribution));
@@ -3808,6 +3832,8 @@
                     <p class="text-gray-700">${escapeHtml(w.english)}</p>
                 </div>
             `).join('') + renderPaginationBar(total, currentPage, totalPages, 'contributorProfile') : '<p class="text-gray-500">No words yet.</p>';
+            const backBtn = document.getElementById('contributor-profile-back-btn');
+            if (backBtn) backBtn.textContent = appState.contributorProfileReturnTo === 'profile' ? '← Back to Profile' : '← Back to Leaderboard';
             showView('contributor-profile');
         }
 
@@ -4621,7 +4647,7 @@
 
         function updatePendingCount() {
             const count = (appState.pendingSubmissions?.length || 0) + (appState.pendingPhrases?.length || 0);
-            ['pending-count', 'pending-count-drawer'].forEach(id => {
+            ['profile-pending-count', 'pending-count-drawer'].forEach(id => {
                 const badge = document.getElementById(id);
                 if (badge) {
                     if (count > 0) {
@@ -4707,7 +4733,7 @@
                 document.getElementById('no-results').classList.add('hidden');
             }
             if (appState.currentView === 'favorites') renderFavorites();
-            if (appState.currentView === 'review') { renderPendingSubmissions(); renderPendingPhrases(); }
+            if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); }
             if (appState.currentView === 'browse') renderBrowseDictionary();
             renderSearchHistory();
             showToast('All data cleared.');
@@ -4839,7 +4865,7 @@
                         showToast(mergeMode ? `Added ${words.length || data.words?.length || 0} entries.` : 'Data imported successfully!');
                         updateWordOfTheDay();
                         if (appState.currentView === 'favorites') renderFavorites();
-                        if (appState.currentView === 'review') { renderPendingSubmissions(); renderPendingPhrases(); }
+                        if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); }
                         if (appState.currentView === 'browse') renderBrowseDictionary();
                     }
                 } catch (error) {
