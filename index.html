@@ -702,7 +702,10 @@
 
             <!-- Search History -->
             <div id="search-history-section" class="mb-4 hidden">
-                <label class="text-sm font-semibold text-gray-600 mb-2 block">Recent Searches:</label>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                    <label class="text-sm font-semibold text-gray-600">Recent Searches:</label>
+                    <button type="button" onclick="clearAllSearchHistory()" class="text-xs text-amber-600 hover:text-amber-700 font-medium hover:underline focus:outline-none focus:underline">Clear All</button>
+                </div>
                 <div id="search-history" class="flex flex-wrap gap-2"></div>
             </div>
 
@@ -731,34 +734,29 @@
         <div class="bg-white rounded-2xl shadow-xl p-3 sm:p-6 mb-4 sm:mb-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Browse Full Dictionary A-Z</h2>
             
-            <!-- Sort Options (mobile-optimized: compact, touch-friendly) -->
-            <div class="mb-6 space-y-4">
-                <div class="flex flex-col sm:flex-row flex-wrap gap-3">
-                    <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
+            <!-- Sort Options: desktop = one row, mobile = two rows (Sort+View, Total+Per page) -->
+            <div class="mb-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
+                <div class="flex flex-row flex-wrap items-center gap-3 sm:contents">
+                    <label class="flex flex-row items-center gap-1.5 flex-1 min-w-0 sm:flex-initial">
                         <span class="text-sm font-semibold text-gray-700 shrink-0">Sort by:</span>
                         <select id="browse-sort" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
                             <option value="dagbani" selected>Dagbani (A-Z)</option>
                             <option value="english">English (A-Z)</option>
                         </select>
                     </label>
-                    <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
-                        <span class="text-sm font-semibold text-gray-700 shrink-0">Dialect:</span>
-                        <select id="browse-dialect-filter" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
-                            <option value="all">All Dialects</option>
-                            <option value="standard">Standard</option>
-                        </select>
-                    </label>
-                    <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
+                    <label class="flex flex-row items-center gap-1.5 flex-1 min-w-0 sm:flex-initial">
                         <span class="text-sm font-semibold text-gray-700 shrink-0">View:</span>
                         <select id="browse-view-mode" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
                             <option value="grid">Cards</option>
                             <option value="list">List (Table)</option>
                         </select>
                     </label>
-                    <div class="flex items-center min-h-[44px] text-sm text-gray-600">
+                </div>
+                <div class="flex flex-row flex-wrap items-center gap-3 sm:contents">
+                    <div class="flex items-center min-h-[44px] text-sm text-gray-600 shrink-0">
                         Total: <span id="browse-total-count" class="font-bold text-amber-600 ml-1">0</span> words
                     </div>
-                    <label class="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
+                    <label class="flex flex-row items-center gap-1.5 flex-1 min-w-0 sm:flex-initial">
                         <span class="text-sm font-semibold text-gray-700 shrink-0">Per page:</span>
                         <select id="browse-per-page" onchange="(appState.pagination=appState.pagination||{}).browse=1;renderBrowseDictionary()" class="flex-1 min-w-0 px-3 py-2.5 min-h-[44px] border-2 border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 touch-manipulation">
                             <option value="12">12</option>
@@ -3702,11 +3700,11 @@
             const historyContainer = document.getElementById('search-history');
             
             if (appState.searchHistory.length > 0 && document.getElementById('show-history').checked) {
-                historyContainer.innerHTML = appState.searchHistory.slice(0, 3).map(term => {
+                historyContainer.innerHTML = appState.searchHistory.slice(0, 3).map((term, idx) => {
                     const safeTerm = JSON.stringify(term);
                     return `<span class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm group">
                         <button onclick="searchFromHistory(${safeTerm})" class="hover:text-amber-800 transition text-left">${escapeHtml(term)}</button>
-                        <button onclick="event.stopPropagation(); removeFromSearchHistory(${safeTerm});" class="min-w-[32px] min-h-[32px] flex items-center justify-center text-gray-400 hover:text-red-600 active:text-red-700 transition text-base leading-none -mr-1 touch-manipulation" aria-label="Remove ${escapeHtml(term)} from history">×</button>
+                        <button type="button" onclick="event.stopPropagation(); removeFromSearchHistory(${idx});" class="min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-400 hover:text-red-600 active:text-red-700 transition text-lg leading-none -mr-1 touch-manipulation" aria-label="Remove ${escapeHtml(term)} from history">×</button>
                     </span>`;
                 }).join('');
                 historySection.classList.remove('hidden');
@@ -3720,13 +3718,19 @@
             handleSearch({ key: 'Enter' });
         }
 
-        function removeFromSearchHistory(term) {
-            const idx = appState.searchHistory.indexOf(term);
-            if (idx >= 0) {
+        function removeFromSearchHistory(idx) {
+            if (idx >= 0 && idx < appState.searchHistory.length) {
                 appState.searchHistory.splice(idx, 1);
                 saveData();
                 renderSearchHistory();
             }
+        }
+
+        function clearAllSearchHistory() {
+            appState.searchHistory = [];
+            saveData();
+            renderSearchHistory();
+            showToast('Recent searches cleared.');
         }
 
         function populateCategories() {
@@ -6139,14 +6143,10 @@
         }
         function renderBrowseDictionary() {
             const sortBy = document.getElementById('browse-sort').value;
-            const dialectFilter = document.getElementById('browse-dialect-filter').value;
             const viewMode = getBrowseViewMode();
             
             // Filter words
             let words = appState.words.filter(w => w.verified);
-            if (dialectFilter !== 'all') {
-                words = words.filter(w => w.dialect === dialectFilter);
-            }
             const listSearchRaw = (document.getElementById('browse-list-search')?.value || '').trim();
             const listSearch = listSearchRaw.toLowerCase();
             if (listSearch && getBrowseViewMode() === 'list') {
