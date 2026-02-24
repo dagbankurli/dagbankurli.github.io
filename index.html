@@ -147,6 +147,10 @@
             scrollbar-width: none;
         }
         .nav-scroll::-webkit-scrollbar { display: none; }
+        /* Dagbani keyboard */
+        #dagbani-keyboard { transition: transform 0.25s ease, opacity 0.2s ease; }
+        #dagbani-keyboard.hidden { transform: translateY(100%); opacity: 0; pointer-events: none; }
+        .dagbani-key { min-width: 44px; min-height: 44px; touch-action: manipulation; }
         .safe-top { padding-top: max(0.5rem, env(safe-area-inset-top)); }
         .modal-mobile { max-height: 90vh; overflow-y: auto; }
         @media (max-width: 639px) {
@@ -653,6 +657,30 @@
             </div>
         </div>
     </nav>
+
+    <!-- Dagbani Keyboard (fixed at bottom, togglable) -->
+    <div id="dagbani-keyboard-wrap" class="fixed bottom-0 left-0 right-0 z-30 safe-bottom" style="padding-bottom: env(safe-area-inset-bottom); display: none;">
+        <div id="dagbani-keyboard" class="hidden bg-white border-t-2 border-amber-300 shadow-2xl rounded-t-2xl p-3 pb-4">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-sm font-semibold text-amber-800">⌨️ Dagbani characters</span>
+                <button type="button" onclick="toggleDagbaniKeyboard()" class="px-3 py-1.5 text-sm font-medium text-amber-700 hover:bg-amber-100 rounded-lg transition" aria-label="Close Dagbani keyboard">✕ Close</button>
+            </div>
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɔ" title="ɔ (open o)">ɔ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɛ" title="ɛ (open e)">ɛ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ŋ" title="ŋ (eng)">ŋ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ʒ" title="ʒ (ezh)">ʒ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɣ" title="ɣ (gamma)">ɣ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɲ" title="ɲ (n with hook)">ɲ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɗ" title="ɗ (d with hook)">ɗ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɓ" title="ɓ (b with hook)">ɓ</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɔ̃" title="ɔ̃ (nasalized)">ɔ̃</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 border-2 border-amber-300 rounded-xl font-bold text-amber-900 text-lg transition touch-manipulation" data-char="ɛ̃" title="ɛ̃ (nasalized)">ɛ̃</button>
+                <button type="button" class="dagbani-key px-4 py-2.5 bg-amber-100 hover:bg-amber-200 active:bg-amber-300 border-2 border-amber-400 rounded-xl font-semibold text-amber-900 text-base transition touch-manipulation col-span-2" data-char="backspace" title="Backspace">⌫</button>
+            </div>
+        </div>
+        <button type="button" id="dagbani-keyboard-toggle" onclick="toggleDagbaniKeyboard()" class="absolute bottom-4 right-4 w-14 h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xl hover:from-amber-600 hover:to-orange-600 active:scale-95 flex items-center justify-center text-2xl transition touch-manipulation z-20" aria-label="Toggle Dagbani keyboard" title="Dagbani keyboard">⌨️</button>
+    </div>
 
     <!-- Dictionary View -->
     <div id="dictionary-view" class="view container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl" style="display: none;">
@@ -2606,6 +2634,8 @@
         function showMainApp() {
             document.getElementById('login-modal').classList.add('hidden');
             document.getElementById('main-nav').style.display = 'flex';
+            const kw = document.getElementById('dagbani-keyboard-wrap');
+            if (kw) kw.style.display = '';
             const role = getCurrentRole();
             const badge = document.getElementById('user-badge');
             const signInBtn = document.getElementById('nav-sign-in');
@@ -7760,6 +7790,52 @@
             if (sug && !sug.classList.contains('hidden') && inp && !inp.contains(e.target) && !sug.contains(e.target)) {
                 sug.classList.add('hidden');
             }
+        });
+
+        // Dagbani virtual keyboard
+        let lastDagbaniInputEl = null;
+        document.addEventListener('focusin', (e) => {
+            const el = e.target;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) lastDagbaniInputEl = el;
+        });
+        function insertDagbaniChar(char) {
+            const el = document.activeElement;
+            const target = (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) ? el : lastDagbaniInputEl;
+            if (!target) return;
+            const start = target.selectionStart ?? target.value.length;
+            const end = target.selectionEnd ?? target.value.length;
+            const val = target.value || '';
+            if (char === 'backspace') {
+                if (start === end && start > 0) {
+                    target.value = val.slice(0, start - 1) + val.slice(end);
+                    target.selectionStart = target.selectionEnd = start - 1;
+                } else if (start !== end) {
+                    target.value = val.slice(0, start) + val.slice(end);
+                    target.selectionStart = target.selectionEnd = start;
+                }
+            } else {
+                target.value = val.slice(0, start) + char + val.slice(end);
+                target.selectionStart = target.selectionEnd = start + char.length;
+            }
+            target.dispatchEvent(new Event('input', { bubbles: true }));
+            target.focus();
+        }
+        function toggleDagbaniKeyboard() {
+            const kb = document.getElementById('dagbani-keyboard');
+            const btn = document.getElementById('dagbani-keyboard-toggle');
+            if (kb && btn) {
+                const isHidden = kb.classList.contains('hidden');
+                kb.classList.toggle('hidden', !isHidden);
+                btn.classList.toggle('hidden', !isHidden);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.dagbani-key').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const char = btn.getAttribute('data-char');
+                    if (char) insertDagbaniChar(char);
+                });
+            });
         });
 
         // Initialize on load
