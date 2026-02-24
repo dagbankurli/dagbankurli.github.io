@@ -1,8 +1,12 @@
 Dagban Kurli - Excel/CSV templates for bulk entry
 
 The app loads its dictionary data from dictionary_import.json (not dictionary_data.json).
-These CSV files open in Excel. Use them to add words, phrases, and idioms.
-Match the column headers exactly when adding rows.
+There are THREE main templates:
+  1. Words      → dagbani_dictionary_template.csv
+  2. Phrases    → dagbani_phrases_template.csv
+  3. Idioms & Proverbs → dagbani_idioms_proverbs_template.csv
+
+Optional: dagbani_adverbs_template.csv (merged into words if present)
 
 === WORDS (dagbani_dictionary_template.csv) ===
 Matches the Add New Word form exactly:
@@ -10,7 +14,7 @@ Matches the Add New Word form exactly:
 dagbani       - Dagbani Word/Phrase (required) e.g. Antire
 english       - English Translation (required) e.g. Hello
 dialect       - Standard
-category      - General, Greetings, Food, Family, Nature, Verbs, Adjectives, Nouns, Provision, Idioms, Phrases, Animals, Names, Plants, Other
+category      - Nouns, Verbs, Adjectives, Adverbs, Numbers, Pronouns, Expressions, Food, Animals, Basics, General (app normalizes variants like noun, adj, etc.)
 grammar       - Grammar Notes (optional) e.g. Noun class: 1, Plural: Antireba
 example       - Example Sentence (optional) e.g. Antire, be ni tooi song ma?
 allowComments - true or false. Allow others to discuss or ask questions
@@ -29,28 +33,26 @@ node csv_to_json.js
 
   --- End ---
 
-  This creates dictionary_import.json with words, phrases, and idioms from all three CSVs.
-
-  Optional - convert only one type:
-    node csv_to_json.js words
-    node csv_to_json.js phrases
-    node csv_to_json.js idioms
-
-  Output: dictionary_import.json (or dictionary_import_words.json etc. for single-type)
+  This reads all three CSV templates and creates dictionary_import.json
+  (words + phrases + idioms/proverbs). All entries are preserved; no deduplication.
 
 UPLOAD: Profile -> Preferences & Data -> Import Data (Restore) -> select dictionary_import.json
-(Same place for words, phrases, and idioms - one JSON can contain all three.)
+
+  NOTE: Large dictionaries (10,000+ words) may exceed browser storage (~5MB limit).
 
 === PHRASES (dagbani_phrases_template.csv) ===
 dagbani   - Dagbani phrase (required)
 english   - English translation (required)
 usage     - When/where this phrase is used (optional)
-category  - basics, common_signs, problems, numbers, time, clock_time, duration, days, months, transportation, money, eating, etc.
+category  - basics, eating, transportation, money, time, numbers, shopping, general (app normalizes legacy values)
 
 === IDIOMS & PROVERBS (dagbani_idioms_proverbs_template.csv) ===
 dagbani   - Dagbani idiom or proverb (required)
 english   - English meaning (required)
 usage     - When this idiom or proverb is used (optional)
-category  - general, basics, common_signs, problems, eating, money, authority, provision, idioms, proverbs, etc.
+category  - proverb, idiom, general (distinct from phrase categories; app normalizes Proverb, Idioms, etc.)
 
-To import: Convert all CSVs to JSON with "node csv_to_json.js", then Profile -> Import Data (Restore). One JSON file can include words, phrases, and idioms.
+To import: Run "node csv_to_json.js" to convert all templates to one JSON, then Profile -> Import Data (Restore). One JSON file includes words, phrases, and idioms/proverbs.
+
+=== ADVERBS (dagbani_adverbs_template.csv) ===
+Optional. If this file exists, csv_to_json.js merges its entries into words (only those not already in the dictionary template).

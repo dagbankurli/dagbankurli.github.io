@@ -181,3 +181,4 @@ const SEED_PHRASES = [
   { dagbani: 'M bori looya ni n di o fiila', english: 'I want to talk to a lawyer', category: 'authority' },
   { dagbani: 'Ni tooi yo n samli puŋpɔŋɔ?', english: 'Can I just pay a fine now?', category: 'authority' }
 ];
+if (typeof module !== 'undefined' && module.exports) module.exports = { SEED_PHRASES };

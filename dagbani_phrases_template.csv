@@ -1,5 +1,465 @@
-dagbani,english,usage,category
-Antire,Hello,Greeting someone,basics
-N doo,Hello (informal),Informal greeting,basics
-Ka di be wula?,How are you?,Asking after someone's wellbeing,basics
-M mali alaafei,Good morning,Morning greeting,basics
+﻿dagbani,english,usage,category
+A gbaai ma mi?,Am I under arrest?,"Lit. ""You have caught me?""",authority
+M bori looya ni n di o fiila,I want to talk to a lawyer,Legal right,authority
+M bori ni n di America embassy kpamba alizama,I want to talk to the American embassy,Seeking consular help,authority
+M bori ni n di Australia embassy kpamba alizama,I want to talk to the Australian embassy,Seeking consular help,authority
+M bori ni n di Britain embassy kpamba alizama,I want to talk to the British embassy,Seeking consular help,authority
+M bori ni n di Canada embassy kpamba alizama,I want to talk to the Canadian embassy,Seeking consular help,authority
+N baŋ n taarihi,I know my rights,Asserting rights,authority
+N bi tum taali shɛli,I haven't done anything wrong,Protest innocence,authority
+N nyɛla America bilichina,I am an American citizen,Nationality,authority
+N nyɛla Australia bilichina,I am an Australian citizen,Nationality,authority
+N nyɛla Britin bilichina,I am a British citizen,Nationality,authority
+N nyɛla Canada bilichina,I am a Canadian citizen,Nationality,authority
+Nangbankpeen n di nyɛli,It was a misunderstanding,Explanation,authority
+Ni tooi yo n samli pumpɔŋɔ?,Can I just pay a fine now?,Asking for fine,authority
+Ya ka a mali ma n chana?,Where are you taking me?,Questioning authority,authority
+A gba ti ni paai,See you later,Response to parting,basics
+A ni suhɔ?,How are you?,"Lit. ""Are you at peace?""",basics
+A ni wula?,How are you?,"Lit. ""How are you?""",basics
+A wumya?,Do you understand?,Checking comprehension,basics
+A yi wula?,Good morning,"Literally ""How did you rise?""",basics
+A yuli bo?,What is your name?,"Lit. ""Your name what?""",basics
+aayi,No,Negation,basics
+Alibarika,Thanks / Blessings,Fuller form,basics
+Aninwula,Good night,Greeting used at night,basics
+Antire,Hello,Evening greeting,basics
+Ba ni sɔŋ ma?,Can you help me?,"Lit. ""Will they not help me?""",basics
+Bai bai,Goodbye (informal),From English,basics
+Barika,Blessings / Thanks,Used after meals,basics
+Bɔhim baŋsim,Learn,Advice,basics
+Bindirigu ʒɛya,Food is ready,Lit. food is standing,basics
+Chɛli li,Leave it,Request,basics
+Da n ti ma samina,Buy me some provisions,Request,basics
+Daaliri,Thank you,Common expression,basics
+Dasiba,Good morning,Standard morning greeting,basics
+Di kuli nyɛla suhupiɛlli,It's always a pleasure,Polite response,basics
+Di niŋ ma suhupiɛli pam ni n ni nya ŋɔ,Nice to meet you,"Lit. ""It makes me happy to see this""",basics
+Di nyɛɣisim,Enjoy your meal,Lit. its sweetness,basics
+Di nyɛla din baligi,It is easy,Comment on task,basics
+Di pala,It's nothing / You're welcome,Response to thanks,basics
+Di simdi,You're welcome,"Lit. ""It is fitting""",basics
+Dimi suhugulo,Please,Polite request marker,basics
+Doli ma,Follow me,Command,basics
+Gaafara,Excuse me,From Hausa/Arabic,basics
+Gaafara n tum taali,Excuse me (begging pardon),Apologetic form,basics
+Gbilim,Lie down,Command,basics
+Guli ma,Wait for me,Command,basics
+iin,Yes,Affirmation,basics
+Ka a saɣi,If you agree,Polite condition,basics
+Ka di niŋ kamaata,If it is appropriate,Polite condition,basics
+Ka ti chaŋ,Let's go,Suggestion,basics
+Kam na,Come here,Command,basics
+Kɔhim ma niɛma,Sell me goods,Request,basics
+Kpe na,Come in,Invitation,basics
+Kpɛŋ n-nyɛ li,It is difficult,Comment on situation,basics
+Labi na,Come back,Command,basics
+Lihi ma!,Look out!,Warning,basics
+M ba,My father,Respectful address,basics
+M baŋya,I know,Statement,basics
+M bi baŋ,I don't know,Statement,basics
+M bia,My child,Affectionate address,basics
+M ma,My mother,Respectful address,basics
+M mala,I am well,Response to greeting,basics
+M mali anfaani,Excuse me,Used to get attention,basics
+M puhiya ka paɣi,Thank you,More formal thanks,basics
+M zɔ,My friend,Friendly address,basics
+Maasim ni,Coolness and...,Part of blessing,basics
+Maasim ni alaafee,Coolness and health,Common blessing,basics
+Maasim ni baŋsim,Coolness and wisdom,Common blessing,basics
+Maasim ni barika,Coolness and blessings,Common blessing,basics
+Maasim ni faako,Coolness and deliverance,Common blessing,basics
+Maasim ni nyɛvili,Coolness and life,Common blessing,basics
+Maasim ni suhudoo,Coolness and peace,Common blessing,basics
+Maasim ni yiko,Coolness and strength,Common blessing,basics
+Maasim ni yurilim,Coolness and love,Common blessing,basics
+N bɔri a,I need you,Can be romantic or literal,basics
+N bi gbaai,I don't understand,"Lit. ""I don't catch""",basics
+N doo,my friend,"Informal greeting (lit. ""my man"")",basics
+N ku tooi yɛli Dagbanli,I can't speak Dagbani,Statement of inability,basics
+N ku tooi yɛli Dagbanli viɛnyɛla,I can't speak Dagbani well,With qualification,basics
+N ni tooi yɛli silimiinsili?,Do you speak English?,"Lit. ""Can I speak English?""",basics
+N nyɛla…,I am…,Self-introduction,basics
+N pali ya,I am full,After meal,basics
+N suhɔya,I am fine,Response to greeting,basics
+N suhu biɛri a zuɣu,I feel sorry for you,Lit. my heart hurts for you,basics
+N suhu ni,In my heart,Emotional expression,basics
+N suhu yu a,I love you,Lit. my heart loves you,basics
+N tumi taali,I'm sorry,Admission of fault,basics
+N yu a,I like you,Shorter affectionate form,basics
+N yuli booni…,My name is called…,Standard response,basics
+N yuli nye…,My name is…,Standard response,basics
+Naawuni deei barika,May God accept thanks,Response to thanks,basics
+Naawuni guli a,May God protect you,Blessing,basics
+Naawuni ni sɔŋ,Goodbye,Said by person leaving,basics
+Naawuni ni ti biɛɣu,Good night (to sleep),Said to someone retiring,basics
+Naawuni pali a ni alaafee,May God fill you with health,Blessing,basics
+Naawuni salaam alaikum,Peace be upon you,Formal Islamic greeting,basics
+Naawuni sɔŋ a,May God help you,Blessing,basics
+Naawuni taɣi a,May God preserve you,Blessing,basics
+Naawuni taɣi ti,God forbid,Exclamation at bad news,basics
+Naawuni ti a baŋsim,May God give you wisdom,Blessing,basics
+Naawuni ti a barika,May God give you blessings,Blessing,basics
+Naawuni ti a faako,May God deliver you,Blessing,basics
+Naawuni ti a maasim,May God give you coolness,Blessing,basics
+Naawuni ti a nasara,May God give you victory,Blessing,basics
+Naawuni ti a nyɛvuli waɣila,May God give you long life,Blessing,basics
+Naawuni ti a suhudoo,May God give you peace,Blessing,basics
+Naawuni ti a yiko,May God give you strength,Blessing,basics
+Naɣi,Stop it,Command,basics
+Ni ti di li,Let's eat,Suggestion,basics
+Ni ti nyu li,Let's drink,Suggestion,basics
+Paɣim a maŋa,Wash yourself,Command,basics
+Pirisi,Please (respectful),Formal politeness,basics
+Sɔŋ ma,Help me,Command,basics
+Sɔŋmi ya ma!,Help!,Call for assistance,basics
+So be kpe ka yari silimiinsili?,Is there someone here who speaks English?,Seeking interpreter,basics
+Suɣim li,Wash it,Command,basics
+Suhu biɛɣu be ni,I am angry,Lit. anger is there,basics
+Ti ma li,Give it to me,Command,basics
+Ti ni kuli lahi paai,See you again,Goodbye phrase,basics
+Ti ŋmaai,Let's part / Goodbye,Lit. let's cut,basics
+Ti paai mi,Goodbye (we've met),Said when parting,basics
+Tum a tuma viɛnyɛla,Do your work well,Advice,basics
+Wahala n-nyɛ li,It is trouble,Exclamation of frustration,basics
+Wumma,Hello? (on phone),Lit. hear me,basics
+Yapolo ka baanjira be?,Where is the toilet?,Essential phrase,basics
+Zanimi,Wait,Command,basics
+Zaŋ ma chaŋ paaki,Take me to the park,Command,basics
+ʒɛmana be ni,Long time no see,Lit. time is there,basics
+ʒimi,Stop,Command,basics
+ʒini gbaai suhudoo,Take a seat,Lit. sit and catch peace,basics
+ʒini na,Sit down,Invitation,basics
+ʒini viɛnyɛla,Sit properly,Advice,basics
+Ala n nyɛ tiɣiti zaŋ chaŋ Tamale?,How much is a ticket to Tamale?,Asking price,bus_and_train
+Bo saha ka loori ŋɔ yɛn ti paai Tamale?,When will this bus arrive in Tamale?,Arrival time,bus_and_train
+Bo saha ka loori zaŋ chaŋ Tamale yi?,When does the bus for Tamale leave?,Departure time,bus_and_train
+Loori ŋɔ ni zani Tamale?,Does this bus stop in Tamale?,Confirming stop,bus_and_train
+Tiɣiti zaɣa yini zaŋ chaŋ Tamale,One ticket to Tamale please,Request,bus_and_train
+Tiɣiti zaɣa yini zaŋ chaŋ Tamale dimisuhugulo,One ticket to Tamale please,Requesting ticket,bus_and_train
+Ya polo ka loori ŋɔ chana?,Where does this bus go?,Asking destination,bus_and_train
+Ya polo ka loori zaŋ chaŋ Tamale be?,Where is the bus to Tamale?,Locating transport,bus_and_train
+Kurigi dɔnya,What time is it?,Asking time,clock_time
+Wuntaŋ zuɣusaa,Noon,Lit. on top of sun,clock_time
+Wuntaŋni kurigi yini,One o'clock PM,Lit. inside sun hour one,clock_time
+Dozim,Yellow,Gold-like,colors
+Dozim dozim,Yellowish,Yellowish tinge,colors
+Mɔri ningbuna,Green,Lit. grass color,colors
+Nuɣiso,Blue,Sky blue,colors
+Nuɣiso nuɣiso,Bluish,Bluish tinge,colors
+Piɛɣu,Light-skinned,Person with light complexion,colors
+Piɛlli,White,Pure white,colors
+Sabila,Dark-skinned,Person with dark complexion,colors
+Sabinli,Black,Dark color,colors
+Saliŋkom,Orange,Lit. orange water,colors
+Tampilim,Grey,Neutral color,colors
+Taŋkpaɣu,Brown,Lit. soil,colors
+Vakahili,Green,Fresh vegetation,colors
+ʒee,Red,Bright red,colors
+ʒeeʒee,Reddish,Reddish tinge,colors
+Baanjira,TOILET,Common term for latrine,common_signs
+Dabi,CLOSED,Sign for closed establishment,common_signs
+Di di,FORBIDDEN,"Lit. ""Do not eat""",common_signs
+Di kpɛri,NO ENTRY,"Lit. ""Do not enter""",common_signs
+Di shihi,DO NOT TRY,"Alternative for ""Do not touch""",common_signs
+Di yuui,DO NOT TOUCH,"Lit. ""Do not touch""",common_signs
+Doba,MEN,"Plural of ""doo""",common_signs
+Gbaai,PULL,Command to pull,common_signs
+Kpe soli,ENTRANCE,"Lit. ""Enter path""",common_signs
+Kpɛm,BOSS,Sign on office door,common_signs
+Kpɛm kpe,SENIOR CITIZENS,For designated seating,common_signs
+Naa,Yes / Okay,Response to greeting,common_signs
+Ni ti maasim,Coolness to us,Response to 'Dasiba' said by elder,common_signs
+Paya,WOMEN,"Plural of ""paɣa""",common_signs
+Piligu,OPEN,Sign for open establishment,common_signs
+Pula,STAFF ONLY,Restricted area,common_signs
+Tuhi,PUSH,Command to push,common_signs
+Yihi soli,EXIT,"Lit. ""Remove path""",common_signs
+Zɔŋ gbali,PRIVATE PROPERTY,"Lit. ""House forbidden""",common_signs
+Alaaba,Wednesday,Third day,days
+Alaaba dali,On Wednesday,Day reference,days
+Alaamish,Thursday,Fourth day,days
+Alaamish dali,On Thursday,Day reference,days
+Alahari,Sunday,Day of rest,days
+Alahari dali,On Sunday,Day reference,days
+Alizumah,Friday,Day of congregation,days
+Alizumma,Saturday,Alternative form,days
+Alizumma dali,On Friday,Day reference,days
+Asibiri,Saturday,Sabbath day,days
+Asibiri dali,On Saturday,Day reference,days
+Atalaata,Tuesday,Second day,days
+Atalaata dali,On Tuesday,Day reference,days
+Atani,Monday,First work day,days
+Atani dali,On Monday,Day reference,days
+Bakɔi din gari la,Last week,Lit. week that passed,days
+Bakɔi din kani na,Next week,Lit. week coming,days
+Bakɔi ŋɔ,This week,Current week,days
+Biɛɣu gbali,The whole day,Full day duration,days
+Biɛɣu kam,Every day,Routine,days
+Biɛɣu kam ni,Each day,Distribution,days
+Biɛɣu pia,Ten days,Ten day period,days
+Biɛɣu pihita,Thirty days,One month roughly,days
+Biɛɣu pirigili,Half a day,Half day duration,days
+Biɛɣu pishi,Twenty days,Twenty day period,days
+Biɛɣu shɛli,Someday,Indefinite future,days
+Biɛɣuni,Tomorrow,Next day,days
+Dabsili shɛli,Some day,Indefinite day,days
+Sɔhila,Yesterday,Day before,days
+Sibiri,Saturday,Short form,days
+Zuŋɔ,Today,This day,days
+Alapele paaki be yapolo?,Where is the airport?,Airport location,directions
+Boosu teesa be yapolo?,Where is the bus station?,Bus station location,directions
+Cheli yili maa,Pass that house,Instruction,directions
+Doli soli ŋɔ,Follow this road,Instruction,directions
+Gari mɔɣili maa,Cross that river,Instruction,directions
+Gili tia maa,Go around that tree,Instruction,directions
+Kpe soli maa,Enter that road,Instruction,directions
+Labi yiŋa,Return home,Instruction,directions
+Nudirigu,Right,Right side,directions
+Nuzaa,Left,Left side,directions
+Ŋmaligim nudirigu,Turn right,Instruction,directions
+Ŋmaligim nuzaa,Turn left,Instruction,directions
+Tuɣi n-chaŋ tooni,Continue straight ahead,Instruction,directions
+Wula ka n-yɛn chaŋ Tamale?,How do I get to Tamale?,Asking directions,directions
+Yihi soli maa,Exit that road,Instruction,directions
+Zaŋ kpa Tamale,Towards Tamale,Directional,directions
+Ziligi teesa be yapolo?,Where is the train station?,Train station location,directions
+Diesel be yapolo n-yo?,Where can I buy diesel?,Asking for fuel,driving
+Petiro be yapolo n-yo?,Where can I buy petrol?,Asking for fuel,driving
+Petiro kɔbiga nyɛla ala?,How much is a gallon of petrol?,Price inquiry,driving
+Petiro shɛl be yapolo?,Where is the petrol station?,Fuel stop location,driving
+Chira ayi,Two months,Plural of goli,duration
+Goli yini,One month,One lunar month,duration
+Yuun tusa,Decade,Ten years,duration
+Yuun tusa ayi,Twenty years,Twenty years,duration
+Ndam,1,"Used when counting (one,  two,  three...)",numbers
+Yini,1,"Used as ""one"" in phrases (one person  one thing)",numbers
+Ayi,2,Cardinal number,numbers
+Ata,3,Cardinal number,numbers
+Anahi,4,Cardinal number,numbers
+Anu,5,Cardinal number,numbers
+Ayobu,6,Cardinal number,numbers
+Apɔin,7,Cardinal number,numbers
+Anii,8,Cardinal number,numbers
+Awɔi,9,Cardinal number,numbers
+Pia,10,Cardinal number,numbers
+Piniyini,11,"Literally ""ten and one""",numbers
+Pinaayi,12,"Literally ""ten and two""",numbers
+Pinaata,13,"Literally ""ten and three""",numbers
+Pinaanahi,14,"Literally ""ten and four""",numbers
+Pinaanu,15,"Literally ""ten and five""",numbers
+Pinaayobu,16,"Literally ""ten and six""",numbers
+Pinaapɔin,17,"Literally ""ten and seven""",numbers
+Pishiayika,18,Contracted form,numbers
+Pisiyinika,19,Contracted form,numbers
+Pishi,20,Cardinal number,numbers
+Pishi ni yini,21,Twenty and one,numbers
+Pishi ni ayi,22,Twenty and two,numbers
+Pishi ni ata,23,Twenty and three,numbers
+Pishi ni anahi,24,Twenty and four,numbers
+Pishi ni anu,25,Twenty and five,numbers
+Pishi ni ayobu,26,Twenty and six,numbers
+Pishi ni apɔin,27,Twenty and seven,numbers
+Pihita ayika,28,Thirty minus two,numbers
+Pihitayinika,29,Thirty minus one,numbers
+Pihita,30,Cardinal number,numbers
+Pihinahi,40,Cardinal number,numbers
+Pihinu,50,Cardinal number,numbers
+Pihiyobu,60,Cardinal number,numbers
+Pisopɔin,70,Cardinal number,numbers
+Pihinii,80,Cardinal number,numbers
+Pihiwɔi,90,Cardinal number,numbers
+Kɔbiga,100,Cardinal number,numbers
+Kɔbishiyi,200,Two hundred,numbers
+Kɔbisita,300,Three hundred,numbers
+Kɔbinaahi,400,Four hundred,numbers
+Kɔbinu,500,Five hundred,numbers
+Kɔbiyobu,600,Six hundred,numbers
+Kɔbispɔin,700,Seven hundred,numbers
+Kɔbinii,800,Eight hundred,numbers
+Kɔbiwɔi,900,Nine hundred,numbers
+Tuhili,1000,One thousand,numbers
+Tusaayi,2000,Two thousand,numbers
+Tusita,3000,Three thousand,numbers
+Tusinaahi,4000,Four thousand,numbers
+Tusinu,5000,Five thousand,numbers
+Tusiyobu,6000,Six thousand,numbers
+Tusipɔin,7000,Seven thousand,numbers
+Tusinii,8000,Eight thousand,numbers
+Tusiwɔi,9000,Nine thousand,numbers
+Tusi pia,10000,Ten thousand,numbers
+Tusi pishi,20000,Twenty thousand,numbers
+Tusi pihita,30000,Thirty thousand,numbers
+Tusi pihinahi,40000,Forty thousand,numbers
+Tusi pihinu,50000,Fifty thousand,numbers
+Tusi pihiyobu,60000,Sixty thousand,numbers
+Tusi pisopɔin,70000,Seventy thousand,numbers
+Tusi pihinii,80000,Eighty thousand,numbers
+Tusi pihiwɔi,90000,Ninety thousand,numbers
+Tusi kɔbiga,100000,One hundred thousand,numbers
+Tusi kɔbishiyi,200000,Two hundred thousand,numbers
+Tusi kɔbisita,300000,Three hundred thousand,numbers
+Tusi kɔbinaahi,400000,Four hundred thousand,numbers
+Tusi kɔbinu,500000,Five hundred thousand,numbers
+Tusi kɔbiyobu,600000,Six hundred thousand,numbers
+Tusi kɔbispɔin,700000,Seven hundred thousand,numbers
+Tusi kɔbinii,800000,Eight hundred thousand,numbers
+Tusi kɔbiwɔi,900000,Nine hundred thousand,numbers
+Tusi tuhili / Tusi tusi yini,1000000,One million,numbers
+Tusi tusaayi,2000000,Two million,numbers
+Tusi tusita,3000000,Three million,numbers
+Tusi tusinaahi,4000000,Four million,numbers
+Tusi tusinu,5000000,Five million,numbers
+Tusi tusiyobu,6000000,Six million,numbers
+Tusi tusipɔin,7000000,Seven million,numbers
+Tusi tusinii,8000000,Eight million,numbers
+Tusi tusiwɔi,9000000,Nine million,numbers
+Tusi tusi pia,10000000,Ten million,numbers
+Tusi tusi pishi,20000000,Twenty million,numbers
+Tusi tusi pihita,30000000,Thirty million,numbers
+Tusi tusi pihinahi,40000000,Forty million,numbers
+Tusi tusi pihinu,50000000,Fifty million,numbers
+Tusi tusi pihiyobu,60000000,Sixty million,numbers
+Tusi tusi pisopɔin,70000000,Seventy million,numbers
+Tusi tusi pihinii,80000000,Eighty million,numbers
+Tusi tusi pihiwɔi,90000000,Ninety million,numbers
+Tusi tusi kɔbiga,100000000,One hundred million,numbers
+Tusi tusi kɔbishiyi,200000000,Two hundred million,numbers
+Tusi tusi kɔbisita,300000000,Three hundred million,numbers
+Tusi tusi kɔbinaahi,400000000,Four hundred million,numbers
+Tusi tusi kɔbinu,500000000,Five hundred million,numbers
+Tusi tusi kɔbiyobu,600000000,Six hundred million,numbers
+Tusi tusi kɔbispɔin,700000000,Seven hundred million,numbers
+Tusi tusi kɔbinii,800000000,Eight hundred million,numbers
+Tusi tusi kɔbiwɔi,900000000,Nine hundred million,numbers
+Tusi tusi tuhili,1000000000,One billion,numbers
+Din pahi,Additional / Extra,Used when counting,numbers
+Zaa,All,Totality,numbers
+Pirigili,Half,Fraction,numbers
+Bɛla,Less / Small,Quantity or size,numbers
+Chɔɣim,Many / Numerous,Large quantity,numbers
+Tuhi tuhaayi,Millions,Alternative form,numbers
+Tusi tuhili,Millions,thousand thousand,numbers
+Pam,More / Plenty / Very,Quantity or degree,numbers
+Gbunni,Remainder,In arithmetic,numbers
+Zali,Remaining / Left over,When counting items,numbers
+Waazim,Zero,From Hausa,numbers
+Bɔhi ba dɔɣite sani,Call an ambulance,"Lit. ""Call doctor people""",problems
+Buɣim kpe ya!,Fire!,Emergency,problems
+Di shihi ma!,Don't touch me!,Warning,problems
+Dim ma,I've been bitten,By animal or insect,problems
+M bɛri mi,I'm sick,"Lit. ""Pain is on me""",problems
+M bori la a sɔŋsim,I need your help,Request,problems
+M bori la ashibiti,I need a hospital,Medical emergency,problems
+M bori la tim,I need medicine,Requesting medication,problems
+N bori la dɔɣite,I need a doctor,Medical request,problems
+N dɔli mi,I am being followed,Fear for safety,problems
+N labi la m baagi,I lost my bag,Reporting loss,problems
+N labi la m poochibila,I lost my wallet,Reporting loss,problems
+N ni tooi zaŋ a phone ŋɔ n niŋ m bini ŋɔ?,Can I use your phone?,Polite request,problems
+N nyɛla daŋa,I've been injured,"Lit. ""I am a wound""",problems
+N tumla n soli,I'm lost,"Lit. ""I have lost my way""",problems
+N yɛn bol'la prinsi,I'll call the police,Threat,problems
+N yiŋa be yapolo?,Where is my house?,When disoriented,problems
+Nimmohi m bala,It's an emergency,"Lit. ""It is urgency""",problems
+Polinga!,Police!,Calling police,problems
+Zan ma bahi,Leave me alone,Order to be left,problems
+Zani ma! Tayiɣa!,Stop! Thief!,Chasing thief,problems
+Asiba,Morning,Early part of day,time
+Bakɔi ata,Three weeks,,time
+Bakɔi ayi,Two weeks,,time
+Bakɔi kam dali,Every day / Daily,Frequency,time
+Bakɔi yini,One week,,time
+Bɔma,Harvest / November,Month name,time
+Bɔma Goli,November,Lit. Harvest month,time
+Buɣim,Fire / January,Month name,time
+Buɣim Goli,January,Lit. Fire month,time
+Buyali,Daytime,Opposite of night,time
+Chimsi,Planting / July,Month name,time
+Chimsi Goli,July,Lit. Planting month,time
+Chira,Months,Plural of goli,time
+Chira anahi,Four months,,time
+Chira anii,Eight months,,time
+Chira anu,Five months,,time
+Chira apɔin,Seven months,,time
+Chira ata,Three months,,time
+Chira awɔi,Nine months,,time
+Chira ayobu,Six months,,time
+Chira pia,Ten months,,time
+Dabsili kam,Every day / Daily,Frequency,time
+Damma,Harmattan / February,Month name,time
+Damma Goli,February,Lit. Harmattan month,time
+Di yi tooi bɛla,Later,Lit. if it can be small,time
+Goli,Moon / Month,General word,time
+Goli anahi,Four months,,time
+Goli anii,Eight months,,time
+Goli anu,Five months,,time
+Goli apɔin,Seven months,,time
+Goli ata,Three months,,time
+Goli awɔi,Nine months,,time
+Goli ayi,Two months,,time
+Goli ayobu,Six months,,time
+Goli din gari la,Last month,Previous month,time
+Goli din kani na,Next month,Coming month,time
+Goli ŋɔ,This month,Current month,time
+Goli pia,Ten months,,time
+Golibila,Crescent moon,Lit. small moon,time
+Golikpɛma,Full moon,Lit. big moon,time
+Golikurigu,Waning moon,Lit. old moon,time
+Golipaaligu,New month,Beginning of month,time
+Golipola,New moon,First crescent,time
+Golisunni,Full moon,Middle of month,time
+Hawa ata,Three hours,duration,time
+Hawa ayi,Two hours,duration,time
+Hawa yini,One hour,duration,time
+Kɔbu,Farming / September,Month name,time
+Kɔbu Goli,September,Lit. Farming month,time
+Kɔnyuri,Thirst / March,Month name,time
+Kɔnyuri Goli,March,Lit. Thirst month,time
+Kpini,Guinea fowl / April,Month name,time
+Kpini Bila,Small guinea fowl / May,Month name,time
+Kpini Bila Goli,May,Lit. Small guinea fowl month,time
+Kpini Goli,April,Lit. Guinea fowl month,time
+Kuli,Home-going / December,Month name,time
+Kuli Goli,December,Lit. Home-going month,time
+Minti pia,Ten minutes,duration,time
+Minti pihita,Thirty minutes,duration,time
+Minti pishi,Twenty minutes,duration,time
+Naanyi,Then / Afterwards,Sequence marker,time
+Pɔi,Before,Prior to,time
+Pɔi ka naanyi,First before,Sequence marker,time
+Pumpɔŋɔ,Now,Present moment,time
+Saha,Time,General word,time
+Sankara,Weeding / August,Month name,time
+Sankara Goli,August,Lit. Weeding month,time
+Tulu,Heat / June,Month name,time
+Tulu Goli,June,Lit. Heat month,time
+Wuntaŋ lu saha,Sunset time,clock_time,time
+Wuntaŋni,Afternoon,Lit. inside sun,time
+Wuntaŋni kurigi anahi,Four o'clock PM,clock_time,time
+Wuntaŋni kurigi ata,Three o'clock PM,clock_time,time
+Wuntaŋni kurigi ayi,Two o'clock PM,clock_time,time
+Yili Naa,House chief / October,Month name,time
+Yili Naa Goli,October,Lit. House chief month,time
+Yumma,Years,Plural of yuuni,time
+Yumma anahi,Four years,count of year,time
+Yumma anii,Eight years,count of year,time
+Yumma anu,Five years,count of year,time
+Yumma apɔin,Seven years,count of year,time
+Yumma ata,Three years,count of year,time
+Yumma awɔi,Nine years,count of year,time
+Yumma ayi,Two years,count of year,time
+Yumma ayobu,Six years,count of year,time
+Yumma kɔbiga,One hundred years,Century,time
+Yumma pia,Ten years,Decade,time
+Yumma pihita,Thirty years,Three decades,time
+Yumma pishi,Twenty years,Score years,time
+Yuŋ,Night,Dark hours,time
+Yuŋ tisuɣu,Midnight,Lit. night rest,time
+Yuŋ tisuɣu kurigi ata,Three o'clock AM,clock_time,time
+Yuŋ tisuɣu kurigi ayi,Two o'clock AM,clock_time,time
+Yuŋ tisuɣu kurigi yini,One o'clock AM,Lit. night rest hour one,time
+Yuuni,One year,Singular,time
+Yuuni yini,One year,Full form,time
+Zaawuni,Evening,Toward night,time
+```,,,
