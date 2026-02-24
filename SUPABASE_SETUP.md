@@ -91,6 +91,43 @@ CREATE TRIGGER on_auth_user_created
 
 The trigger creates the profile when a user signs up (including when email confirmation is required).
 
+### Activity log (for admins)
+
+```sql
+CREATE TABLE activity_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL CHECK (type IN ('approved', 'rejected')),
+  kind TEXT NOT NULL CHECK (kind IN ('word', 'phrase', 'idiom')),
+  item_id TEXT,
+  dagbani TEXT,
+  by_username TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
+
+-- Admins can read activity log
+CREATE POLICY "Admins can read activity_log" ON activity_log
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- Admins can insert activity log
+CREATE POLICY "Admins can insert activity_log" ON activity_log
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+```
+
+### Allow admins to update user roles (for User Management)
+
+```sql
+CREATE POLICY "Admins can update other profiles" ON profiles
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles p WHERE p.id = auth.uid() AND p.role = 'admin')
+  );
+```
+
 ## 5. Promote your first admin
 
 After creating an account and signing in, run this in the SQL Editor (replace `your@email.com` with your email):
@@ -113,7 +150,42 @@ In Supabase: **Authentication** → **Providers** → **Email**:
 - Enable "Confirm email" if you want users to verify their email (or disable for simpler flow).
 - For a free community app, you may disable confirmation so signup works immediately.
 
-## 7. Deploy
+## 7. Run the new tables (User Management + Activity Log)
+
+If you already set up Supabase before, run this **additional SQL** in the SQL Editor:
+
+```sql
+-- Activity log table
+CREATE TABLE IF NOT EXISTS activity_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL CHECK (type IN ('approved', 'rejected')),
+  kind TEXT NOT NULL CHECK (kind IN ('word', 'phrase', 'idiom')),
+  item_id TEXT,
+  dagbani TEXT,
+  by_username TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins can read activity_log" ON activity_log
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+CREATE POLICY "Admins can insert activity_log" ON activity_log
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- Allow admins to update user roles (User Management)
+CREATE POLICY "Admins can update other profiles" ON profiles
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles p WHERE p.id = auth.uid() AND p.role = 'admin')
+  );
+```
+
+## 8. Deploy
 
 Push your changes. The app will use Supabase when `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set. If they are empty, it falls back to localStorage (offline mode).
 

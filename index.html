@@ -2944,6 +2944,27 @@
             if (appState.currentView === 'profile') renderProfile();
         }
 
+        async function fetchActivityLogFromSupabase() {
+            if (!supabase || !isAdmin()) return;
+            try {
+                const { data } = await supabase.from('activity_log').select('*').order('created_at', { ascending: false }).limit(500);
+                if (data && data.length) {
+                    appState.activityLog = data.map(r => ({ type: r.type, kind: r.kind, id: r.item_id, dagbani: r.dagbani, by: r.by_username, at: r.created_at }));
+                }
+            } catch (e) { console.warn('Activity log fetch failed:', e); }
+        }
+        async function pushActivityLogToSupabase(entry) {
+            if (!supabase || !isAdmin()) return;
+            try {
+                await supabase.from('activity_log').insert({
+                    type: entry.type,
+                    kind: entry.kind || 'word',
+                    item_id: String(entry.id || ''),
+                    dagbani: entry.dagbani || '',
+                    by_username: entry.by || appState.currentUser?.username || 'Admin'
+                });
+            } catch (e) { console.warn('Activity log push failed:', e); }
+        }
         function renderActivityLog() {
             const actList = document.getElementById('activity-log-list');
             const paginationEl = document.getElementById('activity-log-pagination');
@@ -2980,13 +3001,26 @@
             if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'auditTrail');
         }
 
-        function renderUserManagement() {
+        async function renderUserManagement() {
             const list = document.getElementById('user-management-list');
             if (!list || !isMasterAdmin()) return;
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const contributors = users.filter(u => u.role === ROLES.contributor);
-            const admins = users.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username));
-            const combined = contributors.map(u => ({ ...u, _type: 'contributor' })).concat(admins.map(u => ({ ...u, _type: 'admin' })));
+            let combined = [];
+            if (supabase) {
+                try {
+                    const { data: profiles } = await supabase.from('profiles').select('id, username, role, attribution_name').in('role', ['contributor', 'admin']);
+                    if (profiles) {
+                        const contributors = profiles.filter(p => p.role === ROLES.contributor).map(p => ({ id: p.id, username: p.username, role: p.role, attributionName: p.attribution_name, _type: 'contributor' }));
+                        const admins = profiles.filter(p => p.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(p.username)).map(p => ({ id: p.id, username: p.username, role: p.role, _type: 'admin' }));
+                        combined = contributors.concat(admins);
+                    }
+                } catch (e) { console.warn('User management fetch failed:', e); }
+            }
+            if (combined.length === 0 && !supabase) {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const contributors = users.filter(u => u.role === ROLES.contributor);
+                const admins = users.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username));
+                combined = contributors.map(u => ({ ...u, _type: 'contributor' })).concat(admins.map(u => ({ ...u, _type: 'admin' })));
+            }
             if (combined.length === 0) {
                 list.innerHTML = '<p class="text-gray-500 text-sm">No contributors or admins to manage.</p>';
                 return;
@@ -3023,9 +3057,18 @@
             list.innerHTML = html + renderPaginationBar(total, currentPage, totalPages, 'userManagement');
         }
 
-        function demoteToContributor(username) {
+        async function demoteToContributor(username) {
             if (!isMasterAdmin()) { showToast('Only master admins can demote.', 'error'); return; }
             if (MASTER_ADMIN_USERNAMES.includes(username)) { showToast('Cannot demote master admins.', 'error'); return; }
+            if (supabase) {
+                try {
+                    const { error } = await supabase.from('profiles').update({ role: ROLES.contributor }).eq('username', username);
+                    if (error) throw error;
+                    showToast(`${username} demoted to contributor.`);
+                    renderUserManagement();
+                } catch (e) { showToast(e.message || 'Demote failed', 'error'); }
+                return;
+            }
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const user = users.find(u => u.username === username);
             if (!user || user.role !== ROLES.admin) return;
@@ -3035,9 +3078,18 @@
             showToast(`${username} demoted to contributor.`);
         }
 
-        function promoteToAdmin(username) {
+        async function promoteToAdmin(username) {
             if (!isMasterAdmin()) { showToast('Only master admins can create admins.', 'error'); return; }
             if (!username) return;
+            if (supabase) {
+                try {
+                    const { error } = await supabase.from('profiles').update({ role: ROLES.admin }).eq('username', username);
+                    if (error) throw error;
+                    showToast(`${username} is now an admin.`);
+                    renderUserManagement();
+                } catch (e) { showToast(e.message || 'Promote failed', 'error'); }
+                return;
+            }
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const user = users.find(u => u.username === username);
             if (!user) { showToast('User not found.', 'error'); return; }
@@ -3104,7 +3156,7 @@
                 if (actSection) {
                     if (isAdmin()) {
                         actSection.classList.remove('hidden');
-                        renderActivityLog();
+                        fetchActivityLogFromSupabase().then(() => { renderActivityLog(); if (isMasterAdmin()) renderAuditTrail(); });
                     } else {
                         actSection.classList.add('hidden');
                     }
@@ -6103,7 +6155,11 @@
             if (!confirm('Reject this idiom submission?')) return;
             const p = (appState.pendingIdioms || []).find(x => x.id === id);
             const approver = appState.currentUser?.username || 'Admin';
-            if (p) (appState.activityLog || []).push({ type: 'rejected', kind: 'idiom', id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
+            if (p) {
+                const entry = { type: 'rejected', kind: 'idiom', id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() };
+                (appState.activityLog || []).push(entry);
+                pushActivityLogToSupabase(entry);
+            }
             appState.pendingIdioms = (appState.pendingIdioms || []).filter(x => x.id !== id);
             saveData();
             renderPendingIdioms();
@@ -6712,7 +6768,9 @@
             }
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
             const approver = appState.currentUser?.username || 'Admin';
-            (appState.activityLog || []).push({ type: 'approved', kind: 'phrase', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
+            const entry = { type: 'approved', kind: 'phrase', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() };
+            (appState.activityLog || []).push(entry);
+            pushActivityLogToSupabase(entry);
             appState.communityFeed.unshift({
                 id: Date.now(),
                 type: 'new_phrase',
@@ -6734,7 +6792,11 @@
             if (!confirm('Reject this phrase submission?')) return;
             const p = appState.pendingPhrases.find(x => x.id === id);
             const approver = appState.currentUser?.username || 'Admin';
-            if (p) (appState.activityLog || []).push({ type: 'rejected', kind: 'phrase', id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
+            if (p) {
+                const entry = { type: 'rejected', kind: 'phrase', id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() };
+                (appState.activityLog || []).push(entry);
+                pushActivityLogToSupabase(entry);
+            }
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
             saveData();
             renderPendingPhrases();
@@ -6782,7 +6844,9 @@
             if (!confirm('Are you sure you want to reject this submission?')) return;
             const submission = appState.pendingSubmissions.find(s => s.id === id);
             const approver = appState.currentUser?.username || 'Admin';
-            (appState.activityLog || []).push({ type: 'rejected', kind: 'word', id, dagbani: submission?.dagbani, by: approver, at: new Date().toISOString() });
+            const entry = { type: 'rejected', kind: 'word', id, dagbani: submission?.dagbani, by: approver, at: new Date().toISOString() };
+            (appState.activityLog || []).push(entry);
+            pushActivityLogToSupabase(entry);
             appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
             saveData();
             renderPendingSubmissions();
