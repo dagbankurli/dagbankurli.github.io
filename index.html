@@ -2998,6 +2998,14 @@
             const savedPhrases = localStorage.getItem('dagbaniPhrases');
             if (savedPhrases) {
                 try { appState.phrases = JSON.parse(savedPhrases); } catch (e) { appState.phrases = []; }
+            } else {
+                fetch('dictionary_import.json').then(r=>r.ok?r.json():{}).then(data=>{
+                    if (data && Array.isArray(data.phrases) && data.phrases.length > 0) {
+                        appState.phrases = data.phrases;
+                        saveData();
+                        if (typeof renderPhraseList === 'function') renderPhraseList();
+                    }
+                }).catch(()=>{});
             }
             const savedPendingPhrases = localStorage.getItem('dagbaniPendingPhrases');
             if (savedPendingPhrases) {
