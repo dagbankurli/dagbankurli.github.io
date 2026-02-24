@@ -689,7 +689,7 @@
                     <option value="dag-en" selected>Dagbani → English</option>
                     <option value="en-dag">English → Dagbani</option>
                 </select>
-                <button type="button" onclick="handleSearch({ key: 'Enter' })" aria-label="Search" class="px-6 py-3 min-h-[44px] bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 touch-manipulation whitespace-nowrap">
+                <button type="button" onclick="performSearch()" aria-label="Search" class="px-6 py-3 min-h-[44px] bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 touch-manipulation whitespace-nowrap">
                     Search
                 </button>
             </div>
@@ -3573,28 +3573,25 @@
         }
 
         // Search Functionality
-        function handleSearch(event) {
-            if (event.key === 'Enter' || event.type === 'input') {
-                const query = document.getElementById('search-input').value.toLowerCase().trim();
-                const direction = document.getElementById('search-direction').value;
-                
-                if (!query) {
-                    document.getElementById('search-results').innerHTML = '';
-                    document.getElementById('no-results').classList.add('hidden');
-                    document.getElementById('search-suggestions').classList.add('hidden');
-                    return;
-                }
-                
-                // Add to search history (max 3 most recent)
-                if (!appState.searchHistory.includes(query)) {
-                    appState.searchHistory.unshift(query);
-                    appState.searchHistory = appState.searchHistory.slice(0, 3);
-                    saveData();
-                    renderSearchHistory();
-                }
-                
-                applyFilters();
+        function performSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!query) {
+                document.getElementById('search-results').innerHTML = '';
+                document.getElementById('no-results').classList.add('hidden');
+                document.getElementById('search-suggestions').classList.add('hidden');
+                return;
             }
+            document.getElementById('search-suggestions').classList.add('hidden');
+            if (!appState.searchHistory.includes(query)) {
+                appState.searchHistory.unshift(query);
+                appState.searchHistory = appState.searchHistory.slice(0, 3);
+                saveData();
+                renderSearchHistory();
+            }
+            applyFilters();
+        }
+        function handleSearch(event) {
+            if (event.key === 'Enter' || event.type === 'input') performSearch();
         }
 
         function showSearchSuggestions() {
@@ -3680,7 +3677,7 @@
         function selectSuggestion(text) {
             document.getElementById('search-input').value = text;
             document.getElementById('search-suggestions').classList.add('hidden');
-            handleSearch({ key: 'Enter' });
+            performSearch();
         }
 
         function applyFilters() {
@@ -4190,7 +4187,7 @@
 
         function searchFromHistory(term) {
             document.getElementById('search-input').value = term;
-            handleSearch({ key: 'Enter' });
+            performSearch();
         }
 
         function removeFromSearchHistory(idx) {
@@ -7669,7 +7666,7 @@
             // Otherwise switch to dictionary view, search, then open modal
             showView('dictionary');
             document.getElementById('search-input').value = word.dagbani;
-            handleSearch({ key: 'Enter' });
+            performSearch();
             setTimeout(() => {
                 document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth' });
                 openWordDetailModal(wordId);
