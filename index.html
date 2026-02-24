@@ -2353,6 +2353,13 @@
 
     <script>
         const SITE_URL = 'https://dagbanikorli.org';
+        // Supabase - set these to enable cloud auth (leave empty for localStorage-only)
+        const SUPABASE_URL = 'https://urtmifisypcpaxbkbwac.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_8GJ6rJCZv86mdzby5jMC-A_CR7fMnyY';
+        let supabase = null;
+        if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+            try { supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) { console.warn('Supabase init failed:', e); }
+        }
         // Application State
         let appState = {
             words: [],
@@ -2538,10 +2545,15 @@
         const FEMININE_IMG = 'images/girl.png';
 
         // Initialize App
-        function init() {
+        async function init() {
             applySavedDarkMode();
             loadData();
-            checkAuth();
+            await checkAuth();
+            if (supabase) {
+                supabase.auth.onAuthStateChange(async (event, session) => {
+                    if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') await checkAuth();
+                });
+            }
             setupSearchResultsDelegation();
             setupBrowseContentDelegation();
             setupGlobalEditDelegation();
@@ -2552,19 +2564,55 @@
         }
 
         // Authentication - Visitors use app without login; others sign in when needed
-        function checkAuth() {
-            const currentUser = localStorage.getItem('currentUser');
-            if (currentUser) {
+        async function checkAuth() {
+            if (supabase) {
                 try {
-                    const u = JSON.parse(currentUser);
-                    appState.currentUser = u;
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session?.user) {
+                        let { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                        if (!profile && session.user.user_metadata?.username) {
+                            await supabase.from('profiles').upsert({
+                                id: session.user.id,
+                                username: session.user.user_metadata.username,
+                                role: session.user.user_metadata.role || 'user',
+                                attribution_name: session.user.user_metadata.attribution_name
+                            }, { onConflict: 'id' });
+                            const r = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                            profile = r.data;
+                        }
+                        if (profile) {
+                            appState.currentUser = {
+                                id: session.user.id,
+                                username: profile.username,
+                                email: session.user.email,
+                                role: profile.role || ROLES.user,
+                                attributionName: profile.attribution_name,
+                                dateJoined: profile.created_at
+                            };
+                        } else {
+                            appState.currentUser = { id: session.user.id, username: session.user.email?.split('@')[0] || 'User', email: session.user.email, role: ROLES.user, dateJoined: new Date().toISOString() };
+                        }
+                    } else {
+                        appState.currentUser = getVisitorUser();
+                    }
                 } catch (e) {
+                    console.warn('Supabase auth check failed:', e);
                     appState.currentUser = getVisitorUser();
                 }
             } else {
-                appState.currentUser = getVisitorUser();
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    try {
+                        const u = JSON.parse(currentUser);
+                        appState.currentUser = u;
+                    } catch (e) {
+                        appState.currentUser = getVisitorUser();
+                    }
+                } else {
+                    appState.currentUser = getVisitorUser();
+                }
+                seedAdminIfNeeded();
             }
-            seedAdminIfNeeded();
             showMainApp();
         }
 
@@ -2600,6 +2648,12 @@
         function showLoginModal(mode) {
             document.getElementById('login-modal').classList.remove('hidden');
             document.getElementById('login-modal').dataset.mode = mode || 'user';
+            if (supabase) {
+                const lbl = document.getElementById('login-username-label');
+                const inp = document.getElementById('login-username');
+                if (lbl) lbl.textContent = 'Email';
+                if (inp) { inp.placeholder = 'Enter your email'; inp.type = 'email'; inp.autocomplete = 'email'; }
+            }
             showLoginForm();
             if (mode === 'admin') {
                 document.getElementById('login-form').classList.remove('hidden');
@@ -2662,18 +2716,60 @@
             updatePendingCount();
         }
 
-        function handleLogin() {
-            const username = document.getElementById('login-username').value.trim();
+        async function handleLogin() {
+            const emailOrUsername = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
             const isAdminMode = document.getElementById('login-modal').dataset.mode === 'admin';
             
-            if (!username || !password) {
-                showToast('Please enter both username and password', 'error');
+            if (!emailOrUsername || !password) {
+                showToast('Please enter both email and password', 'error');
+                return;
+            }
+
+            if (supabase) {
+                if (!emailOrUsername.includes('@')) {
+                    showToast('Please sign in with your email address', 'error');
+                    return;
+                }
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: emailOrUsername,
+                        password
+                    });
+                    if (error) {
+                        showToast(error.message || 'Invalid email or password', 'error');
+                        return;
+                    }
+                    const { data: profile } = await supabase.from('profiles').select('*').eq('id', data.user.id).single();
+                    const user = {
+                        id: data.user.id,
+                        username: profile?.username || data.user.email?.split('@')[0],
+                        email: data.user.email,
+                        role: profile?.role || ROLES.user,
+                        attributionName: profile?.attribution_name,
+                        dateJoined: profile?.created_at || new Date().toISOString()
+                    };
+                    if (isAdminMode && user.role !== ROLES.admin) {
+                        await supabase.auth.signOut();
+                        showToast('Admin access only. Use regular login.', 'error');
+                        return;
+                    }
+                    if (!isAdminMode && user.role === ROLES.admin) {
+                        showToast('Use Admin login for this account.', 'error');
+                        return;
+                    }
+                    appState.currentUser = user;
+                    showToast('Welcome back, ' + user.username + '!');
+                    closeLoginModal();
+                    showMainApp();
+                } catch (e) {
+                    showToast(e.message || 'Sign in failed', 'error');
+                }
                 return;
             }
 
             const users = JSON.parse(localStorage.getItem('users') || '[]');
-            let user = users.find(u => (u.username === username || u.email === username) && u.password === password);
+            let user = users.find(u => (u.username === emailOrUsername || u.email === emailOrUsername) && u.password === password);
             
             if (user) {
                 if (isAdminMode && user.role !== ROLES.admin) {
@@ -2700,7 +2796,7 @@
             refField.classList.toggle('hidden', role !== 'contributor');
         }
 
-        function handleRegister() {
+        async function handleRegister() {
             const username = document.getElementById('register-username').value.trim();
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value.trim();
@@ -2719,6 +2815,57 @@
 
             if (password.length < 6) {
                 showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            if (supabase) {
+                try {
+                    const { data, error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            data: {
+                                username,
+                                role: role || 'user',
+                                attribution_name: role === 'contributor' ? references : null
+                            }
+                        }
+                    });
+                    if (error) {
+                        showToast(error.message || 'Sign up failed', 'error');
+                        return;
+                    }
+                    const user = data.user;
+                    const roleVal = role || 'user';
+                    const attrName = roleVal === 'contributor' ? references : null;
+                    if (data.session) {
+                        const { error: profileErr } = await supabase.from('profiles').upsert({
+                            id: user.id,
+                            username,
+                            role: roleVal,
+                            attribution_name: attrName
+                        }, { onConflict: 'id' });
+                        if (profileErr) console.warn('Profile upsert:', profileErr);
+                        appState.currentUser = {
+                            id: user.id,
+                            username,
+                            email: user.email,
+                            role: roleVal,
+                            attributionName: attrName,
+                            dateJoined: new Date().toISOString()
+                        };
+                        showToast('Account created successfully!');
+                        closeLoginModal();
+                        showMainApp();
+                    } else {
+                        showToast('Account created! Check your email to confirm, then sign in.');
+                        closeLoginModal();
+                        showMainApp();
+                        showLoginModal('user');
+                    }
+                } catch (e) {
+                    showToast(e.message || 'Sign up failed', 'error');
+                }
                 return;
             }
 
@@ -2767,16 +2914,30 @@
             document.getElementById('login-form-title').textContent = 'Sign In';
             document.getElementById('login-register-prompt').classList.remove('hidden');
             document.getElementById('login-guest-btn').classList.remove('hidden');
+            if (supabase) {
+                const lbl = document.getElementById('login-username-label');
+                const inp = document.getElementById('login-username');
+                if (lbl) lbl.textContent = 'Email';
+                if (inp) { inp.placeholder = 'Enter your email'; inp.type = 'email'; inp.autocomplete = 'email'; }
+            } else {
+                const lbl = document.getElementById('login-username-label');
+                const inp = document.getElementById('login-username');
+                if (lbl) lbl.textContent = 'Username or Email';
+                if (inp) { inp.placeholder = 'Enter your username or email'; inp.type = 'text'; inp.autocomplete = 'username'; }
+            }
         }
 
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
+        async function handleLogout() {
+            if (!confirm('Are you sure you want to logout?')) return;
+            if (supabase) {
+                try { await supabase.auth.signOut(); } catch (e) { console.warn(e); }
+            } else {
                 localStorage.removeItem('currentUser');
-                appState.currentUser = getVisitorUser();
-                showToast('Logged out successfully');
-                showMainApp();
-                if (appState.currentView === 'profile') renderProfile();
             }
+            appState.currentUser = getVisitorUser();
+            showToast('Logged out successfully');
+            showMainApp();
+            if (appState.currentView === 'profile') renderProfile();
         }
 
         function renderActivityLog() {

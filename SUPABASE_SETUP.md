@@ -1,0 +1,126 @@
+# Supabase Setup for Dagban Kurli
+
+Follow these steps to connect your app to Supabase (free tier).
+
+## 1. Create a Supabase project
+
+1. Go to [supabase.com](https://supabase.com) and sign up (free).
+2. Click **New Project**.
+3. Name it (e.g. `dagban-kurli`), set a database password, choose a region.
+4. Wait for the project to be created.
+
+## 2. Get your API keys
+
+1. In the Supabase dashboard, go to **Project Settings** (gear icon) → **API**.
+2. Copy:
+   - **Project URL** (e.g. `https://xxxxx.supabase.co`)
+   - **anon public** key (under "Project API keys")
+
+## 3. Add keys to your app
+
+Open `index.html` and find the Supabase config (around line 2355). Replace the placeholders:
+
+```javascript
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'your-anon-key-here';
+```
+
+**Important:** The anon key is safe to expose in the browser. Never put your `service_role` key in frontend code.
+
+## 4. Create the database tables
+
+In Supabase, go to **SQL Editor** and run this SQL:
+
+```sql
+-- Profiles table (extends Supabase Auth users with app-specific fields)
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  username TEXT UNIQUE NOT NULL,
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('visitor', 'user', 'contributor', 'admin')),
+  attribution_name TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Users can read their own profile
+CREATE POLICY "Users can read own profile" ON profiles
+  FOR SELECT USING (auth.uid() = id);
+
+-- Users can insert their own profile (on signup)
+CREATE POLICY "Users can insert own profile" ON profiles
+  FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Users can update their own profile (except role - admins do that)
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id);
+
+-- Anyone can read profiles (for displaying usernames)
+CREATE POLICY "Public profiles readable" ON profiles
+  FOR SELECT USING (true);
+
+-- Auto-create profile on signup (handles email confirmation flow)
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, username, role, attribution_name)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1)),
+    COALESCE(NEW.raw_user_meta_data->>'role', 'user'),
+    NEW.raw_user_meta_data->>'attribution_name'
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    username = COALESCE(EXCLUDED.username, profiles.username),
+    role = COALESCE(EXCLUDED.role, profiles.role),
+    attribution_name = COALESCE(EXCLUDED.attribution_name, profiles.attribution_name),
+    updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+```
+
+The trigger creates the profile when a user signs up (including when email confirmation is required).
+
+## 5. Promote your first admin
+
+After creating an account and signing in, run this in the SQL Editor (replace `your@email.com` with your email):
+
+```sql
+UPDATE profiles SET role = 'admin' WHERE id = (
+  SELECT id FROM auth.users WHERE email = 'your@email.com'
+);
+```
+
+Or promote by username:
+
+```sql
+UPDATE profiles SET role = 'admin' WHERE username = 'your_username';
+```
+
+## 6. Configure Auth (optional)
+
+In Supabase: **Authentication** → **Providers** → **Email**:
+- Enable "Confirm email" if you want users to verify their email (or disable for simpler flow).
+- For a free community app, you may disable confirmation so signup works immediately.
+
+## 7. Deploy
+
+Push your changes. The app will use Supabase when `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set. If they are empty, it falls back to localStorage (offline mode).
+
+---
+
+## Future: Sync contributions, favorites, etc.
+
+You can add more tables later for:
+- `pending_words`, `pending_phrases`, `pending_idioms` (contributions)
+- `favorites` (user_id, word_id)
+- `comments`, `word_votes`, `community_feed`
+
+The current setup gives you **auth only**. Dictionary data still loads from `dictionary_import.json` and contributions stay in localStorage until you add those tables.
