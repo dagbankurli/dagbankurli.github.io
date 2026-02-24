@@ -8053,9 +8053,14 @@
             const kb = document.getElementById('dagbani-keyboard');
             const btn = document.getElementById('dagbani-keyboard-toggle');
             if (kb && btn) {
-                const isHidden = kb.classList.contains('hidden');
-                kb.classList.toggle('hidden', !isHidden);
-                btn.classList.toggle('hidden', !isHidden);
+                const isKeyboardHidden = kb.classList.contains('hidden');
+                if (isKeyboardHidden) {
+                    kb.classList.remove('hidden');
+                    btn.classList.add('hidden');
+                } else {
+                    kb.classList.add('hidden');
+                    btn.classList.remove('hidden');
+                }
             }
         }
         document.addEventListener('DOMContentLoaded', () => {
