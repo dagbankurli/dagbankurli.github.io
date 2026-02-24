@@ -3020,7 +3020,12 @@
             }
             
             if (wordsNeedFetch || phrasesNeedFetch || idiomsNeedFetch) {
-                fetch('dictionary_import.json').then(r => r.ok ? r.json() : {}).then(data => {
+                const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+                const dictUrl = (base ? base + '/' : './') + 'dictionary_import.json';
+                fetch(dictUrl).then(r => {
+                    if (!r.ok) throw new Error('Dictionary fetch failed: ' + r.status);
+                    return r.json();
+                }).then(data => {
                     if (data) {
                         if (wordsNeedFetch && Array.isArray(data.words) && data.words.length > 0) {
                             appState.words = data.words;
@@ -3038,7 +3043,10 @@
                         }
                         saveData();
                     }
-                }).catch(() => {}).finally(hideLoading);
+                }).catch(err => {
+                    if (typeof showToast === 'function') showToast('Could not load dictionary. Check that dictionary_import.json exists.', 'error');
+                    console.warn('Dictionary load failed:', err);
+                }).finally(hideLoading);
             } else {
                 hideLoading();
             }
@@ -6968,7 +6976,9 @@
             appState.savedCustomSets = [];
             appState.browseLetterFilter = 'all';
             ['dagbaniWords','dagbaniPending','dagbaniPhrases','dagbaniPendingPhrases','dagbaniIdioms','dagbaniPendingIdioms','dagbaniFavorites','dagbaniSearchHistory','dagbaniCommunityFeed','dagbaniComments','dagbaniWordVotes','dagbaniSavedCustomSets'].forEach(k => localStorage.removeItem(k));
-            fetch('dictionary_import.json').then(r => r.ok ? r.json() : {}).then(data => {
+            const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+            const dictUrl = (base ? base + '/' : './') + 'dictionary_import.json';
+            fetch(dictUrl).then(r => r.ok ? r.json() : {}).then(data => {
                 if (data && (data.words || data.phrases || data.idioms)) {
                     if (Array.isArray(data.words) && data.words.length > 0) appState.words = data.words;
                     if (Array.isArray(data.phrases) && data.phrases.length > 0) appState.phrases = data.phrases;
