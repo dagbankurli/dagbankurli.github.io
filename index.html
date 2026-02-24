@@ -2351,11 +2351,12 @@
         }
     </style>
 
+    <script src="config.js"></script>
     <script>
         const SITE_URL = 'https://dagbanikorli.org';
-        // Supabase - set these to enable cloud auth (leave empty for localStorage-only)
-        const SUPABASE_URL = 'https://urtmifisypcpaxbkbwac.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_8GJ6rJCZv86mdzby5jMC-A_CR7fMnyY';
+        // Supabase - from config.js (local) or injected at deploy (GitHub Actions)
+        const SUPABASE_URL = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || '';
+        const SUPABASE_ANON_KEY = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.key) || '';
         let supabase = null;
         if (SUPABASE_URL && SUPABASE_ANON_KEY) {
             try { supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) { console.warn('Supabase init failed:', e); }

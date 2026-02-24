@@ -18,14 +18,17 @@ Follow these steps to connect your app to Supabase (free tier).
 
 ## 3. Add keys to your app
 
-Open `index.html` and find the Supabase config (around line 2355). Replace the placeholders:
+**Local development:** Copy `config.example.js` to `config.js` and add your keys. `config.js` is gitignored.
 
-```javascript
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-key-here';
-```
+**Deployment (GitHub Pages):** Add these as GitHub Secrets so keys stay out of the repo:
 
-**Important:** The anon key is safe to expose in the browser. Never put your `service_role` key in frontend code.
+1. Go to your repo on GitHub → **Settings** → **Secrets and variables** → **Actions**
+2. Click **New repository secret**
+3. Add:
+   - Name: `SUPABASE_URL` → Value: `https://your-project.supabase.co`
+   - Name: `SUPABASE_ANON_KEY` → Value: your anon key
+
+4. In **Settings** → **Pages**, set **Source** to **GitHub Actions** (not "Deploy from a branch")
 
 ## 4. Create the database tables
 

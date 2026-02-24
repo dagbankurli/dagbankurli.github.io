@@ -66,7 +66,7 @@ Make sure these are included (they should be by default):
 
 ## Optional: Supabase auth (cloud sign-in)
 
-For real user accounts (sign up, sign in, roles), see **SUPABASE_SETUP.md**. Add your Supabase URL and anon key to `index.html`. Without them, the app uses localStorage (works offline, no cloud).
+For real user accounts, see **SUPABASE_SETUP.md**. Keys go in `config.js` (local, gitignored) and GitHub Secrets (deploy). Without them, the app uses localStorage.
 
 ## Updating the live site
 
