@@ -2974,58 +2974,73 @@
                 document.body.removeAttribute('aria-busy');
             }
             
+            let wordsNeedFetch = !savedWords;
+            let phrasesNeedFetch = false;
+            let idiomsNeedFetch = false;
+            
             if (savedWords) {
-                appState.words = JSON.parse(savedWords);
-                injectVocabularySchema();
-                hideLoading();
+                try {
+                    appState.words = JSON.parse(savedWords);
+                    injectVocabularySchema();
+                } catch (e) { appState.words = []; wordsNeedFetch = true; }
             } else {
                 appState.words = [];
-                fetch('dictionary_import.json').then(r=>r.ok?r.json():{}).then(data=>{
-                    if (data && Array.isArray(data.words) && data.words.length > 0) {
-                        appState.words = data.words;
-                        saveData();
-                        injectVocabularySchema();
-                        if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
-                        if (typeof applyFilters === 'function') applyFilters();
-                    }
-                }).catch(()=>{}).finally(hideLoading);
-                saveData();
             }
             
             if (savedPending) {
-                appState.pendingSubmissions = JSON.parse(savedPending);
+                try { appState.pendingSubmissions = JSON.parse(savedPending); } catch (e) { appState.pendingSubmissions = []; }
             }
+            
             const savedPhrases = localStorage.getItem('dagbaniPhrases');
             if (savedPhrases) {
-                try { appState.phrases = JSON.parse(savedPhrases); } catch (e) { appState.phrases = []; }
-            } else {
-                fetch('dictionary_import.json').then(r=>r.ok?r.json():{}).then(data=>{
-                    if (data && Array.isArray(data.phrases) && data.phrases.length > 0) {
-                        appState.phrases = data.phrases;
-                        saveData();
-                        if (typeof renderPhraseList === 'function') renderPhraseList();
-                    }
-                }).catch(()=>{});
-            }
+                try {
+                    const p = JSON.parse(savedPhrases);
+                    if (Array.isArray(p) && p.length > 0) appState.phrases = p;
+                    else phrasesNeedFetch = true;
+                } catch (e) { appState.phrases = []; phrasesNeedFetch = true; }
+            } else phrasesNeedFetch = true;
+            
             const savedPendingPhrases = localStorage.getItem('dagbaniPendingPhrases');
             if (savedPendingPhrases) {
                 try { appState.pendingPhrases = JSON.parse(savedPendingPhrases); } catch (e) { appState.pendingPhrases = []; }
             }
+            
             const savedIdioms = localStorage.getItem('dagbaniIdioms');
             if (savedIdioms) {
-                try { appState.idioms = JSON.parse(savedIdioms); } catch (e) { appState.idioms = []; }
-            } else {
-                fetch('dictionary_import.json').then(r=>r.ok?r.json():{}).then(data=>{
-                    if (data && Array.isArray(data.idioms) && data.idioms.length > 0) {
-                        appState.idioms = data.idioms;
-                        saveData();
-                        if (typeof renderIdiomList === 'function') renderIdiomList();
-                    }
-                }).catch(()=>{});
-            }
+                try {
+                    const i = JSON.parse(savedIdioms);
+                    if (Array.isArray(i) && i.length > 0) appState.idioms = i;
+                    else idiomsNeedFetch = true;
+                } catch (e) { appState.idioms = []; idiomsNeedFetch = true; }
+            } else idiomsNeedFetch = true;
+            
             const savedPendingIdioms = localStorage.getItem('dagbaniPendingIdioms');
             if (savedPendingIdioms) {
                 try { appState.pendingIdioms = JSON.parse(savedPendingIdioms); } catch (e) { appState.pendingIdioms = []; }
+            }
+            
+            if (wordsNeedFetch || phrasesNeedFetch || idiomsNeedFetch) {
+                fetch('dictionary_import.json').then(r => r.ok ? r.json() : {}).then(data => {
+                    if (data) {
+                        if (wordsNeedFetch && Array.isArray(data.words) && data.words.length > 0) {
+                            appState.words = data.words;
+                            injectVocabularySchema();
+                            if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
+                            if (typeof applyFilters === 'function') applyFilters();
+                        }
+                        if (phrasesNeedFetch && Array.isArray(data.phrases) && data.phrases.length > 0) {
+                            appState.phrases = data.phrases;
+                            if (typeof renderPhraseList === 'function') renderPhraseList();
+                        }
+                        if (idiomsNeedFetch && Array.isArray(data.idioms) && data.idioms.length > 0) {
+                            appState.idioms = data.idioms;
+                            if (typeof renderIdiomList === 'function') renderIdiomList();
+                        }
+                        saveData();
+                    }
+                }).catch(() => {}).finally(hideLoading);
+            } else {
+                hideLoading();
             }
             if (savedFavorites) {
                 appState.favorites = JSON.parse(savedFavorites);
