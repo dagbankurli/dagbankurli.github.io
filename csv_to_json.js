@@ -69,7 +69,7 @@ try {
     example: r.example ? String(r.example).trim() : null,
     verified: true,
     dateAdded: new Date().toISOString(),
-    ...(r.picture ? { picture: String(r.picture).trim() } : {}),
+    ...(r.picture && !/^picture$/i.test(String(r.picture).trim()) ? { picture: String(r.picture).trim() } : {}),
     ...(r.audio ? { audio: String(r.audio).trim() } : {})
   }));
 } catch (e) {
@@ -86,7 +86,7 @@ try {
     english: String(r.english).trim(),
     usage: r.usage ? String(r.usage).trim() : null,
     category: (r.category || 'general').trim(),
-    picture: r.picture ? String(r.picture).trim() : null,
+    picture: (r.picture && !/^picture$/i.test(String(r.picture).trim())) ? String(r.picture).trim() : null,
     audio: r.audio ? String(r.audio).trim() : null
   }));
 } catch (e) {
@@ -103,7 +103,7 @@ try {
     english: String(r.english).trim(),
     usage: r.usage ? String(r.usage).trim() : null,
     category: (r.category || 'general').trim(),
-    picture: r.picture ? String(r.picture).trim() : null,
+    picture: (r.picture && !/^picture$/i.test(String(r.picture).trim())) ? String(r.picture).trim() : null,
     audio: r.audio ? String(r.audio).trim() : null
   }));
 } catch (e) {
