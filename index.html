@@ -71,6 +71,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ─── Custom Styles (animations, utilities, responsive) ───────────────── */
         * {
             font-family: 'Outfit', sans-serif;
         }
@@ -271,8 +272,12 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen overflow-x-hidden" itemscope itemtype="https://schema.org/WebApplication">
+    <!--
+    HTML STRUCTURE: Skip link | No-JS fallback | Loading overlay | Modals |
+    Nav + drawer | Dagbani keyboard | Main views (dictionary, browse, learn, etc.) | Toast
+    -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <!-- Static content for crawlers & AI (no JS required) -->
+    <!-- No-JS fallback for crawlers & AI -->
     <noscript>
         <div style="padding:2rem;max-width:800px;margin:0 auto">
             <h1>Dagban Kurli - Dagbani-English Community Lexicon</h1>
@@ -289,11 +294,15 @@
             <p><a href="#">Enable JavaScript to use the full dictionary and learning features.</a></p>
         </div>
     </noscript>
+
+    <!-- Global loading overlay (shown during initial data fetch) -->
     <div id="global-loading" class="fixed inset-0 bg-white/90 z-[70] flex flex-col items-center justify-center gap-4 hidden" role="status" aria-live="polite" aria-label="Loading Dagban Kurli" aria-busy="true">
         <div class="spinner" aria-hidden="true"></div>
         <p class="text-gray-600 font-medium">Loading Dagban Kurli…</p>
     </div>
-    <!-- Login Modal -->
+
+    <!-- ─── Modals (overlays) ───────────────────────────────────────────────── -->
+    <!-- Login Modal (sign in, sign up, guest) -->
     <div id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title" aria-describedby="login-form-title" onclick="if(event.target===this)closeLoginModal()" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" style="padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full slide-in" onclick="event.stopPropagation()">
             <h2 id="login-modal-title" class="text-2xl font-bold text-gray-800 mb-6 text-center">Welcome to Dagban Kurli</h2>
@@ -591,7 +600,7 @@
         </div>
     </div>
 
-    <!-- Report Error Modal (learners) -->
+    <!-- Report Error Modal (learners report dictionary errors) -->
     <div id="report-error-modal" role="dialog" aria-modal="true" aria-labelledby="report-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeReportErrorModal()">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full slide-in" onclick="event.stopPropagation()">
             <h2 id="report-modal-title" class="text-xl font-bold text-gray-800 mb-4">Report error / Suggest correction</h2>
@@ -606,7 +615,8 @@
         </div>
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- ─── Navigation & Layout ─────────────────────────────────────────────── -->
+    <!-- Navigation Bar (sticky; hamburger on mobile, full links on desktop) -->
     <nav role="navigation" aria-label="Main navigation" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg sticky top-0 z-40 safe-top" id="main-nav" style="display: none;">
         <div class="w-full max-w-[100vw] mx-auto px-3 sm:px-4 py-2 sm:py-3">
             <div class="flex items-center justify-between gap-2 w-full min-w-0">
@@ -661,7 +671,7 @@
         </div>
     </nav>
 
-    <!-- Dagbani Keyboard (fixed at bottom, togglable) -->
+    <!-- Dagbani keyboard (ɔ, ɛ, ŋ, etc.; fixed bottom, toggle via ⌨️ button) -->
     <div id="dagbani-keyboard-wrap" class="fixed bottom-0 left-0 right-0 z-30 safe-bottom" style="padding-bottom: env(safe-area-inset-bottom); display: none;">
         <div id="dagbani-keyboard" class="hidden bg-white border-t-2 border-amber-300 shadow-2xl rounded-t-2xl p-3 pb-4">
             <div class="flex items-center justify-between mb-2 px-1">
@@ -685,7 +695,8 @@
         <button type="button" id="dagbani-keyboard-toggle" onclick="toggleDagbaniKeyboard()" class="absolute bottom-4 right-4 w-14 h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xl hover:from-amber-600 hover:to-orange-600 active:scale-95 flex items-center justify-center text-2xl transition touch-manipulation z-20" aria-label="Toggle Dagbani keyboard" title="Dagbani keyboard">⌨️</button>
     </div>
 
-    <!-- Dictionary View -->
+    <!-- ─── Main Content Views (one visible at a time) ───────────────────────── -->
+    <!-- Dictionary View (search, filters, results, word of the day) -->
     <div id="dictionary-view" class="view container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl" style="display: none;">
         <!-- Word of the Day -->
         <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-4 sm:p-6 mb-6 text-white slide-in overflow-hidden">
@@ -771,7 +782,7 @@
         </main>
     </div>
 
-    <!-- Browse A-Z View -->
+    <!-- Browse A-Z View (alphabetical dictionary, sort, letter jump) -->
     <div id="browse-view" class="view hidden container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl overflow-x-hidden">
         <div class="bg-white rounded-2xl shadow-xl p-3 sm:p-6 mb-4 sm:mb-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Browse Full Dictionary A-Z</h2>
@@ -846,7 +857,7 @@
         </div>
     </div>
 
-    <!-- Learn View -->
+    <!-- Learn View (phrases, practice, idioms, names, history, short stories, media) -->
     <div id="learn-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Learn</h2>
@@ -1309,7 +1320,7 @@
             </div>
         </div>
 
-        <!-- Names -->
+        <!-- Learn: Names (Dagbani naming conventions) -->
         <div id="learn-names" class="learn-section-content hidden">
             <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Dagbani Names</h3>
@@ -1330,6 +1341,7 @@
                 </div>
             </div>
         </div>
+        <!-- Learn: History (Yaa-Naa dynasty, kings diagram) -->
         <div id="learn-history" class="learn-section-content hidden">
             <div class="learn-sub-tabs flex gap-1.5 tabs-scroll pb-2 -mx-1 px-1 overflow-x-auto overflow-y-hidden" style="-webkit-overflow-scrolling: touch;">
                 <button onclick="showHistoryTab('kingdom')" class="history-tab-btn flex-shrink-0 px-3 py-2 min-h-[44px] rounded-lg border-2 text-sm font-semibold bg-amber-100 border-amber-400 text-amber-800 touch-manipulation" data-tab="kingdom">Kingdom</button>
@@ -1399,6 +1411,7 @@
                 </div>
             </div>
         </div>
+        <!-- Learn: Phrases (common phrases list) -->
         <div id="learn-phrases" class="learn-section-content hidden">
             <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -1494,6 +1507,7 @@
                 <div id="learn-phrase-list-container" class="space-y-4"></div>
             </div>
         </div>
+        <!-- Learn: Idioms & Proverbs -->
         <div id="learn-idioms" class="learn-section-content hidden">
             <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -1579,12 +1593,14 @@
                 <div id="learn-idiom-list-container" class="space-y-4"></div>
             </div>
         </div>
+        <!-- Learn: Short Stories -->
         <div id="learn-short-stories" class="learn-section-content hidden">
             <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Short Stories</h3>
                 <p class="text-gray-500">Content coming soon.</p>
             </div>
         </div>
+        <!-- Learn: Media (external resources) -->
         <div id="learn-media" class="learn-section-content hidden">
             <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 slide-in">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Media</h3>
@@ -1593,7 +1609,7 @@
         </div>
     </div>
 
-    <!-- Favorites View -->
+    <!-- Favorites View (saved words) -->
     <div id="favorites-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">My Favorites</h2>
@@ -1603,7 +1619,7 @@
         </div>
     </div>
 
-    <!-- Community View -->
+    <!-- Community View (feed, announcements) -->
     <div id="community-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Community Updates</h2>
@@ -1614,7 +1630,7 @@
         </div>
     </div>
 
-    <!-- Leaderboard View -->
+    <!-- Leaderboard View (top contributors) -->
     <div id="leaderboard-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Leaderboard</h2>
@@ -1631,7 +1647,7 @@
         </div>
     </div>
 
-    <!-- Profile View (consolidates account, my contributions, review, user management, settings) -->
+    <!-- Profile View (account, my contributions, review queue, user management, settings) -->
     <div id="profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div id="profile-gate" class="bg-white rounded-2xl shadow-xl p-8 text-center slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Profile</h2>
@@ -1862,7 +1878,7 @@
         </div>
     </div>
 
-    <!-- Contributor Profile View -->
+    <!-- Contributor Profile View (public contributor page) -->
     <div id="contributor-profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
             <button id="contributor-profile-back-btn" onclick="(function(){const v=appState.contributorProfileReturnTo||'leaderboard';appState.contributorProfileReturnTo=null;showView(v);})()" class="text-amber-600 font-semibold hover:underline mb-4">← Back to Leaderboard</button>
@@ -2059,7 +2075,7 @@
         </div>
     </div>
 
-    <!-- Contribute View -->
+    <!-- Contribute View (single word, bulk upload, phrases, idioms) -->
     <div id="contribute-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div id="contribute-gate" class="hidden bg-amber-50 border-2 border-amber-300 rounded-2xl p-8 text-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Contribute to the Lexicon</h2>
@@ -2069,11 +2085,13 @@
         </div>
         <div id="contribute-form-wrapper" class="bg-white rounded-2xl shadow-xl p-6 mb-6 slide-in">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Contribute to the Lexicon</h2>
+            <!-- Tabs: Single Word | Bulk Upload -->
             <div class="flex gap-2 mb-6 border-b border-gray-200">
                 <button type="button" onclick="switchContributeMode('single')" id="contribute-mode-single" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Single Word</button>
                 <button type="button" onclick="switchContributeMode('bulk')" id="contribute-mode-bulk" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Bulk Upload</button>
             </div>
             
+            <!-- Single word contribution form -->
             <form id="word-form" onsubmit="submitWord(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Dagbani Word/Phrase</label>
@@ -2356,15 +2374,33 @@
 
     <script src="config.js?v=__BUILD_ID__"></script>
     <script>
+        /**
+         * Dagban Kurli - Dagbani-English Community Lexicon
+         * ===============================================
+         * FILE STRUCTURE:
+         * 1. Config & Supabase init
+         * 2. App state
+         * 3. Constants (numbers, roles, categories)
+         * 4. Utility functions (paginate, escapeHtml, etc.)
+         * 5. Authentication & user roles
+         * 6. View navigation & layout
+         * 7. Search & filtering
+         * 8. Data loading (localStorage + dictionary_import.json)
+         * 9. Dictionary (words, phrases, idioms - render, contributions)
+         * 10. Practice & quiz
+         * 11. Dagbani keyboard
+         */
+
+        // ─── 1. Config & Supabase ─────────────────────────────────────────────
         const SITE_URL = 'https://dagbanikorli.org';
-        // Supabase - from config.js (local) or injected at deploy (GitHub Actions)
         const SUPABASE_URL = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || '';
         const SUPABASE_ANON_KEY = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.key) || '';
         let supabase = null;
         if (SUPABASE_URL && SUPABASE_ANON_KEY) {
             try { supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) { console.warn('Supabase init failed:', e); }
         }
-        // Application State
+
+        // ─── 2. App State ─────────────────────────────────────────────────────
         let appState = {
             words: [],
             pendingSubmissions: [],
@@ -2405,7 +2441,7 @@
             browseLetterFilter: 'all'
         };
 
-        // Numbers 1–100 (1 appears twice: yini + ndam per dictionary_import.json)
+        // ─── 3. Constants (Numbers, Roles, Categories) ───────────────────────
         const DAGBANI_NUMBERS = {
             1:'yini',2:'ayi',3:'ata',4:'anahi',5:'anu',6:'ayobu',7:'ayopɔin',8:'anii',9:'awɔi',10:'pia',
             11:'pia ni yini',12:'pia ni ayi',13:'pia ni ata',14:'pia ni anahi',15:'pia ni anu',16:'pia ni ayobu',17:'pia ni ayopɔin',18:'pishi ayi ka',19:'pishi yini ka',20:'pishi',
@@ -2425,9 +2461,16 @@
         const DAGBANI_NDAM = { dagbani: 'ndam', english: 'one (counting form)' };
 
         const ROLES = { visitor: 'visitor', user: 'user', contributor: 'contributor', admin: 'admin' };
-        const MASTER_ADMIN_USERNAMES = ['admin', 'maman', 'mwumpini']; // Only these can promote users to admin
+        const MASTER_ADMIN_USERNAMES = ['admin', 'maman', 'mwumpini'];
         const PAGE_SIZE = 20;
 
+        // ─── 4. Utility Functions ────────────────────────────────────────────
+        /**
+         * Paginate an array of items.
+         * @param {Array} items - Array to paginate
+         * @param {number|object} pageOrKey - Page number or pagination key object
+         * @param {number} [pageSize] - Items per page
+         */
         function paginate(items, page, pageSize) {
             const size = Math.max(1, parseInt(pageSize, 10) || PAGE_SIZE);
             const p = Math.max(1, parseInt(page, 10) || 1);
@@ -2548,7 +2591,8 @@
         const MASCULINE_IMG = 'images/boy.png';
         const FEMININE_IMG = 'images/girl.png';
 
-        // Initialize App
+        // ─── App Initialization (entry point) ──────────────────────────────────
+        /** Bootstraps app: dark mode, data, auth, event delegation, UI. */
         async function init() {
             applySavedDarkMode();
             loadData();
@@ -2567,7 +2611,8 @@
             populateCategories();
         }
 
-        // Authentication - Visitors use app without login; others sign in when needed
+        // ─── 5. Authentication & User Roles ───────────────────────────────────
+        /** Syncs session with Supabase; loads profile and sets appState.currentUser. */
         async function checkAuth() {
             if (supabase) {
                 try {
@@ -3206,7 +3251,8 @@
             document.head.appendChild(s);
         }
 
-        // Load data from localStorage
+        // ─── 8. Data Loading (localStorage + dictionary_import.json) ────────────
+        /** Loads words/phrases/idioms from localStorage or fetches dictionary_import.json. */
         function loadData() {
             const loadingEl = document.getElementById('global-loading');
             if (loadingEl) { loadingEl.classList.remove('hidden'); loadingEl.setAttribute('aria-busy', 'true'); }
@@ -3348,7 +3394,8 @@
             localStorage.setItem('dagbaniPracticeStats', JSON.stringify(appState.practiceStats || {}));
         }
 
-        // View Navigation
+        // ─── 6. View Navigation & Layout ───────────────────────────────────────
+        /** Switches visible view; updates nav active state and view-specific content. */
         function showView(viewName) {
             document.querySelectorAll('.view').forEach(view => {
                 view.classList.add('hidden');
@@ -3819,7 +3866,8 @@
             } catch (_) { return t.includes(q); }
         }
 
-        // Search Functionality
+        // ─── 7. Search & Filtering ─────────────────────────────────────────────
+        /** Runs search across words, phrases, idioms; updates results and pagination. */
         function performSearch() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             if (!query) {
@@ -4147,6 +4195,7 @@
             });
         }
 
+        /** Event delegation for search result cards (favorite, share, edit, vote, comments). */
         function setupSearchResultsDelegation() {
             const container = document.getElementById('search-results');
             if (!container || container._searchDelegationBound) return;
@@ -8000,7 +8049,8 @@
         }
         function closePhraseViewModal() { document.getElementById('phrase-view-modal').classList.add('hidden'); }
 
-        // Utility Functions
+        // ─── Utility: escapeHtml (XSS prevention) ─────────────────────────────
+        /** Escapes HTML to prevent XSS when rendering user content. */
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
