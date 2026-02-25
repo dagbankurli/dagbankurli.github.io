@@ -2374,6 +2374,7 @@
 
     <script src="config.js?v=__BUILD_ID__"></script>
     <script>
+        if (typeof window.SUPABASE_CONFIG === 'undefined') window.SUPABASE_CONFIG = { url: '', key: '' };
         /**
          * Dagban Kurli - Dagbani-English Community Lexicon
          * ===============================================
@@ -2598,6 +2599,8 @@
         ];
         const MASCULINE_IMG = 'images/boy.png';
         const FEMININE_IMG = 'images/girl.png';
+        const MASCULINE_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="%23dbeafe"/><circle cx="32" cy="26" r="10" fill="%2393c5fd"/><path d="M20 58 Q32 42 44 58" fill="%2393c5fd"/></svg>');
+        const FEMININE_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="%23fce7f3"/><circle cx="32" cy="26" r="10" fill="%23f9a8d4"/><path d="M20 58 Q32 42 44 58" fill="%23f9a8d4"/></svg>');
 
         // ─── App Initialization (entry point) ──────────────────────────────────
         /** Bootstraps app: dark mode, data, auth, event delegation, UI. */
@@ -3767,9 +3770,9 @@
             if (!container) return;
             const g = n => n.gender || 'both';
             const imgHtml = n => {
-                if (g(n) === 'm') return `<img src="${MASCULINE_IMG}" alt="masculine" class="w-14 h-14 mx-auto object-contain rounded-full">`;
-                if (g(n) === 'f') return `<img src="${FEMININE_IMG}" alt="feminine" class="w-14 h-14 mx-auto object-contain rounded-full">`;
-                return `<div class="flex justify-center gap-1"><img src="${MASCULINE_IMG}" alt="masculine" class="w-12 h-12 object-contain rounded-full"><img src="${FEMININE_IMG}" alt="feminine" class="w-12 h-12 object-contain rounded-full"></div>`;
+                if (g(n) === 'm') return `<img src="${MASCULINE_IMG}" alt="masculine" class="w-14 h-14 mx-auto object-contain rounded-full" onerror="this.onerror=null;this.src='${MASCULINE_FALLBACK}'">`;
+                if (g(n) === 'f') return `<img src="${FEMININE_IMG}" alt="feminine" class="w-14 h-14 mx-auto object-contain rounded-full" onerror="this.onerror=null;this.src='${FEMININE_FALLBACK}'">`;
+                return `<div class="flex justify-center gap-1"><img src="${MASCULINE_IMG}" alt="masculine" class="w-12 h-12 object-contain rounded-full" onerror="this.onerror=null;this.src='${MASCULINE_FALLBACK}'"><img src="${FEMININE_IMG}" alt="feminine" class="w-12 h-12 object-contain rounded-full" onerror="this.onerror=null;this.src='${FEMININE_FALLBACK}'"></div>`;
             };
             const { slice: listSlice, currentPage, totalPages, total } = paginate(list, (appState.pagination || {}).names);
             container.innerHTML = listSlice.length ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${listSlice.map(n => `
