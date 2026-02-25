@@ -29,6 +29,12 @@ function parseCSVLine(line) {
   return out;
 }
 
+function isValidMediaUrl(val) {
+  if (!val || typeof val !== 'string') return false;
+  const s = val.trim();
+  return s.startsWith('http://') || s.startsWith('https://') || s.startsWith('data:');
+}
+
 function parseCSV(csv) {
   const lines = csv.trim().split(/\r?\n/);
   if (lines.length < 2) return [];
@@ -69,8 +75,8 @@ try {
     example: r.example ? String(r.example).trim() : null,
     verified: true,
     dateAdded: new Date().toISOString(),
-    ...(r.picture && !/^picture$/i.test(String(r.picture).trim()) ? { picture: String(r.picture).trim() } : {}),
-    ...(r.audio ? { audio: String(r.audio).trim() } : {})
+    ...(r.picture && !/^picture$/i.test(String(r.picture).trim()) && isValidMediaUrl(r.picture) ? { picture: String(r.picture).trim() } : {}),
+    ...(r.audio && isValidMediaUrl(r.audio) ? { audio: String(r.audio).trim() } : {})
   }));
 } catch (e) {
   console.error('Words error:', e.message);
@@ -86,8 +92,8 @@ try {
     english: String(r.english).trim(),
     usage: r.usage ? String(r.usage).trim() : null,
     category: (r.category || 'general').trim(),
-    picture: (r.picture && !/^picture$/i.test(String(r.picture).trim())) ? String(r.picture).trim() : null,
-    audio: r.audio ? String(r.audio).trim() : null
+    picture: (r.picture && !/^picture$/i.test(String(r.picture).trim()) && isValidMediaUrl(r.picture)) ? String(r.picture).trim() : null,
+    audio: (r.audio && isValidMediaUrl(r.audio)) ? String(r.audio).trim() : null
   }));
 } catch (e) {
   console.error('Phrases error:', e.message);
@@ -103,8 +109,8 @@ try {
     english: String(r.english).trim(),
     usage: r.usage ? String(r.usage).trim() : null,
     category: (r.category || 'general').trim(),
-    picture: (r.picture && !/^picture$/i.test(String(r.picture).trim())) ? String(r.picture).trim() : null,
-    audio: r.audio ? String(r.audio).trim() : null
+    picture: (r.picture && !/^picture$/i.test(String(r.picture).trim()) && isValidMediaUrl(r.picture)) ? String(r.picture).trim() : null,
+    audio: (r.audio && isValidMediaUrl(r.audio)) ? String(r.audio).trim() : null
   }));
 } catch (e) {
   console.error('Idioms error:', e.message);
