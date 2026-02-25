@@ -2464,6 +2464,14 @@
         const MASTER_ADMIN_USERNAMES = ['admin', 'maman', 'mwumpini'];
         const PAGE_SIZE = 20;
 
+        /** Map (num, isNdam) to audio filename in /audio/ folder. Only 1–10 have recordings. */
+        const NUMBER_AUDIO_FILES = {
+            1: '1 yini.mp3',
+            2: '2.mp3', 3: '3.mp3', 4: '4.mp3', 5: '5.mp3',
+            6: '6.mp3', 7: '7.mp3', 8: '8.mp3', 9: '9.mp3', 10: '10.mp3'
+        };
+        const NDAM_AUDIO_FILE = '1 dam.mp3';
+
         // ─── 4. Utility Functions ────────────────────────────────────────────
         /**
          * Paginate an array of items.
@@ -3782,7 +3790,9 @@
                 const secondary = numbersLearnView === 'dag' ? en : dag;
                 const primaryLang = numbersLearnView === 'dag' ? 'ha' : 'en';
                 const numLabel = isNdam ? '1 (ndam)' : num >= 1000 ? num.toLocaleString() : num;
-                return `<div class="group flex flex-col items-center justify-center p-2 rounded-lg border border-amber-200 bg-amber-50/30 hover:border-amber-400 hover:bg-amber-50 transition cursor-pointer touch-manipulation numbers-learn-card" data-speak="${escapeHtml(primary)}" data-lang="${primaryLang}" title="Tap to hear">
+                const audioFile = isNdam ? NDAM_AUDIO_FILE : (NUMBER_AUDIO_FILES[num] || null);
+                const dataAudio = audioFile ? ` data-audio="${escapeHtml(audioFile)}"` : '';
+                return `<div class="group flex flex-col items-center justify-center p-2 rounded-lg border border-amber-200 bg-amber-50/30 hover:border-amber-400 hover:bg-amber-50 transition cursor-pointer touch-manipulation numbers-learn-card" data-speak="${escapeHtml(primary)}" data-lang="${primaryLang}"${dataAudio} title="Tap to hear">
                     <span class="text-sm font-bold text-amber-700">${escapeHtml(String(numLabel))}</span>
                     <span class="text-xs font-semibold text-gray-800 leading-tight">${escapeHtml(primary)}</span>
                     <span class="text-[10px] text-gray-500 leading-tight">${escapeHtml(secondary)}</span>
@@ -3790,7 +3800,16 @@
                 </div>`;
             }).join('');
             grid.querySelectorAll('.numbers-learn-card').forEach(el => {
-                el.addEventListener('click', () => { speakPhrase(el.dataset.speak || '', el.dataset.lang || 'ha'); });
+                el.addEventListener('click', () => {
+                    const audio = el.dataset.audio;
+                    const text = el.dataset.speak || '';
+                    const lang = el.dataset.lang || 'ha';
+                    if (audio) {
+                        playNumberAudio(audio, text, lang);
+                    } else {
+                        speakPhrase(text, lang);
+                    }
+                });
             });
         }
 
@@ -5626,6 +5645,28 @@
             }
             updatePendingCount();
             if (appState.currentView === 'profile') renderMyContributions();
+        }
+
+        /** Returns base path for assets (same as dictionary_import.json). */
+        function getAssetBase() {
+            const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+            return (base ? base + '/' : './');
+        }
+
+        /** Plays number audio from /audio/ folder. Falls back to speakPhrase if no file or play fails. */
+        function playNumberAudio(audioPath, fallbackText, fallbackLang) {
+            if (!audioPath) {
+                if (fallbackText) speakPhrase(fallbackText, fallbackLang);
+                return;
+            }
+            const url = getAssetBase() + 'audio/' + encodeURIComponent(audioPath);
+            const audio = new Audio(url);
+            audio.onerror = () => {
+                if (fallbackText) speakPhrase(fallbackText, fallbackLang);
+            };
+            audio.play().catch(() => {
+                if (fallbackText) speakPhrase(fallbackText, fallbackLang);
+            });
         }
 
         function speakPhrase(text, lang) {
