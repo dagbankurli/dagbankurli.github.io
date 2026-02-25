@@ -3057,6 +3057,29 @@
             } catch (e) { console.warn('Pending fetch from Supabase failed:', e); }
         }
 
+        /** Fetch contributor's own pending from Supabase (for My Contributions cross-device sync). RLS returns only rows where user_id = auth.uid(). */
+        async function fetchMyPendingFromSupabase() {
+            if (!supabase || !appState.currentUser?.id || !isContributor()) return;
+            try {
+                const { data } = await supabase.from('pending_submissions').select('*').order('created_at', { ascending: true });
+                if (data && data.length) {
+                    const words = data.filter(r => r.kind === 'word').map(r => ({ ...r.content, id: r.id }));
+                    const phrases = data.filter(r => r.kind === 'phrase').map(r => ({ ...r.content, id: r.id }));
+                    const idioms = data.filter(r => r.kind === 'idiom').map(r => ({ ...r.content, id: r.id }));
+                    const cloudIdsW = new Set(words.map(w => String(w.id)));
+                    const cloudIdsP = new Set(phrases.map(p => String(p.id)));
+                    const cloudIdsI = new Set(idioms.map(i => String(i.id)));
+                    const localW = (appState.pendingSubmissions || []).filter(s => !cloudIdsW.has(String(s.id)));
+                    const localP = (appState.pendingPhrases || []).filter(p => !cloudIdsP.has(String(p.id)));
+                    const localI = (appState.pendingIdioms || []).filter(i => !cloudIdsI.has(String(i.id)));
+                    appState.pendingSubmissions = [...words, ...localW];
+                    appState.pendingPhrases = [...phrases, ...localP];
+                    appState.pendingIdioms = [...idioms, ...localI];
+                    saveData();
+                }
+            } catch (e) { console.warn('My pending fetch from Supabase failed:', e); }
+        }
+
         /** Delete pending from Supabase when admin approves/rejects. */
         async function deletePendingFromSupabase(kind, id) {
             if (!supabase) return;
@@ -3219,8 +3242,21 @@
             content.style.display = 'block';
             updateUserInfo();
             if (mcSection) {
-                if (isContributor()) { mcSection.classList.remove('hidden'); mcSection.style.display = 'block'; renderMyContributions(); }
-                else { mcSection.classList.add('hidden'); mcSection.style.display = 'none'; }
+                if (isContributor()) {
+                    mcSection.classList.remove('hidden');
+                    mcSection.style.display = 'block';
+                    if (supabase) {
+                        fetchMyPendingFromSupabase().then(() => {
+                            renderMyContributions();
+                            updatePendingCount();
+                        });
+                    } else {
+                        renderMyContributions();
+                    }
+                } else {
+                    mcSection.classList.add('hidden');
+                    mcSection.style.display = 'none';
+                }
             }
             if (reviewSection) {
                 if (isAdmin()) {
