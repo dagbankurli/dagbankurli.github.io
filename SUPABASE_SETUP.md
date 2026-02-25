@@ -185,17 +185,47 @@ CREATE POLICY "Admins can update other profiles" ON profiles
   );
 ```
 
-## 8. Deploy
+## 8. Pending submissions (cross-device sync)
+
+Run this SQL so contributor submissions sync to Supabase and admins see them on any device:
+
+```sql
+CREATE TABLE IF NOT EXISTS pending_submissions (
+  id TEXT PRIMARY KEY,
+  kind TEXT NOT NULL CHECK (kind IN ('word', 'phrase', 'idiom')),
+  user_id UUID REFERENCES auth.users(id),
+  content JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE pending_submissions ENABLE ROW LEVEL SECURITY;
+
+-- Contributors can insert their own submissions
+CREATE POLICY "Contributors can insert own pending" ON pending_submissions
+  FOR INSERT WITH CHECK (
+    auth.uid() = user_id AND
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('contributor', 'admin'))
+  );
+
+-- Admins can read all pending submissions
+CREATE POLICY "Admins can read all pending" ON pending_submissions
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- Admins can delete (when approving/rejecting)
+CREATE POLICY "Admins can delete pending" ON pending_submissions
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- Contributors can read their own (for My Contributions)
+CREATE POLICY "Users can read own pending" ON pending_submissions
+  FOR SELECT USING (auth.uid() = user_id);
+```
+
+**Note:** Large audio/image data URLs may hit row size limits. If inserts fail, the app falls back to localStorage and the contributor can use Export for admin.
+
+## 9. Deploy
 
 Push your changes. The app will use Supabase when `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set. If they are empty, it falls back to localStorage (offline mode).
-
----
-
-## Future: Sync contributions, favorites, etc.
-
-You can add more tables later for:
-- `pending_words`, `pending_phrases`, `pending_idioms` (contributions)
-- `favorites` (user_id, word_id)
-- `comments`, `word_votes`, `community_feed`
-
-The current setup gives you **auth only**. Dictionary data still loads from `dictionary_import.json` and contributions stay in localStorage until you add those tables.

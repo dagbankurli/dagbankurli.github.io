@@ -3018,6 +3018,52 @@
                 });
             } catch (e) { console.warn('Activity log push failed:', e); }
         }
+
+        /** Push pending submission to Supabase for cross-device sync. */
+        async function pushPendingToSupabase(kind, id, content) {
+            if (!supabase || !appState.currentUser?.id) return;
+            try {
+                await supabase.from('pending_submissions').insert({
+                    id: String(id),
+                    kind,
+                    user_id: appState.currentUser.id,
+                    content
+                });
+            } catch (e) {
+                console.warn('Pending push to Supabase failed (saved locally):', e);
+            }
+        }
+
+        /** Fetch pending submissions from Supabase (for admins). Merges with local items from import. */
+        async function fetchPendingFromSupabase() {
+            if (!supabase || !isAdmin()) return;
+            try {
+                const { data } = await supabase.from('pending_submissions').select('*').order('created_at', { ascending: true });
+                if (data && data.length) {
+                    const words = data.filter(r => r.kind === 'word').map(r => ({ ...r.content, id: r.id }));
+                    const phrases = data.filter(r => r.kind === 'phrase').map(r => ({ ...r.content, id: r.id }));
+                    const idioms = data.filter(r => r.kind === 'idiom').map(r => ({ ...r.content, id: r.id }));
+                    const cloudIdsW = new Set(words.map(w => String(w.id)));
+                    const cloudIdsP = new Set(phrases.map(p => String(p.id)));
+                    const cloudIdsI = new Set(idioms.map(i => String(i.id)));
+                    const localW = (appState.pendingSubmissions || []).filter(s => !cloudIdsW.has(String(s.id)));
+                    const localP = (appState.pendingPhrases || []).filter(p => !cloudIdsP.has(String(p.id)));
+                    const localI = (appState.pendingIdioms || []).filter(i => !cloudIdsI.has(String(i.id)));
+                    appState.pendingSubmissions = [...words, ...localW];
+                    appState.pendingPhrases = [...phrases, ...localP];
+                    appState.pendingIdioms = [...idioms, ...localI];
+                    saveData();
+                }
+            } catch (e) { console.warn('Pending fetch from Supabase failed:', e); }
+        }
+
+        /** Delete pending from Supabase when admin approves/rejects. */
+        async function deletePendingFromSupabase(kind, id) {
+            if (!supabase) return;
+            try {
+                await supabase.from('pending_submissions').delete().eq('id', String(id)).eq('kind', kind);
+            } catch (e) { console.warn('Pending delete from Supabase failed:', e); }
+        }
         function renderActivityLog() {
             const actList = document.getElementById('activity-log-list');
             const paginationEl = document.getElementById('activity-log-pagination');
@@ -3177,8 +3223,26 @@
                 else { mcSection.classList.add('hidden'); mcSection.style.display = 'none'; }
             }
             if (reviewSection) {
-                if (isAdmin()) { reviewSection.classList.remove('hidden'); reviewSection.style.display = 'block'; setReviewTab('words'); renderPendingSubmissions(); renderPendingPhrases(); renderPendingIdioms(); }
-                else { reviewSection.classList.add('hidden'); reviewSection.style.display = 'none'; }
+                if (isAdmin()) {
+                    reviewSection.classList.remove('hidden');
+                    reviewSection.style.display = 'block';
+                    setReviewTab('words');
+                    if (supabase) {
+                        fetchPendingFromSupabase().then(() => {
+                            renderPendingSubmissions();
+                            renderPendingPhrases();
+                            renderPendingIdioms();
+                            updatePendingCount();
+                        });
+                    } else {
+                        renderPendingSubmissions();
+                        renderPendingPhrases();
+                        renderPendingIdioms();
+                    }
+                } else {
+                    reviewSection.classList.add('hidden');
+                    reviewSection.style.display = 'none';
+                }
             }
         }
 
@@ -3889,14 +3953,15 @@
         /** Runs search across words, phrases, idioms; updates results and pagination. */
         function performSearch() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
-            if (!query) {
+            const category = document.getElementById('filter-category')?.value || 'all';
+            if (!query && category === 'all') {
                 document.getElementById('search-results').innerHTML = '';
                 document.getElementById('no-results').classList.add('hidden');
                 document.getElementById('search-suggestions').classList.add('hidden');
                 return;
             }
             document.getElementById('search-suggestions').classList.add('hidden');
-            if (!appState.searchHistory.includes(query)) {
+            if (query && !appState.searchHistory.includes(query)) {
                 appState.searchHistory.unshift(query);
                 appState.searchHistory = appState.searchHistory.slice(0, 3);
                 saveData();
@@ -3999,21 +4064,27 @@
             const direction = document.getElementById('search-direction').value;
             const hasAudio = document.getElementById('filter-audio').checked;
             const category = document.getElementById('filter-category').value;
-            
-            if (!query) {
+            const categoryOnly = !query && category !== 'all';
+
+            if (!query && category === 'all') {
                 document.getElementById('search-results').innerHTML = '';
                 document.getElementById('no-results').classList.add('hidden');
                 return;
             }
-            
-            let wordResults = appState.words.filter(word => {
-                if (hasAudio && !word.audio) return false;
-                if (category !== 'all' && getCanonicalWordCategory(word.category) !== category) return false;
-                const matchesEnglish = searchMatches(query, word.english);
-                const matchesDagbani = searchMatches(query, word.dagbani);
+
+            const textMatches = (item) => {
+                if (!query) return true;
+                const matchesEnglish = searchMatches(query, item.english);
+                const matchesDagbani = searchMatches(query, item.dagbani);
                 if (direction === 'en-dag') return matchesEnglish;
                 if (direction === 'dag-en') return matchesDagbani;
                 return matchesEnglish || matchesDagbani;
+            };
+
+            let wordResults = appState.words.filter(word => {
+                if (hasAudio && !word.audio) return false;
+                if (category !== 'all' && getCanonicalWordCategory(word.category) !== category) return false;
+                return textMatches(word);
             }).map(w => ({ ...w, _type: 'word' }));
 
             const allPhrases = getAllPhrases();
@@ -4022,11 +4093,7 @@
             const phraseResults = Object.values(phrasesByKey).filter(phrase => {
                 if (hasAudio && !phrase.audio) return false;
                 if (category !== 'all' && getLexiconCategoryForPhrase(phrase) !== category) return false;
-                const matchesEnglish = searchMatches(query, phrase.english);
-                const matchesDagbani = searchMatches(query, phrase.dagbani);
-                if (direction === 'en-dag') return matchesEnglish;
-                if (direction === 'dag-en') return matchesDagbani;
-                return matchesEnglish || matchesDagbani;
+                return textMatches(phrase);
             }).map(p => ({ ...p, _type: 'phrase', _id: p.id || ('phrase-' + (p.dagbani || '').toLowerCase()) }));
 
             const allIdioms = [...(typeof BUILTIN_IDIOMS !== 'undefined' ? BUILTIN_IDIOMS : []), ...(appState.idioms || [])];
@@ -4035,23 +4102,23 @@
             const idiomResults = Object.values(idiomsByKey).filter(idiom => {
                 if (hasAudio && !idiom.audio) return false;
                 if (category !== 'all' && getLexiconCategoryForIdiom(idiom) !== category) return false;
-                const matchesEnglish = searchMatches(query, idiom.english);
-                const matchesDagbani = searchMatches(query, idiom.dagbani);
-                if (direction === 'en-dag') return matchesEnglish;
-                if (direction === 'dag-en') return matchesDagbani;
-                return matchesEnglish || matchesDagbani;
+                return textMatches(idiom);
             }).map(i => ({ ...i, _type: 'idiom', _id: i.id || ('idiom-' + (i.dagbani || '').toLowerCase()) }));
 
             let results = [...wordResults, ...phraseResults, ...idiomResults];
-            const getRank = (item) => {
-                const q = query.toLowerCase();
-                if (direction === 'en-dag') return getSearchRank(q, item.english);
-                if (direction === 'dag-en') return getSearchRank(q, item.dagbani);
-                const rEng = getSearchRank(q, item.english);
-                const rDag = getSearchRank(q, item.dagbani);
-                return compareSearchRank(rEng, rDag) <= 0 ? rEng : rDag;
-            };
-            results.sort((a, b) => compareSearchRank(getRank(a), getRank(b)));
+            if (categoryOnly) {
+                results.sort((a, b) => (a.dagbani || '').localeCompare(b.dagbani || '', 'en'));
+            } else {
+                const getRank = (item) => {
+                    const q = query.toLowerCase();
+                    if (direction === 'en-dag') return getSearchRank(q, item.english);
+                    if (direction === 'dag-en') return getSearchRank(q, item.dagbani);
+                    const rEng = getSearchRank(q, item.english);
+                    const rDag = getSearchRank(q, item.dagbani);
+                    return compareSearchRank(rEng, rDag) <= 0 ? rEng : rDag;
+                };
+                results.sort((a, b) => compareSearchRank(getRank(a), getRank(b)));
+            }
             appState.searchResults = results;
             appState.pagination = appState.pagination || {};
             if (results.length !== (appState._prevSearchCount || 0)) appState.pagination.searchResults = 1;
@@ -5416,7 +5483,6 @@
         // Word Submission
         function submitWord(event) {
             event.preventDefault();
-            
             const english = document.getElementById('english-word').value.trim();
             const dagbani = document.getElementById('dagbani-word').value.trim();
             const dialect = document.getElementById('word-dialect').value;
@@ -5424,43 +5490,45 @@
             const grammar = document.getElementById('grammar-notes').value.trim();
             const example = document.getElementById('example-sentence').value.trim();
             let picture = appState.wordUploadedImage || (document.getElementById('word-picture')?.value || '').trim() || null;
-            const audioBlob = appState.audioChunks.length > 0 ? 
-                URL.createObjectURL(new Blob(appState.audioChunks, { type: 'audio/webm' })) : null;
-            
             const allowComments = document.getElementById('word-allow-comments')?.checked !== false;
-            const submission = {
-                id: Date.now(),
-                english,
-                dagbani,
-                dialect,
-                category,
-                grammar: grammar || null,
-                example: example || null,
-                picture,
-                audio: audioBlob,
-                verified: false,
-                allowComments,
-                submittedBy: appState.currentUser?.username || 'Visitor',
-                contributorAttribution: appState.currentUser?.attributionName || null,
-                dateAdded: new Date().toISOString()
+            const doSubmit = (audio) => {
+                const submission = {
+                    id: Date.now(),
+                    english, dagbani, dialect, category,
+                    grammar: grammar || null,
+                    example: example || null,
+                    picture,
+                    audio: audio || null,
+                    verified: false,
+                    allowComments,
+                    submittedBy: appState.currentUser?.username || 'Visitor',
+                    contributorAttribution: appState.currentUser?.attributionName || null,
+                    dateAdded: new Date().toISOString()
+                };
+                appState.pendingSubmissions.push(submission);
+                pushPendingToSupabase('word', submission.id, submission);
+                saveData();
+                document.getElementById('word-form').reset();
+                const playWrap = document.getElementById('audio-playback-wrap');
+                if (playWrap) playWrap.classList.add('hidden');
+                const ap = document.getElementById('audio-playback');
+                if (ap) { ap.src = ''; }
+                document.getElementById('recording-status').classList.add('hidden');
+                document.getElementById('record-btn').classList.remove('hidden');
+                appState.audioChunks = [];
+                appState.wordUploadedImage = null;
+                clearWordImageUpload();
+                showToast('Word submitted successfully! It will be reviewed by the community.');
+                updatePendingCount();
             };
-            
-            appState.pendingSubmissions.push(submission);
-            saveData();
-            
-            document.getElementById('word-form').reset();
-            const playWrap = document.getElementById('audio-playback-wrap');
-            if (playWrap) playWrap.classList.add('hidden');
-            const ap = document.getElementById('audio-playback');
-            if (ap) { ap.src = ''; }
-            document.getElementById('recording-status').classList.add('hidden');
-            document.getElementById('record-btn').classList.remove('hidden');
-            appState.audioChunks = [];
-            appState.wordUploadedImage = null;
-            clearWordImageUpload();
-            
-            showToast('Word submitted successfully! It will be reviewed by the community.');
-            updatePendingCount();
+            if (appState.audioChunks.length > 0) {
+                const blob = new Blob(appState.audioChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onload = () => { doSubmit(reader.result); };
+                reader.readAsDataURL(blob);
+            } else {
+                doSubmit(null);
+            }
         }
 
         function handleWordImageUpload(event) {
@@ -5567,7 +5635,7 @@
                 }
                 if (dagbani && english) {
                     const allowComments = document.getElementById('bulk-allow-comments')?.checked !== false;
-                    appState.pendingSubmissions.push({
+                    const sub = {
                         id: Date.now() + count,
                         dagbani, english, dialect, category,
                         grammar: null, example: null, audio: null,
@@ -5576,7 +5644,9 @@
                         submittedBy: appState.currentUser?.username || 'Visitor',
                         contributorAttribution: appState.currentUser?.attributionName || null,
                         dateAdded: new Date().toISOString()
-                    });
+                    };
+                    appState.pendingSubmissions.push(sub);
+                    pushPendingToSupabase('word', sub.id, sub);
                     count++;
                 }
             }
@@ -5615,6 +5685,7 @@
                     dateAdded: new Date().toISOString()
                 };
                 appState.pendingPhrases.push(phrase);
+                pushPendingToSupabase('phrase', phrase.id, phrase);
                 appState.phraseAudioChunks = [];
                 saveData();
                 form.reset();
@@ -6061,6 +6132,7 @@
                 };
                 appState.pendingIdioms = appState.pendingIdioms || [];
                 appState.pendingIdioms.push(pending);
+                pushPendingToSupabase('idiom', pending.id, pending);
                 saveData();
                 closeEditIdiomModal();
                 updatePendingCount();
@@ -6160,6 +6232,7 @@
                 };
                 appState.pendingIdioms = appState.pendingIdioms || [];
                 appState.pendingIdioms.push(idiom);
+                pushPendingToSupabase('idiom', idiom.id, idiom);
                 saveData();
                 form.reset();
                 appState.idiomUploadedImage = null;
@@ -6234,6 +6307,7 @@
             appState.pendingIdioms = (appState.pendingIdioms || []).filter(x => x.id !== id);
             const approver = appState.currentUser?.username || 'Admin';
             (appState.activityLog || []).push({ type: 'approved', kind: 'idiom', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
+            deletePendingFromSupabase('idiom', id);
             saveData();
             renderPendingIdioms();
             updatePendingCount();
@@ -6250,6 +6324,7 @@
                 (appState.activityLog || []).push(entry);
                 pushActivityLogToSupabase(entry);
             }
+            deletePendingFromSupabase('idiom', id);
             appState.pendingIdioms = (appState.pendingIdioms || []).filter(x => x.id !== id);
             saveData();
             renderPendingIdioms();
@@ -6769,6 +6844,7 @@
                                     <strong>Report/Suggestion:</strong> ${escapeHtml(submission.reportDescription)}
                                 </div>
                             ` : ''}
+                            ${submission.picture ? `<img src="${(submission.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display='none'">` : ''}
                             ${submission.audio ? `
                                 <audio controls class="mt-3 w-full">
                                     <source src="${submission.audio}" type="audio/webm">
@@ -6856,6 +6932,7 @@
             } else {
                 appState.phrases.push({ id: p.id || Date.now(), ...p });
             }
+            deletePendingFromSupabase('phrase', id);
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
             const approver = appState.currentUser?.username || 'Admin';
             const entry = { type: 'approved', kind: 'phrase', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() };
@@ -6887,6 +6964,7 @@
                 (appState.activityLog || []).push(entry);
                 pushActivityLogToSupabase(entry);
             }
+            deletePendingFromSupabase('phrase', id);
             appState.pendingPhrases = appState.pendingPhrases.filter(x => x.id !== id);
             saveData();
             renderPendingPhrases();
@@ -6909,6 +6987,7 @@
                 submission.id = submission.id || Date.now();
                 appState.words.push(submission);
             }
+            deletePendingFromSupabase('word', id);
             appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
             appState.communityFeed.unshift({
                 id: Date.now(),
@@ -6937,6 +7016,7 @@
             const entry = { type: 'rejected', kind: 'word', id, dagbani: submission?.dagbani, by: approver, at: new Date().toISOString() };
             (appState.activityLog || []).push(entry);
             pushActivityLogToSupabase(entry);
+            deletePendingFromSupabase('word', id);
             appState.pendingSubmissions = appState.pendingSubmissions.filter(s => s.id !== id);
             saveData();
             renderPendingSubmissions();
@@ -7059,6 +7139,7 @@
                     dateAdded: new Date().toISOString()
                 };
                 appState.pendingSubmissions.push(submission);
+                pushPendingToSupabase('word', submission.id, submission);
                 saveData();
                 closeEditWordModal();
                 updatePendingCount();
@@ -7183,6 +7264,7 @@
                     dateAdded: new Date().toISOString()
                 };
                 appState.pendingPhrases.push(submission);
+                pushPendingToSupabase('phrase', submission.id, submission);
                 saveData();
                 closeEditPhraseModal();
                 updatePendingCount();
