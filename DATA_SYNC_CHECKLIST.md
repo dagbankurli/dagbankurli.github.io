@@ -40,24 +40,30 @@ If you don’t add this secret, deploys still work; the dictionary just won’t 
 
 ---
 
-## 4. Local test (optional)
+## 4. Local sync (PowerShell) – copy and run
 
-From the repo root:
+Your project URL is already in `scripts/run-sync.ps1`. You only need to set the **service_role** key and run.
 
-```bash
-node csv_to_json.js
+1. **Get the service_role key:** Supabase Dashboard → **Project Settings** → **API** → under "Project API keys" copy **`service_role`** (the secret one, not anon).
+
+2. **From the repo root** in PowerShell, run:
+
+```powershell
+$env:SUPABASE_SERVICE_ROLE_KEY = "paste-your-service-role-key-here"
+.\scripts\run-sync.ps1
 ```
 
-Then, with your Supabase project URL and service_role key set:
-
-```bash
-set SUPABASE_URL=https://your-project.supabase.co
-set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-node scripts/sync-dictionary-to-supabase.js
-```
-
-(On macOS/Linux use `export` instead of `set`.)
+That builds `dictionary_import.json` from your CSVs and syncs it to the `dictionary` table. Then check the dictionary table in Supabase Table Editor.
 
 ---
 
-**Summary:** Run the dictionary table SQL in Supabase once. Add `SUPABASE_SERVICE_ROLE_KEY` in GitHub if you want sync-on-push. The rest is already in the app and workflow.
+---
+
+## 5. How to know data is connected
+
+- **In the app:** Sign in → open **Profile** (or the view that has **Preferences & Data**). Under **Supabase connection** you’ll see:
+  - **Supabase is not configured** — app is using only localStorage / `dictionary_import.json`.
+  - **Supabase is connected** — app can talk to Supabase. Tap **Check dictionary in Supabase** to see whether the dictionary table has data (e.g. “X words, Y phrases, Z idioms”) or is empty.
+- **In Supabase:** Dashboard → **Table Editor** → open the **dictionary** table. If sync has run (from deploy or from an admin import), you’ll see rows with `kind` (word/phrase/idiom) and `content` (JSON).
+
+**Summary:** Run the dictionary table SQL in Supabase once. Add `SUPABASE_SERVICE_ROLE_KEY` in GitHub if you want sync-on-push. Use Profile → Preferences & Data → “Check dictionary in Supabase” to confirm data is in the cloud.

@@ -1761,6 +1761,14 @@
             <!-- Preferences & Data -->
             <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Preferences & Data</h2>
+                <div id="supabase-data-status" class="mb-6 p-4 rounded-xl border border-gray-200 bg-gray-50">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Supabase connection</h3>
+                    <p id="supabase-status-text" class="text-sm text-gray-600 mb-2">Checking…</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" id="supabase-test-btn" onclick="confirmSupabaseConnection()" class="px-3 py-1.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition hidden">Test connection</button>
+                        <button type="button" id="supabase-check-btn" onclick="checkSupabaseDictionary()" class="px-3 py-1.5 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition hidden">Check dictionary in Supabase</button>
+                    </div>
+                </div>
                 <div class="space-y-6">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-700 mb-3">App Preferences</h3>
@@ -3138,6 +3146,85 @@
             }
         }
 
+        /** Tests that the app can reach Supabase (auth API). Returns { ok, message }. */
+        async function testSupabaseConnection() {
+            if (!supabase) return { ok: false, message: 'Not configured' };
+            try {
+                const { error } = await supabase.auth.getSession();
+                if (error) return { ok: false, message: error.message };
+                return { ok: true, message: 'Connected and reachable.' };
+            } catch (e) {
+                return { ok: false, message: (e && e.message) ? e.message : String(e) };
+            }
+        }
+
+        /** Updates the Supabase connection status text in Preferences & Data; runs a quick connection test when configured. */
+        function renderSupabaseDataStatus() {
+            const textEl = document.getElementById('supabase-status-text');
+            const btnEl = document.getElementById('supabase-check-btn');
+            if (!textEl) return;
+            if (!supabase) {
+                textEl.textContent = 'Supabase is not configured. Dictionary uses localStorage and dictionary_import.json.';
+                if (btnEl) btnEl.classList.add('hidden');
+                const testBtn = document.getElementById('supabase-test-btn');
+                if (testBtn) testBtn.classList.add('hidden');
+                return;
+            }
+            textEl.textContent = 'Checking connection…';
+            const testBtn = document.getElementById('supabase-test-btn');
+            if (btnEl) btnEl.classList.remove('hidden');
+            if (testBtn) testBtn.classList.remove('hidden');
+            (async () => {
+                const result = await testSupabaseConnection();
+                if (!textEl) return;
+                if (result.ok) {
+                    textEl.textContent = 'Supabase is connected and reachable. Use "Check dictionary in Supabase" below to see if dictionary data is in the cloud.';
+                } else {
+                    textEl.textContent = 'Supabase connection failed: ' + result.message;
+                }
+            })();
+        }
+
+        /** Runs connection test and updates the Supabase status text (for "Test connection" button). */
+        async function confirmSupabaseConnection() {
+            const textEl = document.getElementById('supabase-status-text');
+            const testBtn = document.getElementById('supabase-test-btn');
+            if (!supabase || !textEl) return;
+            if (testBtn) { testBtn.disabled = true; testBtn.textContent = 'Testing…'; }
+            const result = await testSupabaseConnection();
+            if (result.ok) {
+                textEl.textContent = 'Supabase is connected and reachable. Use "Check dictionary in Supabase" to see cloud data.';
+            } else {
+                textEl.textContent = 'Supabase connection failed: ' + result.message;
+            }
+            if (testBtn) { testBtn.disabled = false; testBtn.textContent = 'Test connection'; }
+        }
+
+        /** Checks the dictionary table in Supabase and shows counts in the status box. */
+        async function checkSupabaseDictionary() {
+            const textEl = document.getElementById('supabase-status-text');
+            const btnEl = document.getElementById('supabase-check-btn');
+            if (!supabase || !textEl) return;
+            if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Checking…'; }
+            try {
+                const byKind = { word: 0, phrase: 0, idiom: 0 };
+                const { data: rows, error } = await supabase.from('dictionary').select('kind');
+                if (!error && rows && rows.length) {
+                    rows.forEach(r => { if (byKind[r.kind] !== undefined) byKind[r.kind]++; });
+                }
+                if (error) {
+                    textEl.textContent = 'Could not read Supabase: ' + (error.message || 'check table exists and RLS).';
+                } else if (byKind.word === 0 && byKind.phrase === 0 && byKind.idiom === 0) {
+                    textEl.textContent = 'Supabase is connected. Dictionary table is empty — push to main (with SUPABASE_SERVICE_ROLE_KEY set) or import JSON as admin to sync.';
+                } else {
+                    textEl.textContent = 'Supabase is connected. Dictionary in cloud: ' + byKind.word + ' words, ' + byKind.phrase + ' phrases, ' + byKind.idiom + ' idioms.';
+                }
+            } catch (e) {
+                textEl.textContent = 'Check failed: ' + (e?.message || String(e));
+            }
+            if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Check dictionary in Supabase'; }
+        }
+
         function renderActivityLog() {
             const actList = document.getElementById('activity-log-list');
             const paginationEl = document.getElementById('activity-log-pagination');
@@ -3331,6 +3418,7 @@
                     reviewSection.style.display = 'none';
                 }
             }
+            renderSupabaseDataStatus();
         }
 
         function updateUserInfo() {
