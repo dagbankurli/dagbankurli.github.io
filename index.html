@@ -3090,6 +3090,54 @@
                 await supabase.from('pending_submissions').delete().eq('id', String(id)).eq('kind', kind);
             } catch (e) { console.warn('Pending delete from Supabase failed:', e); }
         }
+
+        /** Fetch approved dictionary (words, phrases, idioms) from Supabase. Returns { words, phrases, idioms } or null. */
+        async function fetchDictionaryFromSupabase() {
+            if (!supabase) return null;
+            try {
+                const { data, error } = await supabase.from('dictionary').select('kind, item_id, content').order('kind');
+                if (error || !data || !data.length) return null;
+                const words = data.filter(r => r.kind === 'word').map(r => r.content);
+                const phrases = data.filter(r => r.kind === 'phrase').map(r => r.content);
+                const idioms = data.filter(r => r.kind === 'idiom').map(r => r.content);
+                return { words, phrases, idioms };
+            } catch (e) {
+                console.warn('fetchDictionaryFromSupabase failed:', e);
+                return null;
+            }
+        }
+
+        /** Sync current words/phrases/idioms to Supabase (admin only). Batches upserts. */
+        async function syncDictionaryToSupabase() {
+            if (!supabase || !isAdmin()) return { ok: false, error: 'Not allowed' };
+            const BATCH = 80;
+            const rows = [];
+            (appState.words || []).forEach(w => {
+                if (w?.id != null && w.dagbani && w.english)
+                    rows.push({ kind: 'word', item_id: String(w.id), content: w, updated_at: new Date().toISOString() });
+            });
+            (appState.phrases || []).forEach(p => {
+                if (p?.id != null && p.dagbani && p.english)
+                    rows.push({ kind: 'phrase', item_id: String(p.id), content: p, updated_at: new Date().toISOString() });
+            });
+            (appState.idioms || []).forEach(i => {
+                if (i?.id != null && i.dagbani && i.english)
+                    rows.push({ kind: 'idiom', item_id: String(i.id), content: i, updated_at: new Date().toISOString() });
+            });
+            if (rows.length === 0) return { ok: true, count: 0 };
+            try {
+                for (let i = 0; i < rows.length; i += BATCH) {
+                    const batch = rows.slice(i, i + BATCH);
+                    const { error } = await supabase.from('dictionary').upsert(batch, { onConflict: 'kind,item_id' });
+                    if (error) throw error;
+                }
+                return { ok: true, count: rows.length };
+            } catch (e) {
+                console.warn('syncDictionaryToSupabase failed:', e);
+                return { ok: false, error: e?.message || String(e) };
+            }
+        }
+
         function renderActivityLog() {
             const actList = document.getElementById('activity-log-list');
             const paginationEl = document.getElementById('activity-log-pagination');
@@ -3426,31 +3474,56 @@
             if (wordsNeedFetch || phrasesNeedFetch || idiomsNeedFetch) {
                 const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
                 const dictUrl = (base ? base + '/' : './') + 'dictionary_import.json';
-                fetch(dictUrl).then(r => {
-                    if (!r.ok) throw new Error('Dictionary fetch failed: ' + r.status);
-                    return r.json();
-                }).then(data => {
-                    if (data) {
-                        if (wordsNeedFetch && Array.isArray(data.words) && data.words.length > 0) {
-                            appState.words = data.words;
-                            injectVocabularySchema();
-                            if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
-                            if (typeof applyFilters === 'function') applyFilters();
+                const doFetchStatic = () => {
+                    fetch(dictUrl).then(r => {
+                        if (!r.ok) throw new Error('Dictionary fetch failed: ' + r.status);
+                        return r.json();
+                    }).then(data => {
+                        if (data) {
+                            if (wordsNeedFetch && Array.isArray(data.words) && data.words.length > 0) {
+                                appState.words = data.words;
+                                injectVocabularySchema();
+                                if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
+                                if (typeof applyFilters === 'function') applyFilters();
+                            }
+                            if (phrasesNeedFetch && Array.isArray(data.phrases) && data.phrases.length > 0) {
+                                appState.phrases = data.phrases;
+                                if (typeof renderPhraseList === 'function') renderPhraseList();
+                            }
+                            if (idiomsNeedFetch && Array.isArray(data.idioms) && data.idioms.length > 0) {
+                                appState.idioms = data.idioms;
+                                if (typeof renderIdiomList === 'function') renderIdiomList();
+                            }
+                            saveData();
                         }
-                        if (phrasesNeedFetch && Array.isArray(data.phrases) && data.phrases.length > 0) {
-                            appState.phrases = data.phrases;
-                            if (typeof renderPhraseList === 'function') renderPhraseList();
-                        }
-                        if (idiomsNeedFetch && Array.isArray(data.idioms) && data.idioms.length > 0) {
-                            appState.idioms = data.idioms;
-                            if (typeof renderIdiomList === 'function') renderIdiomList();
-                        }
-                        saveData();
-                    }
-                }).catch(err => {
-                    if (typeof showToast === 'function') showToast('Could not load dictionary. Check that dictionary_import.json exists.', 'error');
-                    console.warn('Dictionary load failed:', err);
-                }).finally(hideLoading);
+                    }).catch(err => {
+                        if (typeof showToast === 'function') showToast('Could not load dictionary. Check that dictionary_import.json exists.', 'error');
+                        console.warn('Dictionary load failed:', err);
+                    }).finally(hideLoading);
+                };
+                if (supabase) {
+                    (async () => {
+                        try {
+                            const data = await fetchDictionaryFromSupabase();
+                            if (data && (data.words?.length > 0 || data.phrases?.length > 0 || data.idioms?.length > 0)) {
+                                if (data.words?.length) {
+                                    appState.words = data.words;
+                                    injectVocabularySchema();
+                                    if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
+                                    if (typeof applyFilters === 'function') applyFilters();
+                                }
+                                if (data.phrases?.length) { appState.phrases = data.phrases; if (typeof renderPhraseList === 'function') renderPhraseList(); }
+                                if (data.idioms?.length) { appState.idioms = data.idioms; if (typeof renderIdiomList === 'function') renderIdiomList(); }
+                                saveData();
+                                hideLoading();
+                                return;
+                            }
+                        } catch (e) { console.warn('Supabase dictionary fetch failed:', e); }
+                        doFetchStatic();
+                    })();
+                } else {
+                    doFetchStatic();
+                }
             } else {
                 hideLoading();
             }
@@ -7734,6 +7807,12 @@
                         if (appState.currentView === 'favorites') renderFavorites();
                         if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); renderPendingIdioms(); }
                         if (appState.currentView === 'browse') renderBrowseDictionary();
+                        if (supabase && isAdmin()) {
+                            syncDictionaryToSupabase().then(r => {
+                                if (r.ok && r.count > 0) showToast(`Dictionary synced to Supabase (${r.count} entries).`);
+                                else if (!r.ok && r.error) showToast('Supabase sync failed: ' + r.error, 'error');
+                            });
+                        }
                     }
                 } catch (error) {
                     const msg = error instanceof SyntaxError

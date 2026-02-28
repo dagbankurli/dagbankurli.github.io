@@ -27,6 +27,7 @@ Follow these steps to connect your app to Supabase (free tier).
 3. Add:
    - Name: `SUPABASE_URL` → Value: `https://your-project.supabase.co`
    - Name: `SUPABASE_ANON_KEY` → Value: your anon key
+   - (Optional) Name: `SUPABASE_SERVICE_ROLE_KEY` → Value: your **service_role** key (Project Settings → API). Needed so that on each push to `main`, the deploy workflow can sync `dictionary_import.json` to the Supabase `dictionary` table. If you omit it, the app still works; dictionary just won’t be auto-synced on deploy.
 
 4. In **Settings** → **Pages**, set **Source** to **GitHub Actions** (not "Deploy from a branch")
 
@@ -226,6 +227,39 @@ CREATE POLICY "Users can read own pending" ON pending_submissions
 
 **Note:** Large audio/image data URLs may hit row size limits. If inserts fail, the app falls back to localStorage and the contributor can use Export for admin.
 
-## 9. Deploy
+## 9. Dictionary table (single source of truth)
 
-Push your changes. The app will use Supabase when `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set. If they are empty, it falls back to localStorage (offline mode).
+Run this SQL so the app can load and sync the main dictionary (words, phrases, idioms) from Supabase:
+
+```sql
+CREATE TABLE IF NOT EXISTS dictionary (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  kind TEXT NOT NULL CHECK (kind IN ('word', 'phrase', 'idiom')),
+  item_id TEXT NOT NULL,
+  content JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(kind, item_id)
+);
+
+ALTER TABLE dictionary ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read dictionary" ON dictionary FOR SELECT USING (true);
+CREATE POLICY "Admins can insert dictionary" ON dictionary FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Admins can update dictionary" ON dictionary FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Admins can delete dictionary" ON dictionary FOR DELETE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+```
+
+- **On git push:** The deploy workflow runs `node csv_to_json.js` then `node scripts/sync-dictionary-to-supabase.js`; if `SUPABASE_SERVICE_ROLE_KEY` is set, the script upserts `dictionary_import.json` into `dictionary`.
+- **On JSON import in the app:** When an admin imports a JSON file (Preferences → Import Data), the app syncs the imported words/phrases/idioms to Supabase after a successful import.
+- **On load:** If Supabase is configured, the app first tries to load words/phrases/idioms from the `dictionary` table; if that fails or is empty, it falls back to localStorage and then `dictionary_import.json`.
+
+## 10. Deploy
+
+Push your changes. The app will use Supabase when `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set. If they are empty, it falls back to localStorage (offline mode). If `SUPABASE_SERVICE_ROLE_KEY` is set, each deploy will sync the built dictionary to Supabase.

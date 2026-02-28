@@ -120,6 +120,43 @@ DROP POLICY IF EXISTS "Users can read own pending" ON pending_submissions;
 CREATE POLICY "Users can read own pending" ON pending_submissions
   FOR SELECT USING (auth.uid() = user_id);
 
+-- 4. Dictionary (words, phrases, idioms) – single source of truth, synced on git push or JSON import
+CREATE TABLE IF NOT EXISTS dictionary (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  kind TEXT NOT NULL CHECK (kind IN ('word', 'phrase', 'idiom')),
+  item_id TEXT NOT NULL,
+  content JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(kind, item_id)
+);
+
+ALTER TABLE dictionary ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can read dictionary" ON dictionary;
+CREATE POLICY "Anyone can read dictionary" ON dictionary
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admins can insert dictionary" ON dictionary;
+CREATE POLICY "Admins can insert dictionary" ON dictionary
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+DROP POLICY IF EXISTS "Admins can update dictionary" ON dictionary;
+CREATE POLICY "Admins can update dictionary" ON dictionary
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+DROP POLICY IF EXISTS "Admins can delete dictionary" ON dictionary;
+CREATE POLICY "Admins can delete dictionary" ON dictionary
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- Service role (CI) bypasses RLS; no policy needed for that.
+
 -- =============================================================================
 -- AFTER signing up in the app, promote your first admin (run separately):
 -- UPDATE profiles SET role = 'admin' WHERE username = 'your_username';
