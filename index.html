@@ -1751,6 +1751,9 @@
             <div id="profile-review-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
                 <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
+                <div id="review-supabase-hint" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+                    If you use Supabase, add your project URL and anon key in <code>config.js</code> (see Preferences &amp; Data) and reload the app to see pending submissions and users from the cloud.
+                </div>
                 <div class="flex gap-2 mb-6 border-b border-gray-200">
                     <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
                     <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
@@ -3297,7 +3300,11 @@
             const btnEl = document.getElementById('supabase-check-btn');
             if (!textEl) return;
             if (!supabase) {
-                textEl.textContent = 'Supabase is not configured. Dictionary uses localStorage and dictionary_import.json.';
+                if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+                    textEl.textContent = 'Supabase URL and key are set in config.js but the client could not start. Open the app from a local server (e.g. run: npx serve .) and sign in with your Supabase account so Peer Review and User Management can load cloud data.';
+                } else {
+                    textEl.textContent = 'Supabase is not configured. Add url and key in config.js. Dictionary uses localStorage and dictionary_import.json until then.';
+                }
                 if (btnEl) btnEl.classList.add('hidden');
                 const testBtn = document.getElementById('supabase-test-btn');
                 if (testBtn) testBtn.classList.add('hidden');
@@ -3422,7 +3429,9 @@
                 combined = contributors.map(u => ({ ...u, _type: 'contributor' })).concat(admins.map(u => ({ ...u, _type: 'admin' })));
             }
             if (combined.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 text-sm">No contributors or admins to manage.</p>';
+                const noUsersMsg = '<p class="text-gray-500 text-sm">No contributors or admins to manage.</p>';
+                const supabaseHint = !client ? '<p class="text-amber-700 text-sm mt-2">If you use Supabase, add your project URL and anon key in <code>config.js</code> (see Preferences &amp; Data) and reload the app to see users and pending submissions from the cloud.</p>' : '';
+                list.innerHTML = noUsersMsg + supabaseHint;
                 return;
             }
             const { slice: pageSlice, currentPage, totalPages, total } = paginate(combined, (appState.pagination || {}).userManagement);
@@ -3605,18 +3614,18 @@
                     reviewSection.classList.remove('hidden');
                     reviewSection.style.display = 'block';
                     setReviewTab('words');
-                    if (supabase) {
-                        fetchPendingFromSupabase().then(() => {
-                            renderPendingSubmissions();
-                            renderPendingPhrases();
-                            renderPendingIdioms();
-                            updatePendingCount();
-                        });
-                    } else {
+                    (async () => {
+                        const client = await ensureSupabaseClient();
+                        if (client) {
+                            await fetchPendingFromSupabase();
+                        }
+                        const reviewHint = document.getElementById('review-supabase-hint');
+                        if (reviewHint) reviewHint.classList.toggle('hidden', !!client);
                         renderPendingSubmissions();
                         renderPendingPhrases();
                         renderPendingIdioms();
-                    }
+                        updatePendingCount();
+                    })();
                 } else {
                     reviewSection.classList.add('hidden');
                     reviewSection.style.display = 'none';

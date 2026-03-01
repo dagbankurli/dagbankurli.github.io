@@ -20,8 +20,15 @@ Set-Location $PSScriptRoot\..
 node csv_to_json.js
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "Syncing to Supabase..."
+Write-Host "Syncing dictionary to Supabase..."
 node scripts/sync-dictionary-to-supabase.js
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "Done. Check the dictionary table in Supabase Table Editor."
+Write-Host "Syncing activity_log (if activity_log_import.json exists)..."
+node scripts/sync-activity-log-to-supabase.js
+Write-Host "Syncing pending_submissions (if pending_submissions_import.json exists)..."
+node scripts/sync-pending-submissions-to-supabase.js
+Write-Host "Syncing profile updates (if profiles_import.json exists)..."
+node scripts/sync-profiles-to-supabase.js
+
+Write-Host "Done. Check dictionary, activity_log, pending_submissions, profiles in Supabase Table Editor."
