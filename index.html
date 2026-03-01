@@ -679,7 +679,6 @@
                 <button onclick="showView('learn')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="learn" aria-label="Learn Dagbani">Learn</button>
                     <button onclick="showView('favorites')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="favorites">Favorites<span id="favorites-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
                     <button onclick="showView('community')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="community">Community</button>
-                    <button onclick="showView('leaderboard')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="leaderboard">Leaderboard</button>
                     <button onclick="showView('contribute')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="contribute">Contribute</button>
                     <button onclick="showView('profile')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="profile">Profile<span id="profile-pending-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
                     <button onclick="showView('donate')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="donate">Donate</button>
@@ -707,7 +706,6 @@
                 <button onclick="navDrawerGo('learn')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="learn">Learn</button>
                 <button onclick="navDrawerGo('favorites')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="favorites">Favorites<span id="favorites-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
                 <button onclick="navDrawerGo('community')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="community">Community</button>
-                <button onclick="navDrawerGo('leaderboard')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="leaderboard">Leaderboard</button>
                 <button onclick="navDrawerGo('contribute')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="contribute">Contribute</button>
                 <button onclick="navDrawerGo('profile')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="profile">Profile<span id="pending-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
                     <button onclick="navDrawerGo('donate')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="donate">Donate</button>
@@ -1664,29 +1662,27 @@
         </div>
     </div>
 
-    <!-- Community View (feed, announcements) -->
+    <!-- Community View (feed + leaderboard) -->
     <div id="community-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
-        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Community Updates</h2>
-            <p class="text-gray-600 mb-6">New words added by our contributors. Help grow the lexicon!</p>
-            <div id="community-feed" class="space-y-4">
-                <p class="text-gray-500 text-center py-8">No new contributions yet. Be the first to contribute!</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Leaderboard View (top contributors) -->
-    <div id="leaderboard-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
-        <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Leaderboard</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="text-lg font-semibold text-amber-700 mb-3">🏆 Top Contributors</h3>
-                    <div id="leaderboard-contributors" class="space-y-2"></div>
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Community Updates</h2>
+                <p class="text-gray-600 mb-6">New words added by our contributors. Help grow the lexicon!</p>
+                <div id="community-feed" class="space-y-4">
+                    <p class="text-gray-500 text-center py-8">No new contributions yet. Be the first to contribute!</p>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold text-amber-700 mb-3">👍 Most Voted Words</h3>
-                    <div id="leaderboard-words" class="space-y-2"></div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Leaderboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-amber-700 mb-3">🏆 Top Contributors</h3>
+                        <div id="leaderboard-contributors" class="space-y-2"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-amber-700 mb-3">👍 Most Voted Words</h3>
+                        <div id="leaderboard-words" class="space-y-2"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1883,6 +1879,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Delete account (last card, logged-in only) -->
+            <div id="profile-delete-account-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Delete account</h2>
+                <p class="text-gray-600 mb-4">Permanently remove your account from this device and sign out. To delete your data on our servers, contact the administrator.</p>
+                <button type="button" onclick="handleDeleteAccount()" class="px-4 py-2 bg-white text-red-600 border-2 border-red-500 rounded-lg font-semibold hover:bg-red-50 transition">Delete account</button>
+            </div>
         </div>
     </div>
 
@@ -1953,7 +1956,7 @@
     <!-- Contributor Profile View (public contributor page) -->
     <div id="contributor-profile-view" class="view hidden container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
-            <button id="contributor-profile-back-btn" onclick="(function(){const v=appState.contributorProfileReturnTo||'leaderboard';appState.contributorProfileReturnTo=null;showView(v);})()" class="text-amber-600 font-semibold hover:underline mb-4">← Back to Leaderboard</button>
+            <button id="contributor-profile-back-btn" onclick="(function(){const v=appState.contributorProfileReturnTo||'community';appState.contributorProfileReturnTo=null;showView(v);})()" class="text-amber-600 font-semibold hover:underline mb-4">← Back to Community</button>
             <h2 id="contributor-profile-name" class="text-2xl font-bold text-gray-800 mb-2"></h2>
             <p id="contributor-profile-stats" class="text-gray-600 mb-6"></p>
             <div id="contributor-profile-words" class="space-y-3"></div>
@@ -3090,7 +3093,7 @@
         }
 
         async function handleLogout() {
-            if (!confirm('Are you sure you want to logout?')) return;
+            if (!confirm('Are you sure you want to log out?')) return;
             const client = await ensureSupabaseClient();
             if (client) {
                 try { await client.auth.signOut(); } catch (e) { console.warn(e); }
@@ -3098,7 +3101,30 @@
                 localStorage.removeItem('currentUser');
             }
             appState.currentUser = getVisitorUser();
-            showToast('Logged out successfully');
+            showToast('Signed out successfully');
+            showMainApp();
+            if (appState.currentView === 'profile') renderProfile();
+        }
+
+        async function handleDeleteAccount() {
+            const msg = 'Permanently delete your account? This will sign you out and remove your account from this device. This cannot be undone.';
+            if (!confirm(msg)) return;
+            const client = await ensureSupabaseClient();
+            if (client) {
+                try { await client.auth.signOut(); } catch (e) { console.warn(e); }
+            }
+            const uid = (appState.currentUser && appState.currentUser.id) ? String(appState.currentUser.id) : null;
+            if (uid) {
+                try {
+                    const raw = localStorage.getItem('users');
+                    const users = raw ? JSON.parse(raw) : [];
+                    const next = users.filter(u => String(u.id) !== uid);
+                    localStorage.setItem('users', JSON.stringify(next));
+                } catch (e) { console.warn(e); }
+            }
+            localStorage.removeItem('currentUser');
+            appState.currentUser = getVisitorUser();
+            showToast('Account removed from this device. To delete your data on our servers, contact the administrator.');
             showMainApp();
             if (appState.currentView === 'profile') renderProfile();
         }
@@ -3977,7 +4003,6 @@
                 showLearnSection('practice');
             } else if (viewName === 'community') {
                 renderCommunityFeed();
-            } else if (viewName === 'leaderboard') {
                 renderLeaderboard();
             } else if (viewName === 'phrases') {
                 const gate = document.getElementById('phrase-list-gate');
@@ -6950,7 +6975,7 @@
                 </div>
             `).join('') + renderPaginationBar(total, currentPage, totalPages, 'contributorProfile') : '<p class="text-gray-500">No words yet.</p>';
             const backBtn = document.getElementById('contributor-profile-back-btn');
-            if (backBtn) backBtn.textContent = appState.contributorProfileReturnTo === 'profile' ? '← Back to Profile' : '← Back to Leaderboard';
+            if (backBtn) backBtn.textContent = appState.contributorProfileReturnTo === 'profile' ? '← Back to Profile' : '← Back to Community';
             showView('contributor-profile');
         }
 
@@ -7470,7 +7495,7 @@
             updatePendingCount();
             updateWordOfTheDay();
             if (appState.currentView === 'community') renderCommunityFeed();
-            if (appState.currentView === 'leaderboard') renderLeaderboard();
+            if (appState.currentView === 'community') renderLeaderboard();
             renderCommunityAnnouncementBanner();
             showToast(submission.editOf ? 'Edit approved!' : 'Word approved and added to dictionary!');
         }
