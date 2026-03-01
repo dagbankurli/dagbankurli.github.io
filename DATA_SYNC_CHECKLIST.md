@@ -4,15 +4,19 @@ Dictionary data now syncs to Supabase in two cases: **on git push** (via the dep
 
 ---
 
-## 1. Create the `dictionary` table in Supabase
+## 1. Create all Supabase tables (profiles, activity_log, pending_submissions, dictionary)
 
-If you haven’t already, run the dictionary table SQL in your Supabase project:
+So that **profiles**, **activity log**, **pending submissions**, and the **dictionary** all work in the app and in the Supabase Table Editor:
 
 1. Open [Supabase Dashboard](https://supabase.com/dashboard) → your project → **SQL Editor**.
-2. Run the **“4. Dictionary”** block from `supabase_schema.sql` (the part that creates the `dictionary` table and its RLS policies).  
-   Or run the SQL from **section 9** in `SUPABASE_SETUP.md`.
+2. Run the **entire** `supabase_schema.sql` file (all four sections: 1. Profiles, 2. Activity log, 3. Pending submissions, 4. Dictionary).  
+   That creates:
+   - **profiles** – user roles (admin, contributor, etc.); auto-filled when users sign up.
+   - **activity_log** – admin approve/reject history (visible in Profile → Review).
+   - **pending_submissions** – contributor submissions for review (cross-device sync).
+   - **dictionary** – words, phrases, idioms (synced by the deploy script or Import Data).
 
-That’s the same table the app and the sync script use.
+If you only need the dictionary for now, you can run just section 4 from `supabase_schema.sql`; add the other sections when you want activity log and pending submissions to sync to Supabase.
 
 ---
 

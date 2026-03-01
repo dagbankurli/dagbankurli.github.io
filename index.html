@@ -1777,29 +1777,16 @@
             <!-- Preferences & Data -->
             <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Preferences & Data</h2>
-                <div id="supabase-data-status" class="mb-6 p-4 rounded-xl border border-gray-200 bg-gray-50">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Supabase connection</h3>
-                    <p id="supabase-status-text" class="text-sm text-gray-600 mb-2">Checking…</p>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" id="supabase-test-btn" onclick="confirmSupabaseConnection()" class="px-3 py-1.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition hidden">Test connection</button>
-                        <button type="button" id="supabase-check-btn" onclick="checkSupabaseDictionary()" class="px-3 py-1.5 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition hidden">Check dictionary in Supabase</button>
-                    </div>
-                </div>
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-3">App Preferences</h3>
-                        <div class="space-y-3">
-                            <label class="flex items-center justify-between cursor-pointer">
-                                <span class="text-gray-700">Dark Mode</span>
-                                <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()" class="w-4 h-4">
-                            </label>
-                            <label class="flex items-center justify-between">
-                                <span class="text-gray-700">Show Search History</span>
-                                <input type="checkbox" id="show-history" checked onchange="saveSettings()" class="w-4 h-4">
-                            </label>
+                <div id="profile-data-management-section" class="hidden">
+                    <div id="supabase-data-status" class="mb-6 p-4 rounded-xl border border-gray-200 bg-gray-50">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Supabase connection</h3>
+                        <p id="supabase-status-text" class="text-sm text-gray-600 mb-2">Checking…</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" id="supabase-test-btn" onclick="confirmSupabaseConnection()" class="px-3 py-1.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition hidden">Test connection</button>
+                            <button type="button" id="supabase-check-btn" onclick="checkSupabaseDictionary()" class="px-3 py-1.5 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition hidden">Check dictionary in Supabase</button>
                         </div>
                     </div>
-                    <div>
+                    <div class="mb-6">
                         <h3 class="text-lg font-semibold text-gray-700 mb-3">Data Management</h3>
                         <div class="space-y-3">
                             <button onclick="exportData()" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">📥 Export Data (Backup)</button>
@@ -1831,6 +1818,21 @@
                                 </div>
                                 <button onclick="clearSelectedData()" class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">🗑️ Clear Selected Data</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">App Preferences</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between cursor-pointer">
+                                <span class="text-gray-700">Dark Mode</span>
+                                <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()" class="w-4 h-4">
+                            </label>
+                            <label class="flex items-center justify-between">
+                                <span class="text-gray-700">Show Search History</span>
+                                <input type="checkbox" id="show-history" checked onchange="saveSettings()" class="w-4 h-4">
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -3062,18 +3064,22 @@
         }
 
         async function fetchActivityLogFromSupabase() {
-            if (!supabase || !isAdmin()) return;
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !isAdmin()) return;
+            const client = await ensureSupabaseClient();
+            if (!client) return;
             try {
-                const { data } = await supabase.from('activity_log').select('*').order('created_at', { ascending: false }).limit(500);
+                const { data } = await client.from('activity_log').select('*').order('created_at', { ascending: false }).limit(500);
                 if (data && data.length) {
                     appState.activityLog = data.map(r => ({ type: r.type, kind: r.kind, id: r.item_id, dagbani: r.dagbani, by: r.by_username, at: r.created_at }));
                 }
             } catch (e) { console.warn('Activity log fetch failed:', e); }
         }
         async function pushActivityLogToSupabase(entry) {
-            if (!supabase || !isAdmin()) return;
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !isAdmin()) return;
+            const client = await ensureSupabaseClient();
+            if (!client) return;
             try {
-                await supabase.from('activity_log').insert({
+                await client.from('activity_log').insert({
                     type: entry.type,
                     kind: entry.kind || 'word',
                     item_id: String(entry.id || ''),
@@ -3085,9 +3091,12 @@
 
         /** Push pending submission to Supabase for cross-device sync. */
         async function pushPendingToSupabase(kind, id, content) {
-            if (!supabase || !appState.currentUser?.id) return;
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !appState.currentUser?.id) return;
+            if (appState.currentUser.id === 'guest') return;
+            const client = await ensureSupabaseClient();
+            if (!client) return;
             try {
-                await supabase.from('pending_submissions').insert({
+                await client.from('pending_submissions').insert({
                     id: String(id),
                     kind,
                     user_id: appState.currentUser.id,
@@ -3100,9 +3109,11 @@
 
         /** Fetch pending submissions from Supabase (for admins). Merges with local items from import. */
         async function fetchPendingFromSupabase() {
-            if (!supabase || !isAdmin()) return;
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !isAdmin()) return;
+            const client = await ensureSupabaseClient();
+            if (!client) return;
             try {
-                const { data } = await supabase.from('pending_submissions').select('*').order('created_at', { ascending: true });
+                const { data } = await client.from('pending_submissions').select('*').order('created_at', { ascending: true });
                 if (data && data.length) {
                     const words = data.filter(r => r.kind === 'word').map(r => ({ ...r.content, id: r.id }));
                     const phrases = data.filter(r => r.kind === 'phrase').map(r => ({ ...r.content, id: r.id }));
@@ -3123,9 +3134,11 @@
 
         /** Fetch contributor's own pending from Supabase (for My Contributions cross-device sync). RLS returns only rows where user_id = auth.uid(). */
         async function fetchMyPendingFromSupabase() {
-            if (!supabase || !appState.currentUser?.id || !isContributor()) return;
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !appState.currentUser?.id || appState.currentUser.id === 'guest' || !isContributor()) return;
+            const client = await ensureSupabaseClient();
+            if (!client) return;
             try {
-                const { data } = await supabase.from('pending_submissions').select('*').order('created_at', { ascending: true });
+                const { data } = await client.from('pending_submissions').select('*').order('created_at', { ascending: true });
                 if (data && data.length) {
                     const words = data.filter(r => r.kind === 'word').map(r => ({ ...r.content, id: r.id }));
                     const phrases = data.filter(r => r.kind === 'phrase').map(r => ({ ...r.content, id: r.id }));
@@ -3146,9 +3159,10 @@
 
         /** Delete pending from Supabase when admin approves/rejects. */
         async function deletePendingFromSupabase(kind, id) {
-            if (!supabase) return;
+            const client = await ensureSupabaseClient();
+            if (!client) return;
             try {
-                await supabase.from('pending_submissions').delete().eq('id', String(id)).eq('kind', kind);
+                await client.from('pending_submissions').delete().eq('id', String(id)).eq('kind', kind);
             } catch (e) { console.warn('Pending delete from Supabase failed:', e); }
         }
 
@@ -3475,6 +3489,16 @@
                 } else {
                     reviewSection.classList.add('hidden');
                     reviewSection.style.display = 'none';
+                }
+            }
+            const dataMgmtSection = document.getElementById('profile-data-management-section');
+            if (dataMgmtSection) {
+                if (isMasterAdmin()) {
+                    dataMgmtSection.classList.remove('hidden');
+                    dataMgmtSection.style.display = 'block';
+                } else {
+                    dataMgmtSection.classList.add('hidden');
+                    dataMgmtSection.style.display = 'none';
                 }
             }
             renderSupabaseDataStatus();
