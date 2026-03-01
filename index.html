@@ -684,7 +684,6 @@
                     <button onclick="showView('profile')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm relative whitespace-nowrap min-h-[44px]" data-view="profile">Profile<span id="profile-pending-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
                     <button onclick="showView('donate')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="donate">Donate</button>
                     <button onclick="showView('about')" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" data-view="about">About</button>
-                    <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg hover:bg-amber-700 transition text-sm whitespace-nowrap min-h-[44px]" id="logout-btn" style="display: none;">Logout</button>
                 </div>
                 <!-- Hamburger: CSS controls visibility (shown below 1280px) -->
                 <button id="nav-hamburger" onclick="toggleNavDrawer()" class="flex-shrink-0 w-12 h-12 min-w-[48px] min-h-[48px] rounded-xl hover:bg-amber-700 active:bg-amber-800 flex items-center justify-center transition-colors touch-manipulation" aria-label="Menu" aria-expanded="false">
@@ -713,7 +712,6 @@
                 <button onclick="navDrawerGo('profile')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center relative touch-manipulation" data-view="profile">Profile<span id="pending-count-drawer" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span></button>
                     <button onclick="navDrawerGo('donate')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="donate">Donate</button>
                 <button onclick="navDrawerGo('about')" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" data-view="about">About</button>
-                <button onclick="navDrawerLogout()" class="nav-drawer-btn px-4 py-3.5 rounded-xl hover:bg-amber-700 active:bg-amber-700 transition text-left font-medium min-h-[52px] text-base flex items-center touch-manipulation" id="logout-btn-drawer" style="display: none;">Logout</button>
             </div>
         </div>
     </nav>
@@ -1708,9 +1706,9 @@
                 <div id="user-info" class="space-y-4 text-gray-700">
                     <div>
                         <label for="profile-username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="profile-username" class="flex-1 px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="Username">
-                            <button type="button" onclick="saveMyUsername()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Save</button>
+                        <div class="flex gap-2 max-w-md">
+                            <input type="text" id="profile-username" class="flex-1 min-w-0 px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="Username">
+                            <button type="button" onclick="saveMyUsername()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition flex-shrink-0">Save</button>
                         </div>
                     </div>
                     <p><strong>Email:</strong> <span id="settings-email">-</span></p>
@@ -1718,9 +1716,9 @@
                     <p><strong>Member Since:</strong> <span id="settings-date">-</span></p>
                     <div id="profile-attribution-wrap" class="hidden">
                         <label for="profile-attribution" class="block text-sm font-semibold text-gray-700 mb-1">Attribution name (shown with your contributions)</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="profile-attribution" class="flex-1 px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="e.g. Dr. Abubakari Alhassan">
-                            <button type="button" onclick="saveMyAttribution()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Save</button>
+                        <div class="flex gap-2 max-w-md">
+                            <input type="text" id="profile-attribution" class="flex-1 min-w-0 px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="e.g. Dr. Abubakari Alhassan">
+                            <button type="button" onclick="saveMyAttribution()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition flex-shrink-0">Save</button>
                         </div>
                     </div>
                     <div id="profile-become-contributor-wrap" class="hidden p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
@@ -1731,6 +1729,9 @@
                             <button type="button" onclick="becomeContributor()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Become contributor</button>
                         </div>
                     </div>
+                </div>
+                <div id="profile-account-logout-wrap" class="mt-4 pt-4 border-t border-gray-200">
+                    <button type="button" onclick="handleLogout()" class="px-4 py-2 bg-red-500 text-white border border-red-600 rounded-lg font-semibold hover:bg-red-600 transition">Logout</button>
                 </div>
                 <p id="settings-visitor-prompt" class="hidden text-amber-700 font-medium mt-2">Sign in to save your progress and favorites across devices.</p>
             </div>
@@ -2866,22 +2867,16 @@
             const badge = document.getElementById('user-badge');
             const signInBtn = document.getElementById('nav-sign-in');
             const signInDrawer = document.getElementById('nav-sign-in-drawer');
-            const logoutBtn = document.getElementById('logout-btn');
-            const logoutBtnDrawer = document.getElementById('logout-btn-drawer');
             if (isLoggedIn()) {
                 badge.textContent = appState.currentUser.username + (isMasterAdmin() ? ' (Master Admin)' : role === ROLES.admin ? ' (Admin)' : role === ROLES.contributor ? ' (Contributor)' : '');
                 badge.classList.remove('hidden');
                 if (signInBtn) signInBtn.style.display = 'none';
                 if (signInDrawer) signInDrawer.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                logoutBtnDrawer.style.display = 'block';
                 updateUserInfo();
             } else {
                 badge.classList.add('hidden');
                 if (signInBtn) signInBtn.style.display = 'block';
                 if (signInDrawer) signInDrawer.style.display = 'block';
-                logoutBtn.style.display = 'none';
-                logoutBtnDrawer.style.display = 'none';
             }
             showView('dictionary');
             updateFavoritesCount();
