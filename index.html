@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="css-loading">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -66,12 +66,27 @@
         ]
     }
     </script>
-    <script src="https://cdn.tailwindcss.com" async></script>
+    <script>
+        (function() {
+            var el = document.createElement('script');
+            el.src = 'https://cdn.tailwindcss.com';
+            el.async = true;
+            el.onload = function() {
+                document.documentElement.classList.remove('css-loading');
+            };
+            el.onerror = function() { document.documentElement.classList.remove('css-loading'); };
+            document.head.appendChild(el);
+            setTimeout(function() { document.documentElement.classList.remove('css-loading'); }, 4000);
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
     <style>
+        /* Prevent flash of unstyled content: hide body until Tailwind has loaded */
+        html.css-loading body { visibility: hidden; }
+        html.css-loading #global-loading { visibility: visible !important; }
         /* ─── Custom Styles (animations, utilities, responsive) ───────────────── */
         * {
             font-family: 'Outfit', sans-serif;
@@ -3303,20 +3318,26 @@
             const list = document.getElementById('user-management-list');
             if (!list || !isMasterAdmin()) return;
             let combined = [];
+            const seenUsernames = new Set();
             if (supabase) {
                 try {
                     const { data: profiles } = await supabase.from('profiles').select('id, username, role, attribution_name').in('role', ['contributor', 'admin']);
-                    if (profiles) {
+                    if (profiles && profiles.length) {
                         const contributors = profiles.filter(p => p.role === ROLES.contributor).map(p => ({ id: p.id, username: p.username, role: p.role, attributionName: p.attribution_name, _type: 'contributor' }));
                         const admins = profiles.filter(p => p.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(p.username)).map(p => ({ id: p.id, username: p.username, role: p.role, _type: 'admin' }));
                         combined = contributors.concat(admins);
+                        combined.forEach(u => seenUsernames.add((u.username || '').toLowerCase()));
                     }
                 } catch (e) { console.warn('User management fetch failed:', e); }
             }
+            const localUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const localContributors = localUsers.filter(u => u.role === ROLES.contributor && !seenUsernames.has((u.username || '').toLowerCase()));
+            const localAdmins = localUsers.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username) && !seenUsernames.has((u.username || '').toLowerCase()));
+            localContributors.forEach(u => { seenUsernames.add((u.username || '').toLowerCase()); combined.push({ ...u, _type: 'contributor' }); });
+            localAdmins.forEach(u => { seenUsernames.add((u.username || '').toLowerCase()); combined.push({ ...u, _type: 'admin' }); });
             if (combined.length === 0 && !supabase) {
-                const users = JSON.parse(localStorage.getItem('users') || '[]');
-                const contributors = users.filter(u => u.role === ROLES.contributor);
-                const admins = users.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username));
+                const contributors = localUsers.filter(u => u.role === ROLES.contributor);
+                const admins = localUsers.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username));
                 combined = contributors.map(u => ({ ...u, _type: 'contributor' })).concat(admins.map(u => ({ ...u, _type: 'admin' })));
             }
             if (combined.length === 0) {
