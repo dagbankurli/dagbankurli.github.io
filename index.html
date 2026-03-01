@@ -1755,13 +1755,6 @@
             <div id="profile-review-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
                 <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
-                <div id="review-import-tip" class="mb-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
-                    <p class="text-sm text-gray-700"><strong>Contributors on another device?</strong> Have them use Profile → My Contributions → "Export pending for admin", then send you the file. Import it here:</p>
-                    <label class="inline-flex items-center gap-2 mt-2 cursor-pointer px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">
-                        <span>📥 Import contributor submissions</span>
-                        <input type="file" accept=".json" class="hidden" onchange="importContributorSubmissions(event)">
-                    </label>
-                </div>
                 <div class="flex gap-2 mb-6 border-b border-gray-200">
                     <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
                     <button type="button" onclick="setReviewTab('phrases')" id="review-tab-phrases" class="px-4 py-2 font-semibold text-gray-600 hover:text-amber-700 -mb-[1px]">Phrases</button>
