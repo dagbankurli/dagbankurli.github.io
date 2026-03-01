@@ -631,6 +631,37 @@
         </div>
     </div>
 
+    <!-- Edit User Modal (master admin: edit username, role, attribution) -->
+    <div id="edit-user-modal" role="dialog" aria-modal="true" aria-labelledby="edit-user-modal-title" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto hidden" onclick="if(event.target===this)closeEditUserModal()">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full slide-in" onclick="event.stopPropagation()">
+            <h2 id="edit-user-modal-title" class="text-xl font-bold text-gray-800 mb-4">Edit user</h2>
+            <input type="hidden" id="edit-user-id">
+            <input type="hidden" id="edit-user-old-username">
+            <div class="space-y-4">
+                <div>
+                    <label for="edit-user-username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                    <input type="text" id="edit-user-username" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg" placeholder="Username">
+                </div>
+                <div>
+                    <label for="edit-user-role" class="block text-sm font-semibold text-gray-700 mb-1">Role</label>
+                    <select id="edit-user-role" onchange="var w=document.getElementById('edit-user-attribution-wrap');w.style.display=this.value==='contributor'?'block':'none';" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg">
+                        <option value="user">Learner</option>
+                        <option value="contributor">Contributor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div id="edit-user-attribution-wrap">
+                    <label for="edit-user-attribution" class="block text-sm font-semibold text-gray-700 mb-1">Attribution name (for contributors)</label>
+                    <input type="text" id="edit-user-attribution" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg" placeholder="e.g. Dr. Abubakari Alhassan">
+                </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="saveEditUser()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Save</button>
+                <button onclick="closeEditUserModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ─── Navigation & Layout ─────────────────────────────────────────────── -->
     <!-- Navigation Bar (sticky; hamburger on mobile, full links on desktop) -->
     <nav role="navigation" aria-label="Main navigation" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg sticky top-0 z-40 safe-top" id="main-nav" style="display: none;">
@@ -1671,14 +1702,35 @@
             <button onclick="closeNavDrawer(); showLoginModal('user')" class="px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Sign In</button>
         </div>
         <div id="profile-content" class="hidden space-y-6">
-            <!-- Account -->
+            <!-- Account (username editable; learner can become contributor) -->
             <div class="bg-white rounded-2xl shadow-xl p-6 slide-in">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Account</h2>
-                <div id="user-info" class="space-y-2 text-gray-700">
-                    <p><strong>Username:</strong> <span id="settings-username">-</span></p>
+                <div id="user-info" class="space-y-4 text-gray-700">
+                    <div>
+                        <label for="profile-username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="profile-username" class="flex-1 px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="Username">
+                            <button type="button" onclick="saveMyUsername()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Save</button>
+                        </div>
+                    </div>
                     <p><strong>Email:</strong> <span id="settings-email">-</span></p>
                     <p><strong>Role:</strong> <span id="settings-role">-</span></p>
                     <p><strong>Member Since:</strong> <span id="settings-date">-</span></p>
+                    <div id="profile-attribution-wrap" class="hidden">
+                        <label for="profile-attribution" class="block text-sm font-semibold text-gray-700 mb-1">Attribution name (shown with your contributions)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="profile-attribution" class="flex-1 px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="e.g. Dr. Abubakari Alhassan">
+                            <button type="button" onclick="saveMyAttribution()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Save</button>
+                        </div>
+                    </div>
+                    <div id="profile-become-contributor-wrap" class="hidden p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
+                        <p class="text-sm font-semibold text-gray-800 mb-2">Become a contributor</p>
+                        <p class="text-sm text-gray-600 mb-3">You can suggest new words, phrases, and idioms for review. Enter your name for attribution (how you want to be credited):</p>
+                        <div class="flex flex-wrap gap-2">
+                            <input type="text" id="profile-become-contributor-name" class="flex-1 min-w-[200px] px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="Your name for attribution">
+                            <button type="button" onclick="becomeContributor()" class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition">Become contributor</button>
+                        </div>
+                    </div>
                 </div>
                 <p id="settings-visitor-prompt" class="hidden text-amber-700 font-medium mt-2">Sign in to save your progress and favorites across devices.</p>
             </div>
@@ -3333,9 +3385,10 @@
             if (!list || !isMasterAdmin()) return;
             let combined = [];
             const seenUsernames = new Set();
-            if (supabase) {
+            const client = await ensureSupabaseClient();
+            if (client) {
                 try {
-                    const { data: profiles } = await supabase.from('profiles').select('id, username, role, attribution_name').in('role', ['contributor', 'admin']);
+                    const { data: profiles } = await client.from('profiles').select('id, username, role, attribution_name').in('role', ['contributor', 'admin']);
                     if (profiles && profiles.length) {
                         const contributors = profiles.filter(p => p.role === ROLES.contributor).map(p => ({ id: p.id, username: p.username, role: p.role, attributionName: p.attribution_name, _type: 'contributor' }));
                         const admins = profiles.filter(p => p.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(p.username)).map(p => ({ id: p.id, username: p.username, role: p.role, _type: 'admin' }));
@@ -3349,7 +3402,7 @@
             const localAdmins = localUsers.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username) && !seenUsernames.has((u.username || '').toLowerCase()));
             localContributors.forEach(u => { seenUsernames.add((u.username || '').toLowerCase()); combined.push({ ...u, _type: 'contributor' }); });
             localAdmins.forEach(u => { seenUsernames.add((u.username || '').toLowerCase()); combined.push({ ...u, _type: 'admin' }); });
-            if (combined.length === 0 && !supabase) {
+            if (combined.length === 0 && !client) {
                 const contributors = localUsers.filter(u => u.role === ROLES.contributor);
                 const admins = localUsers.filter(u => u.role === ROLES.admin && !MASTER_ADMIN_USERNAMES.includes(u.username));
                 combined = contributors.map(u => ({ ...u, _type: 'contributor' })).concat(admins.map(u => ({ ...u, _type: 'admin' })));
@@ -3359,16 +3412,19 @@
                 return;
             }
             const { slice: pageSlice, currentPage, totalPages, total } = paginate(combined, (appState.pagination || {}).userManagement);
+            window._userManagementPage = pageSlice;
             const contribsOnPage = pageSlice.filter(u => u._type === 'contributor');
             const adminsOnPage = pageSlice.filter(u => u._type === 'admin');
             let html = '';
             if (contribsOnPage.length > 0) {
                 html += '<p class="text-sm font-semibold text-gray-600 mb-2">Contributors (promote to admin):</p>';
-                contribsOnPage.forEach(u => {
+                contribsOnPage.forEach((u, idx) => {
+                    const i = pageSlice.indexOf(u);
                     const attr = u.attributionName || u.username;
                     html += `<div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200 mb-2">
                         <span>${escapeHtml(u.username)} ${u.attributionName ? '(' + escapeHtml(u.attributionName) + ')' : ''}</span>
                         <div class="flex gap-2">
+                            <button onclick="openEditUserModal(${i})" class="px-3 py-1.5 bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold hover:bg-gray-300">Edit</button>
                             <button onclick="showContributorProfileFromAdmin(${JSON.stringify(attr)})" class="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold hover:bg-blue-200">View words</button>
                             <button onclick="promoteToAdmin(${JSON.stringify(u.username)})" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Make admin</button>
                         </div>
@@ -3377,10 +3433,12 @@
             }
             if (adminsOnPage.length > 0) {
                 html += '<p class="text-sm font-semibold text-gray-600 mt-4 mb-2">Admins:</p>';
-                adminsOnPage.forEach(u => {
+                adminsOnPage.forEach((u, idx) => {
+                    const i = pageSlice.indexOf(u);
                     html += `<div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200 mb-2">
                         <span>${escapeHtml(u.username)}</span>
                         <div class="flex gap-2">
+                            <button onclick="openEditUserModal(${i})" class="px-3 py-1.5 bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold hover:bg-gray-300">Edit</button>
                             <span class="text-amber-700 text-sm font-semibold">Admin</span>
                             <button onclick="demoteToContributor(${JSON.stringify(u.username)})" class="text-xs px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Demote</button>
                         </div>
@@ -3393,9 +3451,10 @@
         async function demoteToContributor(username) {
             if (!isMasterAdmin()) { showToast('Only master admins can demote.', 'error'); return; }
             if (MASTER_ADMIN_USERNAMES.includes(username)) { showToast('Cannot demote master admins.', 'error'); return; }
-            if (supabase) {
+            const client = await ensureSupabaseClient();
+            if (client) {
                 try {
-                    const { error } = await supabase.from('profiles').update({ role: ROLES.contributor }).eq('username', username);
+                    const { error } = await client.from('profiles').update({ role: ROLES.contributor }).eq('username', username);
                     if (error) throw error;
                     showToast(`${username} demoted to contributor.`);
                     renderUserManagement();
@@ -3414,9 +3473,10 @@
         async function promoteToAdmin(username) {
             if (!isMasterAdmin()) { showToast('Only master admins can create admins.', 'error'); return; }
             if (!username) return;
-            if (supabase) {
+            const client = await ensureSupabaseClient();
+            if (client) {
                 try {
-                    const { error } = await supabase.from('profiles').update({ role: ROLES.admin }).eq('username', username);
+                    const { error } = await client.from('profiles').update({ role: ROLES.admin }).eq('username', username);
                     if (error) throw error;
                     showToast(`${username} is now an admin.`);
                     renderUserManagement();
@@ -3432,6 +3492,63 @@
             localStorage.setItem('users', JSON.stringify(users));
             renderUserManagement();
             showToast(`${username} is now an admin.`);
+        }
+
+        function openEditUserModal(index) {
+            const list = window._userManagementPage;
+            if (!list || index == null || index < 0 || index >= list.length) return;
+            const u = list[index];
+            if (!u) return;
+            document.getElementById('edit-user-id').value = u.id || '';
+            document.getElementById('edit-user-old-username').value = u.username || '';
+            document.getElementById('edit-user-username').value = u.username || '';
+            document.getElementById('edit-user-role').value = u.role || 'user';
+            document.getElementById('edit-user-attribution').value = u.attributionName || '';
+            document.getElementById('edit-user-attribution-wrap').style.display = (u.role === ROLES.contributor) ? 'block' : 'none';
+            document.getElementById('edit-user-modal').classList.remove('hidden');
+        }
+        function closeEditUserModal() {
+            document.getElementById('edit-user-modal').classList.add('hidden');
+        }
+        async function saveEditUser() {
+            if (!isMasterAdmin()) { closeEditUserModal(); return; }
+            const id = document.getElementById('edit-user-id').value.trim();
+            const oldUsername = document.getElementById('edit-user-old-username').value.trim();
+            const username = document.getElementById('edit-user-username').value.trim();
+            const role = document.getElementById('edit-user-role').value;
+            const attributionName = document.getElementById('edit-user-attribution').value.trim();
+            if (!username) { showToast('Username is required.', 'error'); return; }
+            const validRoles = ['user', 'contributor', 'admin'];
+            if (!validRoles.includes(role)) { showToast('Invalid role.', 'error'); return; }
+            const client = await ensureSupabaseClient();
+            if (client && id) {
+                try {
+                    const { error } = await client.from('profiles').update({
+                        username: username,
+                        role: role,
+                        attribution_name: attributionName || null
+                    }).eq('id', id);
+                    if (error) throw error;
+                    showToast('User updated.');
+                    closeEditUserModal();
+                    renderUserManagement();
+                } catch (e) { showToast(e.message || 'Update failed', 'error'); }
+                return;
+            }
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.username === oldUsername);
+            if (!user) { showToast('User not found.', 'error'); return; }
+            user.username = username;
+            user.role = role;
+            if (user.attributionName !== undefined) user.attributionName = attributionName || '';
+            localStorage.setItem('users', JSON.stringify(users));
+            if (appState.currentUser && appState.currentUser.username === oldUsername) {
+                appState.currentUser.username = username;
+                appState.currentUser.role = role;
+            }
+            showToast('User updated.');
+            closeEditUserModal();
+            renderUserManagement();
         }
 
         function renderProfile() {
@@ -3505,7 +3622,10 @@
         }
 
         function updateUserInfo() {
-            const su = document.getElementById('settings-username');
+            const usernameInput = document.getElementById('profile-username');
+            const attributionWrap = document.getElementById('profile-attribution-wrap');
+            const attributionInput = document.getElementById('profile-attribution');
+            const becomeWrap = document.getElementById('profile-become-contributor-wrap');
             const se = document.getElementById('settings-email');
             const sd = document.getElementById('settings-date');
             const sr = document.getElementById('settings-role');
@@ -3514,10 +3634,13 @@
             if (appState.currentUser && isLoggedIn()) {
                 const r = appState.currentUser.role || ROLES.user;
                 const roleLabel = isMasterAdmin() ? 'Master Admin' : { user: 'Learner', contributor: 'Contributor', admin: 'Admin' }[r] || 'User';
-                if (su) su.textContent = appState.currentUser.username;
+                if (usernameInput) usernameInput.value = appState.currentUser.username || '';
                 if (se) se.textContent = appState.currentUser.email || 'Not provided';
                 if (sd) sd.textContent = appState.currentUser.dateJoined ? new Date(appState.currentUser.dateJoined).toLocaleDateString() : '-';
                 if (sr) sr.textContent = roleLabel;
+                if (attributionWrap) attributionWrap.classList.toggle('hidden', r !== ROLES.contributor && !isAdmin());
+                if (attributionInput) attributionInput.value = appState.currentUser.attributionName || '';
+                if (becomeWrap) becomeWrap.classList.toggle('hidden', r !== ROLES.user);
                 if (svp) svp.classList.add('hidden');
                 if (umSection) {
                     if (isMasterAdmin()) {
@@ -3546,13 +3669,96 @@
                     }
                 }
             } else {
-                if (su) su.textContent = 'Visitor';
+                if (usernameInput) usernameInput.value = '';
+                if (attributionWrap) attributionWrap.classList.add('hidden');
+                if (becomeWrap) becomeWrap.classList.add('hidden');
                 if (umSection) umSection.classList.add('hidden');
                 if (se) se.textContent = '-';
                 if (sd) sd.textContent = '-';
                 if (sr) sr.textContent = 'Visitor';
                 if (svp) svp.classList.remove('hidden');
             }
+        }
+
+        async function saveMyUsername() {
+            if (!appState.currentUser || !isLoggedIn() || appState.currentUser.id === 'guest') return;
+            const username = (document.getElementById('profile-username')?.value || '').trim();
+            if (!username) { showToast('Username cannot be empty.', 'error'); return; }
+            const client = await ensureSupabaseClient();
+            if (client && appState.currentUser.id) {
+                try {
+                    const { error } = await client.from('profiles').update({ username }).eq('id', appState.currentUser.id);
+                    if (error) throw error;
+                    appState.currentUser.username = username;
+                    showToast('Username updated.');
+                    showMainApp();
+                } catch (e) { showToast(e.message || 'Update failed', 'error'); }
+                return;
+            }
+            const oldUsername = appState.currentUser.username;
+            appState.currentUser.username = username;
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const u = users.find(x => x.username === oldUsername || (x.email && x.email === appState.currentUser.email));
+            if (u) u.username = username;
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(appState.currentUser));
+            showToast('Username updated.');
+            showMainApp();
+        }
+
+        async function saveMyAttribution() {
+            if (!appState.currentUser || !isLoggedIn() || appState.currentUser.id === 'guest') return;
+            const attributionName = (document.getElementById('profile-attribution')?.value || '').trim();
+            const client = await ensureSupabaseClient();
+            if (client && appState.currentUser.id) {
+                try {
+                    const { error } = await client.from('profiles').update({ attribution_name: attributionName || null }).eq('id', appState.currentUser.id);
+                    if (error) throw error;
+                    appState.currentUser.attributionName = attributionName;
+                    showToast('Attribution name updated.');
+                } catch (e) { showToast(e.message || 'Update failed', 'error'); }
+                return;
+            }
+            appState.currentUser.attributionName = attributionName;
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const u = users.find(x => (x.email && x.email === appState.currentUser.email) || x.username === appState.currentUser.username);
+            if (u) u.attributionName = attributionName;
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(appState.currentUser));
+            showToast('Attribution name updated.');
+        }
+
+        async function becomeContributor() {
+            if (!appState.currentUser || !isLoggedIn() || appState.currentUser.id === 'guest') return;
+            const r = appState.currentUser.role || ROLES.user;
+            if (r !== ROLES.user) { showToast('You are already a contributor or admin.', 'error'); return; }
+            const attributionName = (document.getElementById('profile-become-contributor-name')?.value || '').trim();
+            if (!attributionName) { showToast('Please enter your name for attribution.', 'error'); return; }
+            const client = await ensureSupabaseClient();
+            if (client && appState.currentUser.id) {
+                try {
+                    const { error } = await client.from('profiles').update({ role: ROLES.contributor, attribution_name: attributionName }).eq('id', appState.currentUser.id);
+                    if (error) throw error;
+                    appState.currentUser.role = ROLES.contributor;
+                    appState.currentUser.attributionName = attributionName;
+                    showToast('You are now a contributor. You can suggest words, phrases, and idioms.');
+                    updateUserInfo();
+                    showMainApp();
+                    if (appState.currentView === 'profile') renderProfile();
+                } catch (e) { showToast(e.message || 'Update failed', 'error'); }
+                return;
+            }
+            appState.currentUser.role = ROLES.contributor;
+            appState.currentUser.attributionName = attributionName;
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const u = users.find(x => (x.email && x.email === appState.currentUser.email) || x.username === appState.currentUser.username);
+            if (u) { u.role = ROLES.contributor; u.attributionName = attributionName; }
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(appState.currentUser));
+            showToast('You are now a contributor.');
+            updateUserInfo();
+            showMainApp();
+            if (appState.currentView === 'profile') renderProfile();
         }
 
         function injectVocabularySchema() {
