@@ -3306,7 +3306,7 @@
             if (!textEl) return;
             if (!supabase) {
                 if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-                    textEl.textContent = 'Supabase URL and key are set in config.js but the client could not start. Open the app from a local server (e.g. run: npx serve .) and sign in with your Supabase account so Peer Review and User Management can load cloud data.';
+                    textEl.textContent = 'Supabase client could not start (common when opening the file directly). Run in terminal: npx serve . then open the URL shown (e.g. http://localhost:3000). On GitHub Pages the app should connect automatically.';
                 } else {
                     textEl.textContent = 'Supabase is not configured. Add url and key in config.js. Dictionary uses localStorage and dictionary_import.json until then.';
                 }
