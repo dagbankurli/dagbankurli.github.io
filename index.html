@@ -2479,28 +2479,54 @@
         const SITE_URL = 'https://dagbanikorli.org';
         const SUPABASE_URL = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || '';
         const SUPABASE_ANON_KEY = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.key) || '';
-        let supabase = null;
+        let supabaseClient = null;
         let supabaseLoadPromise = null;
         function loadSupabaseScript() {
             if (window.supabase) return Promise.resolve();
             if (supabaseLoadPromise) return supabaseLoadPromise;
-            supabaseLoadPromise = new Promise((resolve, reject) => {
-                const s = document.createElement('script');
-                s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-                s.async = true;
-                s.onload = () => resolve();
-                s.onerror = () => { supabaseLoadPromise = null; reject(new Error('Supabase script failed to load')); };
-                document.head.appendChild(s);
-            });
+            var urls = [
+                'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+                'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+                'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+                'https://unpkg.com/@supabase/supabase-js@2'
+            ];
+            var idx = 0;
+            function loadOne() {
+                if (idx >= urls.length) return Promise.reject(new Error('Supabase script failed to load'));
+                var src = urls[idx++];
+                return new Promise(function (resolve, reject) {
+                    var s = document.createElement('script');
+                    s.src = src;
+                    s.async = true;
+                    s.onload = function () { resolve(); };
+                    s.onerror = function () {
+                        s.remove();
+                        loadOne().then(resolve, reject);
+                    };
+                    document.head.appendChild(s);
+                });
+            }
+            supabaseLoadPromise = loadOne();
             return supabaseLoadPromise;
         }
+        function getSupabaseCreateClient() {
+            var s = window.supabase;
+            if (s && typeof s.createClient === 'function') return s.createClient;
+            if (s && s.default && typeof s.default.createClient === 'function') return s.default.createClient;
+            return null;
+        }
         async function ensureSupabaseClient() {
-            if (supabase) return supabase;
+            if (supabaseClient) return supabaseClient;
             if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
             try {
                 await loadSupabaseScript();
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                return supabase;
+                var createClientFn = getSupabaseCreateClient();
+                if (!createClientFn) {
+                    console.warn('Supabase script loaded but createClient not found. Check network or try another browser.');
+                    return null;
+                }
+                supabaseClient = createClientFn(SUPABASE_URL, SUPABASE_ANON_KEY);
+                return supabaseClient;
             } catch (e) { console.warn('Supabase init failed:', e); return null; }
         }
 
@@ -2791,6 +2817,35 @@
                 seedAdminIfNeeded();
             }
             showMainApp();
+            syncAllFromSupabase().catch(function () {});
+        }
+
+        /** Load every data point from Supabase and sync to app state + localStorage. Runs after auth so roles are known. */
+        async function syncAllFromSupabase() {
+            var client = await ensureSupabaseClient();
+            if (!client) return;
+            try {
+                var data = await fetchDictionaryFromSupabase();
+                if (data && (data.words && data.words.length || data.phrases && data.phrases.length || data.idioms && data.idioms.length)) {
+                    if (data.words && data.words.length) {
+                        appState.words = data.words;
+                        if (typeof injectVocabularySchema === 'function') injectVocabularySchema();
+                        if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
+                        if (typeof applyFilters === 'function') applyFilters();
+                    }
+                    if (data.phrases && data.phrases.length) appState.phrases = data.phrases;
+                    if (data.idioms && data.idioms.length) appState.idioms = data.idioms;
+                    if (typeof renderPhraseList === 'function') renderPhraseList();
+                    if (typeof renderIdiomList === 'function') renderIdiomList();
+                }
+                if (isAdmin()) {
+                    await fetchActivityLogFromSupabase();
+                    await fetchPendingFromSupabase();
+                } else if (isContributor()) {
+                    await fetchMyPendingFromSupabase();
+                }
+                saveData();
+            } catch (e) { console.warn('syncAllFromSupabase:', e); }
         }
 
         function getVisitorUser() {
@@ -3242,9 +3297,9 @@
 
         /** Fetch approved dictionary (words, phrases, idioms) from Supabase. Returns { words, phrases, idioms } or null. */
         async function fetchDictionaryFromSupabase() {
-            if (!supabase) return null;
+            if (!supabaseClient) return null;
             try {
-                const { data, error } = await supabase.from('dictionary').select('kind, item_id, content').order('kind');
+                const { data, error } = await supabaseClient.from('dictionary').select('kind, item_id, content').order('kind');
                 if (error || !data || !data.length) return null;
                 const words = data.filter(r => r.kind === 'word').map(r => r.content);
                 const phrases = data.filter(r => r.kind === 'phrase').map(r => r.content);
@@ -3258,7 +3313,7 @@
 
         /** Sync current words/phrases/idioms to Supabase (admin only). Batches upserts. */
         async function syncDictionaryToSupabase() {
-            if (!supabase || !isAdmin()) return { ok: false, error: 'Not allowed' };
+            if (!supabaseClient || !isAdmin()) return { ok: false, error: 'Not allowed' };
             const BATCH = 80;
             const rows = [];
             (appState.words || []).forEach(w => {
@@ -3277,7 +3332,7 @@
             try {
                 for (let i = 0; i < rows.length; i += BATCH) {
                     const batch = rows.slice(i, i + BATCH);
-                    const { error } = await supabase.from('dictionary').upsert(batch, { onConflict: 'kind,item_id' });
+                    const { error } = await supabaseClient.from('dictionary').upsert(batch, { onConflict: 'kind,item_id' });
                     if (error) throw error;
                 }
                 return { ok: true, count: rows.length };
@@ -3289,9 +3344,9 @@
 
         /** Tests that the app can reach Supabase (auth API). Returns { ok, message }. */
         async function testSupabaseConnection() {
-            if (!supabase) return { ok: false, message: 'Not configured' };
+            if (!supabaseClient) return { ok: false, message: 'Not configured' };
             try {
-                const { error } = await supabase.auth.getSession();
+                const { error } = await supabaseClient.auth.getSession();
                 if (error) return { ok: false, message: error.message };
                 return { ok: true, message: 'Connected and reachable.' };
             } catch (e) {
@@ -3300,13 +3355,18 @@
         }
 
         /** Updates the Supabase connection status text in Preferences & Data; runs a quick connection test when configured. */
-        function renderSupabaseDataStatus() {
+        async function renderSupabaseDataStatus() {
             const textEl = document.getElementById('supabase-status-text');
             const btnEl = document.getElementById('supabase-check-btn');
             if (!textEl) return;
-            if (!supabase) {
+            textEl.textContent = 'Checking…';
+            var client = supabaseClient;
+            if (!client && SUPABASE_URL && SUPABASE_ANON_KEY) {
+                try { client = await ensureSupabaseClient(); } catch (e) { console.warn(e); }
+            }
+            if (!client) {
                 if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-                    textEl.textContent = 'Supabase client could not start (common when opening the file directly). Run in terminal: npx serve . then open the URL shown (e.g. http://localhost:3000). On GitHub Pages the app should connect automatically.';
+                    textEl.textContent = 'Supabase client could not start. If you opened the file directly (file://), run: npx serve . and open http://localhost:3000. Check the browser console (F12) for errors.';
                 } else {
                     textEl.textContent = 'Supabase is not configured. Add url and key in config.js. Dictionary uses localStorage and dictionary_import.json until then.';
                 }
@@ -3319,7 +3379,7 @@
             const testBtn = document.getElementById('supabase-test-btn');
             if (btnEl) btnEl.classList.remove('hidden');
             if (testBtn) testBtn.classList.remove('hidden');
-            (async () => {
+            try {
                 const result = await testSupabaseConnection();
                 if (!textEl) return;
                 if (result.ok) {
@@ -3327,14 +3387,16 @@
                 } else {
                     textEl.textContent = 'Supabase connection failed: ' + result.message;
                 }
-            })();
+            } catch (e) {
+                if (textEl) textEl.textContent = 'Connection check failed: ' + (e && e.message ? e.message : String(e));
+            }
         }
 
         /** Runs connection test and updates the Supabase status text (for "Test connection" button). */
         async function confirmSupabaseConnection() {
             const textEl = document.getElementById('supabase-status-text');
             const testBtn = document.getElementById('supabase-test-btn');
-            if (!supabase || !textEl) return;
+            if (!supabaseClient || !textEl) return;
             if (testBtn) { testBtn.disabled = true; testBtn.textContent = 'Testing…'; }
             const result = await testSupabaseConnection();
             if (result.ok) {
@@ -3349,11 +3411,11 @@
         async function checkSupabaseDictionary() {
             const textEl = document.getElementById('supabase-status-text');
             const btnEl = document.getElementById('supabase-check-btn');
-            if (!supabase || !textEl) return;
+            if (!supabaseClient || !textEl) return;
             if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Checking…'; }
             try {
                 const byKind = { word: 0, phrase: 0, idiom: 0 };
-                const { data: rows, error } = await supabase.from('dictionary').select('kind');
+                const { data: rows, error } = await supabaseClient.from('dictionary').select('kind');
                 if (!error && rows && rows.length) {
                     rows.forEach(r => { if (byKind[r.kind] !== undefined) byKind[r.kind]++; });
                 }
@@ -3601,7 +3663,7 @@
                 if (isContributor()) {
                     mcSection.classList.remove('hidden');
                     mcSection.style.display = 'block';
-                    if (supabase) {
+                    if (supabaseClient) {
                         fetchMyPendingFromSupabase().then(() => {
                             renderMyContributions();
                             updatePendingCount();
@@ -8200,7 +8262,7 @@
                         if (appState.currentView === 'favorites') renderFavorites();
                         if (appState.currentView === 'profile') { renderPendingSubmissions(); renderPendingPhrases(); renderPendingIdioms(); }
                         if (appState.currentView === 'browse') renderBrowseDictionary();
-                        if (supabase && isAdmin()) {
+                        if (supabaseClient && isAdmin()) {
                             syncDictionaryToSupabase().then(r => {
                                 if (r.ok && r.count > 0) showToast(`Dictionary synced to Supabase (${r.count} entries).`);
                                 else if (!r.ok && r.error) showToast('Supabase sync failed: ' + r.error, 'error');
