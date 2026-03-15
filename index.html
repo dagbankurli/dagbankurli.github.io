@@ -1749,7 +1749,11 @@
 
             <!-- Review (admin+) -->
             <div id="profile-review-section" class="bg-white rounded-2xl shadow-xl p-6 slide-in hidden">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review</h2>
+                <div id="review-pending-notice" class="hidden mb-4 p-4 bg-amber-100 border-2 border-amber-500 rounded-xl">
+                    <p class="text-lg font-bold text-amber-900"><span id="review-pending-number">0</span> item(s) pending approval</p>
+                    <p class="text-sm text-amber-800 mt-1">Review below — Words, Phrases, and Idioms tabs.</p>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review<span id="review-heading-count" class="hidden ml-2 text-amber-600 font-semibold">(0 pending)</span></h2>
                 <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
                 <div id="review-supabase-hint" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
                     If you use Supabase, add your project URL and anon key in <code>config.js</code> (see Preferences &amp; Data) and reload the app to see pending submissions and users from the cloud.
@@ -3940,7 +3944,7 @@
             
             const needNetworkFetch = wordsNeedFetch || phrasesNeedFetch || idiomsNeedFetch;
             const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
-            const dictUrl = (base ? base + '/' : './') + 'dictionary_import.json';
+            const dictUrl = (base ? base + '/' : '/') + 'dictionary_import.json';
             
             function applyDictionaryData(data) {
                 if (!data) return;
@@ -3972,11 +3976,14 @@
                         const data = await fetchDictionaryFromSupabase();
                         if (data && (data.words?.length > 0 || data.phrases?.length > 0 || data.idioms?.length > 0)) {
                             applyDictionaryData(data);
-                            hideLoading();
-                            return;
+                        } else if (needNetworkFetch) {
+                            doFetchStatic();
                         }
-                    } catch (e) { console.warn('Supabase dictionary fetch failed:', e); }
-                    if (needNetworkFetch) doFetchStatic(); else hideLoading();
+                    } catch (e) {
+                        console.warn('Supabase dictionary fetch failed:', e);
+                        if (needNetworkFetch) doFetchStatic();
+                    }
+                    hideLoading();
                 })();
             } else if (needNetworkFetch) {
                 doFetchStatic();
@@ -6873,7 +6880,9 @@
             }
             appState.pendingIdioms = (appState.pendingIdioms || []).filter(x => x.id !== id);
             const approver = appState.currentUser?.username || 'Admin';
-            (appState.activityLog || []).push({ type: 'approved', kind: 'idiom', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() });
+            const idiomEntry = { type: 'approved', kind: 'idiom', id: p.id, dagbani: p.dagbani, by: approver, at: new Date().toISOString() };
+            (appState.activityLog || []).push(idiomEntry);
+            pushActivityLogToSupabase(idiomEntry);
             deletePendingFromSupabase('idiom', id);
             saveData();
             renderPendingIdioms();
@@ -7519,6 +7528,7 @@
             updatePendingCount();
             if (appState.currentView === 'phrases') renderPhraseList();
             if (appState.currentView === 'community') renderCommunityFeed();
+            renderCommunityAnnouncementBanner();
             showToast(p.editOf ? 'Phrase edit approved!' : 'Phrase approved and added to phrase list!');
         }
 
@@ -7565,7 +7575,9 @@
                 dateAdded: new Date().toISOString()
             });
             if (appState.communityFeed.length > 100) appState.communityFeed.pop();
-            (appState.activityLog || []).push({ type: 'approved', kind: 'word', id: submission.id, dagbani: submission.dagbani, by: approver, at: new Date().toISOString() });
+            const wordEntry = { type: 'approved', kind: 'word', id: submission.id, dagbani: submission.dagbani, by: approver, at: new Date().toISOString() };
+            (appState.activityLog || []).push(wordEntry);
+            pushActivityLogToSupabase(wordEntry);
             saveData();
             renderPendingSubmissions();
             updatePendingCount();
@@ -7906,6 +7918,30 @@
                     }
                 }
             });
+            var notice = document.getElementById('review-pending-notice');
+            var numEl = document.getElementById('review-pending-number');
+            var headingCount = document.getElementById('review-heading-count');
+            if (isAdmin()) {
+                if (notice && numEl) {
+                    if (count > 0) {
+                        numEl.textContent = count;
+                        notice.classList.remove('hidden');
+                    } else {
+                        notice.classList.add('hidden');
+                    }
+                }
+                if (headingCount) {
+                    if (count > 0) {
+                        headingCount.textContent = '(' + count + ' pending)';
+                        headingCount.classList.remove('hidden');
+                    } else {
+                        headingCount.classList.add('hidden');
+                    }
+                }
+            } else {
+                if (notice) notice.classList.add('hidden');
+                if (headingCount) headingCount.classList.add('hidden');
+            }
         }
 
         // Donate
@@ -7972,7 +8008,7 @@
             appState.browseLetterFilter = 'all';
             ['dagbaniWords','dagbaniPending','dagbaniPhrases','dagbaniPendingPhrases','dagbaniIdioms','dagbaniPendingIdioms','dagbaniFavorites','dagbaniSearchHistory','dagbaniCommunityFeed','dagbaniComments','dagbaniWordVotes','dagbaniSavedCustomSets'].forEach(k => localStorage.removeItem(k));
             const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
-            const dictUrl = (base ? base + '/' : './') + 'dictionary_import.json';
+            const dictUrl = (base ? base + '/' : '/') + 'dictionary_import.json';
             fetch(dictUrl).then(r => r.ok ? r.json() : {}).then(data => {
                 if (data && (data.words || data.phrases || data.idioms)) {
                     if (Array.isArray(data.words) && data.words.length > 0) appState.words = data.words;
