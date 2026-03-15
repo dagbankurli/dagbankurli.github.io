@@ -3299,15 +3299,22 @@
             } catch (e) { console.warn('Pending delete from Supabase failed:', e); }
         }
 
+        /** Parse content from Supabase (may be object or JSON string). */
+        function parseContent(c) {
+            if (c == null) return null;
+            if (typeof c === 'object') return c;
+            if (typeof c === 'string') { try { return JSON.parse(c); } catch (_) { return null; } }
+            return null;
+        }
         /** Fetch approved dictionary (words, phrases, idioms) from Supabase. Returns { words, phrases, idioms } or null. */
         async function fetchDictionaryFromSupabase() {
             if (!supabaseClient) return null;
             try {
                 const { data, error } = await supabaseClient.from('dictionary').select('kind, item_id, content').order('kind');
                 if (error || !data || !data.length) return null;
-                const words = data.filter(r => r.kind === 'word').map(r => r.content);
-                const phrases = data.filter(r => r.kind === 'phrase').map(r => r.content);
-                const idioms = data.filter(r => r.kind === 'idiom').map(r => r.content);
+                const words = data.filter(r => r.kind === 'word').map(r => parseContent(r.content)).filter(Boolean);
+                const phrases = data.filter(r => r.kind === 'phrase').map(r => parseContent(r.content)).filter(Boolean);
+                const idioms = data.filter(r => r.kind === 'idiom').map(r => parseContent(r.content)).filter(Boolean);
                 return { words, phrases, idioms };
             } catch (e) {
                 console.warn('fetchDictionaryFromSupabase failed:', e);
@@ -3944,7 +3951,8 @@
             
             const needNetworkFetch = wordsNeedFetch || phrasesNeedFetch || idiomsNeedFetch;
             const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
-            const dictUrl = (base ? base + '/' : '/') + 'dictionary_import.json';
+            const dictPath = (base ? base + '/' : '/') + 'dictionary_import.json';
+            const dictUrl = dictPath.startsWith('http') ? dictPath : (window.location.origin + dictPath);
             
             function applyDictionaryData(data) {
                 if (!data) return;
@@ -3960,7 +3968,7 @@
             }
             
             function doFetchStatic() {
-                fetch(dictUrl).then(r => {
+                return fetch(dictUrl).then(r => {
                     if (!r.ok) throw new Error('Dictionary fetch failed: ' + r.status);
                     return r.json();
                 }).then(data => { applyDictionaryData(data); }).catch(err => {
@@ -3976,14 +3984,20 @@
                         const data = await fetchDictionaryFromSupabase();
                         if (data && (data.words?.length > 0 || data.phrases?.length > 0 || data.idioms?.length > 0)) {
                             applyDictionaryData(data);
+                            hideLoading();
                         } else if (needNetworkFetch) {
-                            doFetchStatic();
+                            await doFetchStatic();
+                        } else {
+                            hideLoading();
                         }
                     } catch (e) {
                         console.warn('Supabase dictionary fetch failed:', e);
-                        if (needNetworkFetch) doFetchStatic();
+                        if (needNetworkFetch) {
+                            await doFetchStatic();
+                        } else {
+                            hideLoading();
+                        }
                     }
-                    hideLoading();
                 })();
             } else if (needNetworkFetch) {
                 doFetchStatic();
