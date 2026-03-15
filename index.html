@@ -2462,6 +2462,13 @@
     </script>
     <script src="config.js?v=__BUILD_ID__" id="config-script"></script>
     <script>
+        // Apply default Supabase config if missing (e.g. config.js 404 or empty on deploy)
+        (function() {
+            var d = { url: 'https://urtmifisypcpaxbkbwac.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVydG1pZmlzeXBjcGF4Ymtid2FjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTAzMTIsImV4cCI6MjA4NzUyNjMxMn0.xIJyW8vCXeL457_ZEuyCfF49O_k8inht23Z7yvrqA-I' };
+            window.SUPABASE_CONFIG = window.SUPABASE_CONFIG || {};
+            if (!window.SUPABASE_CONFIG.url) window.SUPABASE_CONFIG.url = d.url;
+            if (!window.SUPABASE_CONFIG.key) window.SUPABASE_CONFIG.key = d.key;
+        })();
         /**
          * Dagban Kurli - Dagbani-English Community Lexicon
          * ===============================================
@@ -3978,17 +3985,20 @@
                     try {
                         await ensureSupabaseClient();
                         data = await fetchDictionaryFromSupabase();
+                        if (data) console.log('Dagban Kurli: Supabase loaded', (data.words && data.words.length) || 0, 'words');
                     } catch (e) {
                         console.warn('Supabase dictionary fetch failed:', e);
                     }
                     var hasData = data && (data.words?.length > 0 || data.phrases?.length > 0 || data.idioms?.length > 0);
                     if (!hasData) {
                         data = await fetchStaticDictionary();
+                        if (data) console.log('Dagban Kurli: fallback loaded', (data.words && data.words.length) || 0, 'words');
                     }
                     if (data) applyDictionaryData(data);
                     hideLoading();
                 })();
             } else {
+                console.warn('Dagban Kurli: No Supabase config (url/key missing)');
                 hideLoading();
             }
             if (savedFavorites) {
