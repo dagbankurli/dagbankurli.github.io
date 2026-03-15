@@ -28,14 +28,10 @@ jobs:
           node csv_to_json.js
           node scripts/sync-dictionary-to-supabase.js
 
-      - name: Cache-bust and create config.js
+      - name: Prepare for deploy
         run: |
-          BUILD_ID="${{ github.run_id }}-${{ github.run_attempt }}"
-          sed -i "s/__BUILD_ID__/$BUILD_ID/g" index.html
-          # Only overwrite config.js when secrets exist; otherwise index.html's default Supabase config is used
-          if [ -n "${{ secrets.SUPABASE_URL }}" ] && [ -n "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
-            echo "window.SUPABASE_CONFIG={url:\"${{ secrets.SUPABASE_URL }}\",key:\"${{ secrets.SUPABASE_ANON_KEY }}\"};" > config.js
-          fi
+          # Optional: add cache-bust to index.html if needed later
+          true
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
