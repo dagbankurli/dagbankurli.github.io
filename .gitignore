@@ -19,5 +19,8 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Local clone of org repo (push to it via remote "org", don't track here)
+dagbankurli.github.io/
+
 # Supabase keys (never commit)
 config.js
