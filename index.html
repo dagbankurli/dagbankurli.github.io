@@ -2455,6 +2455,7 @@
     </style>
 
     <script>
+      // @ts-nocheck
       // Supabase: single source for dictionary (no config.js = no 404)
       window.SUPABASE_CONFIG = {
         url: 'https://urtmifisypcpaxbkbwac.supabase.co',
@@ -2634,12 +2635,12 @@
             for (let i = from; i <= to; i++) pages.push(i);
             const prev = currentPage > 1 ? currentPage - 1 : 0;
             const next = currentPage < totalPages ? currentPage + 1 : 0;
-            const pageButtons = pages.map(p => `<button class="px-3 py-1.5 rounded-lg font-semibold transition text-sm ${p === currentPage ? 'bg-amber-600 text-white' : 'hover:bg-amber-100 text-amber-700'}" onclick="goToPage('${pageKey}',${p})">${p}</button>`).join('');
+            const pageButtons = pages.map(p => `<button class="px-3 py-1.5 rounded-lg font-semibold transition text-sm ${p === currentPage ? 'bg-amber-600 text-white' : 'hover:bg-amber-100 text-amber-700'}" onclick="goToPage(${escapeJsonAttr(pageKey)},${p})">${p}</button>`).join('');
             return `<nav class="flex flex-wrap items-center justify-center gap-2 py-4 mt-6 border-t border-amber-200" aria-label="Pagination">
                 <span class="text-sm text-gray-600 mr-2">Page ${currentPage} of ${totalPages} · ${total} total</span>
-                <button class="px-3 py-1.5 rounded-lg font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm" ${prev ? `onclick="goToPage('${pageKey}',${prev})"` : 'disabled'}>‹ Prev</button>
+                <button class="px-3 py-1.5 rounded-lg font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm" ${prev ? `onclick="goToPage(${escapeJsonAttr(pageKey)},${prev})"` : 'disabled'}>‹ Prev</button>
                 <div class="flex gap-1">${pageButtons}</div>
-                <button class="px-3 py-1.5 rounded-lg font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm" ${next ? `onclick="goToPage('${pageKey}',${next})"` : 'disabled'}>Next ›</button>
+                <button class="px-3 py-1.5 rounded-lg font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm" ${next ? `onclick="goToPage(${escapeJsonAttr(pageKey)},${next})"` : 'disabled'}>Next ›</button>
             </nav>`;
         }
 
@@ -2738,13 +2739,15 @@
         let authListenerAttached = false;
         /** Bootstraps app: dark mode, data, auth, event delegation, UI. Shows UI immediately; auth runs in background. */
         async function init() {
+            document.documentElement.setAttribute('data-masc-fb', MASCULINE_FALLBACK);
+            document.documentElement.setAttribute('data-fem-fb', FEMININE_FALLBACK);
             applySavedDarkMode();
             loadData();
             // Show app immediately as visitor so the page doesn't hang on slow Supabase
             appState.currentUser = getVisitorUser();
             showMainApp();
-            // Hide loading overlay immediately so user never waits (don't rely on async flow)
-            (function(){ var el = document.getElementById('global-loading'); if (el) el.classList.add('hidden'); document.body.removeAttribute('aria-busy'); })();
+            // Hide loading overlay and reveal body (don't rely on Tailwind to remove css-loading)
+            (function(){ var el = document.getElementById('global-loading'); if (el) el.classList.add('hidden'); document.body.removeAttribute('aria-busy'); document.documentElement.classList.remove('css-loading'); })();
             if (SUPABASE_URL && SUPABASE_ANON_KEY && !authListenerAttached) {
                 authListenerAttached = true;
                 ensureSupabaseClient().then(client => {
@@ -3529,8 +3532,8 @@
                         <span>${escapeHtml(u.username)} ${u.attributionName ? '(' + escapeHtml(u.attributionName) + ')' : ''}</span>
                         <div class="flex gap-2">
                             <button onclick="openEditUserModal(${i})" class="px-3 py-1.5 bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold hover:bg-gray-300">Edit</button>
-                            <button onclick="showContributorProfileFromAdmin(${JSON.stringify(attr)})" class="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold hover:bg-blue-200">View words</button>
-                            <button onclick="promoteToAdmin(${JSON.stringify(u.username)})" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Make admin</button>
+                            <button onclick="showContributorProfileFromAdmin(JSON.parse(this.getAttribute('data-attr')))" data-attr="${escDq(JSON.stringify(attr))}" class="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold hover:bg-blue-200">View words</button>
+                            <button onclick="promoteToAdmin(JSON.parse(this.getAttribute('data-username')))" data-username="${escDq(JSON.stringify(u.username))}" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700">Make admin</button>
                         </div>
                     </div>`;
                 });
@@ -3544,7 +3547,7 @@
                         <div class="flex gap-2">
                             <button onclick="openEditUserModal(${i})" class="px-3 py-1.5 bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold hover:bg-gray-300">Edit</button>
                             <span class="text-amber-700 text-sm font-semibold">Admin</span>
-                            <button onclick="demoteToContributor(${JSON.stringify(u.username)})" class="text-xs px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Demote</button>
+                            <button onclick="demoteToContributor(JSON.parse(this.getAttribute('data-username')))" data-username="${escDq(JSON.stringify(u.username))}" class="text-xs px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Demote</button>
                         </div>
                     </div>`;
                 });
@@ -4237,7 +4240,7 @@
                 const i = (currentPage - 1) * PAGE_SIZE + idx;
                 const num = i + 1;
                 const yrs = getReignYearsCount(k.reign);
-                const imgSrc = k.image || KING_GBEWAA_PALACE_IMG;
+                const imgSrc = safeMediaUrl(k.image) || KING_GBEWAA_PALACE_IMG;
                 return `
                 <button onclick="showKingDetail(${i})" class="relative text-left p-3 rounded-lg border border-amber-200 hover:border-amber-400 hover:bg-amber-50 transition flex flex-row items-center gap-3 w-full">
                     <span class="absolute top-1.5 right-1.5 w-5 h-5 bg-amber-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">${num}</span>
@@ -4247,7 +4250,7 @@
                         ${yrs ? `<span class="block text-[11px] text-amber-600">${yrs}</span>` : ''}
                         <span class="block text-[10px] text-amber-500 mt-0.5">Click to read →</span>
                     </div>
-                    <img src="${imgSrc}" alt="${escapeHtml(k.name)}" class="w-16 h-16 flex-shrink-0 object-cover rounded-lg aspect-square bg-amber-100" onerror="this.onerror=null;this.src='${KING_GBEWAA_PALACE_IMG}'">
+                    <img src="${imgSrc}" alt="${escapeHtml(k.name)}" class="w-16 h-16 flex-shrink-0 object-cover rounded-lg aspect-square bg-amber-100" data-fallback="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gbewaa_palace_in_Yendi.jpg/330px-Gbewaa_palace_in_Yendi.jpg" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback')||''">
                 </button>
             `;
             }).join('');
@@ -4308,9 +4311,15 @@
             if (!container) return;
             const g = n => n.gender || 'both';
             const imgHtml = n => {
-                if (g(n) === 'm') return `<img src="${MASCULINE_IMG}" alt="masculine" class="w-14 h-14 mx-auto object-contain rounded-full" onerror="this.onerror=null;this.src='${MASCULINE_FALLBACK}'">`;
-                if (g(n) === 'f') return `<img src="${FEMININE_IMG}" alt="feminine" class="w-14 h-14 mx-auto object-contain rounded-full" onerror="this.onerror=null;this.src='${FEMININE_FALLBACK}'">`;
-                return `<div class="flex justify-center gap-1"><img src="${MASCULINE_IMG}" alt="masculine" class="w-12 h-12 object-contain rounded-full" onerror="this.onerror=null;this.src='${MASCULINE_FALLBACK}'"><img src="${FEMININE_IMG}" alt="feminine" class="w-12 h-12 object-contain rounded-full" onerror="this.onerror=null;this.src='${FEMININE_FALLBACK}'"></div>`;
+                var _getMasc = 'document.documentElement.getAttribute(' + _dq + 'data-masc-fb' + _dq + ')||' + _dq + _dq;
+                var _getFem = 'document.documentElement.getAttribute(' + _dq + 'data-fem-fb' + _dq + ')||' + _dq + _dq;
+                const masc = '<img src="images/boy.png" alt="masculine" class="w-14 h-14 mx-auto object-contain rounded-full" onerror="this.onerror=null;this.src=' + _getMasc + '"">';
+                const fem = '<img src="images/girl.png" alt="feminine" class="w-14 h-14 mx-auto object-contain rounded-full" onerror="this.onerror=null;this.src=' + _getFem + '"">';
+                if (g(n) === 'm') return masc;
+                if (g(n) === 'f') return fem;
+                const m12 = masc.replace('w-14 h-14', 'w-12 h-12');
+                const f12 = fem.replace('w-14 h-14', 'w-12 h-12');
+                return '<div class="flex justify-center gap-1">' + m12 + f12 + '</div>';
             };
             const { slice: listSlice, currentPage, totalPages, total } = paginate(list, (appState.pagination || {}).names);
             container.innerHTML = listSlice.length ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${listSlice.map(n => `
@@ -4598,7 +4607,7 @@
                     const eng = item.english || '';
                     const valToSearch = searchVal === 'eng' ? eng : dag;
                     const safeVal = escapeHtml(valToSearch);
-                    const clickHandler = `var s=this.getAttribute('data-suggestion');if(s)selectSuggestion(s);`;
+                    const clickHandler = 'var s=this.getAttribute(\x27data-suggestion\x27);if(s)selectSuggestion(s);';
                     const primary = isEnToDag ? eng : dag;
                     const secondary = isEnToDag ? dag : eng;
                     if (item._type === 'word') {
@@ -4747,15 +4756,15 @@
                                 </span>
                             </div>
                         </div>
-                        ${word.audio ? `
+                        ${safeMediaUrl(word.audio) ? `
                             <audio controls class="w-full sm:ml-4 sm:w-48 h-10 flex-shrink-0 card-actions">
-                                <source src="${word.audio}" type="audio/webm">
+                                <source src="${safeMediaUrl(word.audio)}" type="audio/webm">
                             </audio>
                         ` : ''}
                     </div>
-                    ${word.picture ? `
+                    ${safeMediaUrl(word.picture) ? `
                         <div class="mt-3 card-actions">
-                            <img src="${word.picture}" alt="${escapeHtml(word.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain">
+                            <img src="${safeMediaUrl(word.picture)}" alt="${escapeHtml(word.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain">
                         </div>
                     ` : ''}
                     ${word.etymology ? `
@@ -4792,10 +4801,10 @@
                             <div id="comments-list-${word.id}" class="space-y-2 mb-4 max-h-40 overflow-y-auto"></div>
                             ${isLoggedIn() ? `
                                 <div class="flex gap-2">
-                                    <input type="text" id="comment-input-${word.id}" placeholder="Add a comment..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" onkeyup="if(event.key==='Enter')submitComment(this.closest('[data-result-id]')?.getAttribute('data-result-id'))">
+                                    <input type="text" id="comment-input-${word.id}" placeholder="Add a comment..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" onkeyup="if(event.key==='Enter'){var el=this.closest('[data-result-id]');submitComment(el?el.getAttribute('data-result-id'):null)}">
                                     <button type="button" class="card-action-btn comment-submit-btn px-3 py-2 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700" data-card-action="comment-submit" data-comment-word-id="${wid}">Post</button>
                                 </div>
-                            ` : '<p class="text-sm text-gray-500"><button onclick="showLoginModal(\'user\')" class="text-amber-600 font-semibold hover:underline">Sign in</button> to comment.</p>'}
+                            ` : '<p class="text-sm text-gray-500"><button onclick="showLoginModal(' + _sq + 'user' + _sq + ')" class="text-amber-600 font-semibold hover:underline">Sign in</button> to comment.</p>'}
                         `}
                     </div>
                 </article>
@@ -4819,9 +4828,9 @@
                             <p class="text-lg sm:text-xl font-semibold text-gray-700 mb-2 break-words">${escapeHtml(phrase.english)}</p>
                             <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">${escapeHtml(categoryLabel)}</span>
                         </div>
-                        ${phrase.audio ? `<audio controls class="w-full sm:ml-4 sm:w-48 h-10 flex-shrink-0 card-actions"><source src="${(phrase.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
+                        ${safeMediaUrl(phrase.audio) ? `<audio controls class="w-full sm:ml-4 sm:w-48 h-10 flex-shrink-0 card-actions"><source src="${safeMediaUrl(phrase.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio>` : ''}
                     </div>
-                    ${phrase.picture ? `<div class="mt-3 card-actions"><img src="${(phrase.picture||'').replace(/"/g,'&quot;')}" alt="${escapeHtml(phrase.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain"></div>` : ''}
+                    ${safeMediaUrl(phrase.picture) ? `<div class="mt-3 card-actions"><img src="${safeMediaUrl(phrase.picture).replace(/\x22/g,'&quot;')}" alt="${escapeHtml(phrase.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain"></div>` : ''}
                     ${phrase.contributorAttribution ? `<p class="text-xs text-gray-500 mt-3">Contributor: ${escapeHtml(phrase.contributorAttribution)}</p>` : ''}
                 </article>
             `;
@@ -4844,9 +4853,9 @@
                             <p class="text-lg sm:text-xl font-semibold text-gray-700 mb-2 break-words">${escapeHtml(idiom.english)}</p>
                             <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">${escapeHtml(categoryLabel)}</span>
                         </div>
-                        ${idiom.audio ? `<audio controls class="w-full sm:ml-4 sm:w-48 h-10 flex-shrink-0 card-actions"><source src="${(idiom.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
+                        ${safeMediaUrl(idiom.audio) ? `<audio controls class="w-full sm:ml-4 sm:w-48 h-10 flex-shrink-0 card-actions"><source src="${safeMediaUrl(idiom.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio>` : ''}
                     </div>
-                    ${idiom.picture ? `<div class="mt-3 card-actions"><img src="${(idiom.picture||'').replace(/"/g,'&quot;')}" alt="${escapeHtml(idiom.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain"></div>` : ''}
+                    ${safeMediaUrl(idiom.picture) ? `<div class="mt-3 card-actions"><img src="${safeMediaUrl(idiom.picture).replace(/\x22/g,'&quot;')}" alt="${escapeHtml(idiom.dagbani)}" class="max-w-full rounded-lg border border-gray-200 max-h-48 object-contain"></div>` : ''}
                     ${idiom.contributorAttribution ? `<p class="text-xs text-gray-500 mt-3">Contributor: ${escapeHtml(idiom.contributorAttribution)}</p>` : ''}
                 </article>
             `;
@@ -5077,11 +5086,11 @@
                 const replies = byParent[c.id] || [];
                 return `<div class="${isReply ? 'ml-6 border-l-2 border-amber-200 pl-3' : ''}">
                     <p class="text-sm"><strong>${escapeHtml(c.author)}</strong>: ${escapeHtml(c.text)} <span class="text-gray-400 text-xs">${c.date ? new Date(c.date).toLocaleDateString() : ''}</span>
-                    ${allowReplies && !isReply ? ` <button onclick="toggleReplyInput(${JSON.stringify(wordId)},${c.id})" class="text-amber-600 hover:underline text-xs">Reply</button>` : ''}</p>
+                    ${allowReplies && !isReply ? ` <button onclick="toggleReplyInput(${escapeJsonAttr(wordId)},${escapeJsonAttr(c.id)})" class="text-amber-600 hover:underline text-xs">Reply</button>` : ''}</p>
                     ${replies.map(r => renderComment(r, true)).join('')}
                     <div id="reply-box-${wordId}-${c.id}" class="hidden mt-2">
-                        <input type="text" id="reply-input-${wordId}-${c.id}" placeholder="Write a reply..." class="w-full px-2 py-1.5 text-sm border rounded" onkeyup="if(event.key==='Enter')submitComment(${JSON.stringify(wordId)},${JSON.stringify(c.id)})">
-                        <button onclick="submitComment(${JSON.stringify(wordId)},${JSON.stringify(c.id)})" class="mt-1 text-sm text-amber-600 font-semibold">Post reply</button>
+                        <input type="text" id="reply-input-${wordId}-${c.id}" placeholder="Write a reply..." class="w-full px-2 py-1.5 text-sm border rounded" onkeyup="if(event.key==='Enter')submitComment(${escapeJsonAttr(wordId)},${escapeJsonAttr(c.id)})">
+                        <button onclick="submitComment(${escapeJsonAttr(wordId)},${escapeJsonAttr(c.id)})" class="mt-1 text-sm text-amber-600 font-semibold">Post reply</button>
                     </div>
                 </div>`;
             }
@@ -5132,9 +5141,9 @@
             
             if (appState.searchHistory.length > 0 && document.getElementById('show-history').checked) {
                 historyContainer.innerHTML = appState.searchHistory.slice(0, 3).map((term, idx) => {
-                    const safeTerm = JSON.stringify(term);
+                    const safeTerm = escapeJsonAttr(term);
                     return `<span class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm group">
-                        <button onclick="searchFromHistory(${safeTerm})" class="hover:text-amber-800 transition text-left">${escapeHtml(term)}</button>
+                        <button onclick="searchFromHistory(JSON.parse(this.getAttribute(\x27data-term\x27)))" data-term="${safeTerm}" class="hover:text-amber-800 transition text-left">${escapeHtml(term)}</button>
                         <button type="button" onclick="event.stopPropagation(); removeFromSearchHistory(${idx});" class="min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-400 hover:text-red-600 active:text-red-700 transition text-lg leading-none -mr-1 touch-manipulation" aria-label="Remove ${escapeHtml(term)} from history">×</button>
                     </span>`;
                 }).join('');
@@ -5980,7 +5989,7 @@
             container.innerHTML = slice.length ? slice.map(w => {
                 const sel = appState.selectedPracticeWords.some(x => x.id === w.id);
                 const label = dir === 'english' ? `${escapeHtml(w.english)} → ${escapeHtml(w.dagbani)}` : `${escapeHtml(w.dagbani)} → ${escapeHtml(w.english)}`;
-                return `<label class="flex items-center gap-2 p-2 hover:bg-amber-50 rounded cursor-pointer"><input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleSelectWord(this, ${JSON.stringify(w.id)})"> ${label}</label>`;
+                return `<label class="flex items-center gap-2 p-2 hover:bg-amber-50 rounded cursor-pointer"><input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleSelectWord(this, ${escapeJsonAttr(w.id)})"> ${label}</label>`;
             }).join('') : '<p class="text-gray-500 p-2">No words found. Try a different search.</p>';
             if (paginationEl) paginationEl.innerHTML = renderPaginationBar(total, currentPage, totalPages, 'selectWords');
             document.getElementById('selected-words-count').textContent = appState.selectedPracticeWords.length;
@@ -6457,8 +6466,8 @@
             const listHtml = slice.map(p => {
                 const pid = p.id || ('phrase-' + (p.dagbani || '').toLowerCase());
                 const safePid = JSON.stringify(pid);
-                const audioHtml = p.audio ? `<audio controls class="h-8 w-32 mt-1 phrase-no-click" preload="metadata"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : '';
-                const picHtml = p.picture ? `<img src="${(p.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-20 rounded border border-amber-200 object-contain mt-2 phrase-no-click" onerror="this.style.display='none'">` : '';
+                const audioHtml = safeMediaUrl(p.audio) ? `<audio controls class="h-8 w-32 mt-1 phrase-no-click" preload="metadata"><source src="${safeMediaUrl(p.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio>` : '';
+                const picHtml = safeMediaUrl(p.picture) ? `<img src="${safeMediaUrl(p.picture).replace(/\x22/g,'&quot;')}" alt="" class="max-h-20 rounded border border-amber-200 object-contain mt-2 phrase-no-click" onerror="this.style.display=\x27none\x27">` : '';
                 const editBtn = isContributor() ? `<button type="button" class="phrase-edit-btn text-lg text-gray-400 hover:text-amber-600 transition min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation" data-phrase-id="${escapeHtml(String(pid))}" title="Suggest edit">✏️</button>` : '';
                 return `
                 <div class="phrase-view-card p-4 border-l-4 border-amber-400 bg-amber-50 rounded-r-lg fade-in cursor-pointer hover:bg-amber-100 active:bg-amber-200 transition touch-manipulation" data-phrase-id="${escapeHtml(String(pid))}" role="button" tabindex="0">
@@ -6554,8 +6563,8 @@
             const listHtml = slice.map(i => {
                 const iid = i.id || ('idiom-' + (i.dagbani || '').toLowerCase());
                 const safeIid = JSON.stringify(iid);
-                const audioHtml = i.audio ? `<audio controls class="h-8 w-32 mt-1 idiom-no-click" preload="metadata"><source src="${(i.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : '';
-                const picHtml = i.picture ? `<img src="${(i.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-20 rounded border border-amber-200 object-contain mt-2 idiom-no-click" onerror="this.style.display='none'">` : '';
+                const audioHtml = safeMediaUrl(i.audio) ? `<audio controls class="h-8 w-32 mt-1 idiom-no-click" preload="metadata"><source src="${safeMediaUrl(i.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio>` : '';
+                const picHtml = safeMediaUrl(i.picture) ? `<img src="${safeMediaUrl(i.picture).replace(/\x22/g,'&quot;')}" alt="" class="max-h-20 rounded border border-amber-200 object-contain mt-2 idiom-no-click" onerror="this.style.display=\x27none\x27">` : '';
                 const editBtn = isContributor() ? `<button type="button" class="idiom-edit-btn text-lg text-gray-400 hover:text-amber-600 transition min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation" data-idiom-id="${escapeHtml(String(iid))}" title="Suggest edit">✏️</button>` : '';
                 return `
                 <div class="idiom-view-card p-4 border-l-4 border-amber-400 bg-amber-50 rounded-r-lg fade-in cursor-pointer hover:bg-amber-100 active:bg-amber-200 transition touch-manipulation" data-idiom-id="${escapeHtml(String(iid))}" role="button" tabindex="0">
@@ -6599,10 +6608,10 @@
             }
             const imgWrap = document.getElementById('idiom-view-image');
             const imgEl = document.getElementById('idiom-view-img');
-            if (idiom.picture) { imgEl.src = idiom.picture; imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
+            if (safeMediaUrl(idiom.picture)) { imgEl.src = safeMediaUrl(idiom.picture); imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
             const audWrap = document.getElementById('idiom-view-audio-wrap');
             const audEl = document.getElementById('idiom-view-audio');
-            if (idiom.audio) { audEl.src = idiom.audio; audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
+            if (safeMediaUrl(idiom.audio)) { audEl.src = safeMediaUrl(idiom.audio); audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
             const editBtn = document.getElementById('idiom-view-edit-btn');
             if (editBtn) editBtn.style.display = isContributor() ? '' : 'none';
             document.getElementById('idiom-view-modal').classList.remove('hidden');
@@ -6625,8 +6634,8 @@
             appState.editIdiomUploadedImage = (typeof idiom.picture === 'string' && idiom.picture.startsWith('data:')) ? idiom.picture : null;
             const picPrev = document.getElementById('edit-idiom-picture-preview');
             const prevImg = document.getElementById('edit-idiom-preview-img');
-            if (idiom.picture) { picPrev.classList.remove('hidden'); prevImg.src = idiom.picture; } else { picPrev.classList.add('hidden'); prevImg.src = ''; }
-            document.getElementById('edit-idiom-audio').src = idiom.audio || '';
+            if (safeMediaUrl(idiom.picture)) { picPrev.classList.remove('hidden'); prevImg.src = safeMediaUrl(idiom.picture); } else { picPrev.classList.add('hidden'); prevImg.src = ''; }
+            document.getElementById('edit-idiom-audio').src = safeMediaUrl(idiom.audio) || '';
             appState.editIdiomAudioChunks = [];
             const audWrap = document.getElementById('edit-idiom-audio-wrap');
             if (idiom.audio) audWrap.classList.remove('hidden'); else audWrap.classList.add('hidden');
@@ -6855,13 +6864,13 @@
                 <div class="bg-gray-50 rounded-xl p-6 border-2 border-gray-200 fade-in">
                     <h3 class="text-xl font-bold text-amber-700 mb-2" lang="dag">${escapeHtml(p.dagbani)}</h3>
                     <p class="text-lg text-gray-700 mb-2">${escapeHtml(p.english)}</p>
-                    ${p.picture ? `<img src="${(p.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display='none'">` : ''}
-                    ${p.audio ? `<audio controls class="mt-2 w-full h-10"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
+                    ${safeMediaUrl(p.picture) ? `<img src="${safeMediaUrl(p.picture).replace(/\x22/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display=\x27none\x27">` : ''}
+                    ${safeMediaUrl(p.audio) ? `<audio controls class="mt-2 w-full h-10"><source src="${safeMediaUrl(p.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio>` : ''}
                     <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${escapeHtml(IDIOM_CATEGORY_LABELS[getCanonicalIdiomCategory(p.category || 'general')] || 'Other')}</span>
                     <p class="text-xs text-gray-500 mt-2">Submitted by: ${escapeHtml(p.submittedBy)}</p>
                     <div class="flex gap-2 mt-4">
-                        <button onclick="approveIdiomSubmission(${JSON.stringify(p.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
-                        <button onclick="rejectIdiomSubmission(${JSON.stringify(p.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
+                        <button onclick="approveIdiomSubmission(${escapeJsonAttr(p.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
+                        <button onclick="rejectIdiomSubmission(${escapeJsonAttr(p.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
                     </div>
                 </div>
             `).join('') + renderPaginationBar(total, currentPage, totalPages, 'pendingIdioms');
@@ -7009,7 +7018,7 @@
             const topContrib = Object.entries(byAttribution).sort((a, b) => b[1] - a[1]).slice(0, 10);
             contribEl.innerHTML = topContrib.map(([name, count], i) => `
                 <div class="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
-                    <span class="font-medium">${i + 1}. <button onclick="showContributorProfile(${JSON.stringify(name)})" class="text-amber-700 hover:underline">${escapeHtml(name)}</button></span>
+                    <span class="font-medium">${i + 1}. <button onclick="showContributorProfile(${escapeJsonAttr(name)})" class="text-amber-700 hover:underline">${escapeHtml(name)}</button></span>
                     <span class="text-sm text-gray-600">${count} words</span>
                 </div>
             `).join('') || '<p class="text-gray-500 text-sm">No contributors yet.</p>';
@@ -7128,14 +7137,14 @@
             else if (myContributionsFilter === 'approved') items = approved;
             else items = [...pending, ...approved].sort((a, b) => (b.dateAdded || '').localeCompare(a.dateAdded || ''));
             if (items.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">No contributions yet. <button onclick="showView(\'contribute\')" class="text-amber-600 font-semibold hover:underline">Contribute now</button></p>';
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No contributions yet. <button onclick="showView(this.getAttribute(\x27data-view\x27))" data-view="contribute" class="text-amber-600 font-semibold hover:underline">Contribute now</button></p>';
                 return;
             }
             const { slice: itemsSlice, currentPage, totalPages, total } = paginate(items, (appState.pagination || {}).myContributions);
             container.innerHTML = itemsSlice.map(item => {
-                const pic = (item.picture || '').replace(/"/g, '&quot;');
-                const picHtml = item.picture ? `<img src="${pic}" alt="" class="w-16 h-16 object-cover rounded-lg border border-amber-200 mt-2" onerror="this.style.display='none'">` : '';
-                const audioHtml = item.audio ? `<div class="flex-1 min-w-[140px]"><p class="text-xs font-semibold text-amber-700 mb-1">▶ Replay</p><audio controls class="h-8 w-full"><source src="${(item.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio></div>` : '';
+                const pic = safeMediaUrl(item.picture).replace(/\x22/g, '&quot;');
+                const picHtml = pic ? `<img src="${pic}" alt="" class="w-16 h-16 object-cover rounded-lg border border-amber-200 mt-2" onerror="this.style.display=\x27none\x27">` : '';
+                const audioHtml = safeMediaUrl(item.audio) ? `<div class="flex-1 min-w-[140px]"><p class="text-xs font-semibold text-amber-700 mb-1">▶ Replay</p><audio controls class="h-8 w-full"><source src="${safeMediaUrl(item.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio></div>` : '';
                 const editBtn = item.status === 'pending' ? `<button type="button" class="pending-edit-btn px-3 py-1.5 text-sm font-semibold bg-amber-200 text-amber-800 rounded-lg hover:bg-amber-300 transition" data-pending-id="${escapeHtml(String(item.id))}" data-pending-kind="${escapeHtml(String(item.kind))}">✏ Edit</button>` : '';
                 const grammarHtml = item.grammar ? `<p class="text-xs text-gray-600 mt-1"><strong>Grammar:</strong> ${escapeHtml(String(item.grammar).slice(0, 80))}${String(item.grammar).length > 80 ? '...' : ''}</p>` : '';
                 const exampleHtml = item.example ? `<p class="text-xs text-gray-600 mt-1"><strong>Example:</strong> ${escapeHtml(String(item.example).slice(0, 80))}${String(item.example).length > 80 ? '...' : ''}</p>` : '';
@@ -7187,11 +7196,11 @@
                 const preview = document.getElementById('edit-pending-picture-preview');
                 const img = document.getElementById('edit-pending-preview-img');
                 if (item.picture) {
-                    img.src = item.picture;
+                    img.src = safeMediaUrl(item.picture) || '';
                     preview.classList.remove('hidden');
                 } else preview.classList.add('hidden');
                 const aud = document.getElementById('edit-pending-audio');
-                aud.src = item.audio || '';
+                aud.src = safeMediaUrl(item.audio) || '';
             } else {
                 const item = appState.pendingPhrases.find(p => p.id == id);
                 if (!item) { showToast('Item not found', 'error'); return; }
@@ -7205,13 +7214,13 @@
                 appState.editPendingPhraseImage = (typeof item.picture === 'string' && item.picture.startsWith('data:')) ? item.picture : null;
                 const picPrev = document.getElementById('edit-pending-phrase-picture-preview');
                 const picImg = document.getElementById('edit-pending-phrase-preview-img');
-                if (item.picture) { picImg.src = item.picture; picPrev.classList.remove('hidden'); } else picPrev.classList.add('hidden');
+                if (safeMediaUrl(item.picture)) { picImg.src = safeMediaUrl(item.picture); picPrev.classList.remove('hidden'); } else picPrev.classList.add('hidden');
                 const catSel = document.getElementById('edit-pending-phrase-category');
                 if (catSel && typeof PHRASE_CATEGORY_LABELS !== 'undefined') {
                     const mainCats = ['basics','eating','transportation','money','time','numbers','shopping','general'];
                     catSel.innerHTML = mainCats.map(k => `<option value="${k}" ${(getCanonicalPhraseCategory(item.category||'general')===k?'selected':'')}>${PHRASE_CATEGORY_LABELS[k] || k}</option>`).join('');
                 }
-                document.getElementById('edit-pending-phrase-audio').src = item.audio || '';
+                document.getElementById('edit-pending-phrase-audio').src = safeMediaUrl(item.audio) || '';
             }
             appState.editPendingWordAudioChunks = [];
             const recBtn = document.getElementById('edit-pending-record-btn');
@@ -7423,10 +7432,10 @@
                                     <strong>Report/Suggestion:</strong> ${escapeHtml(submission.reportDescription)}
                                 </div>
                             ` : ''}
-                            ${submission.picture ? `<img src="${(submission.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display='none'">` : ''}
-                            ${submission.audio ? `
+                            ${safeMediaUrl(submission.picture) ? `<img src="${safeMediaUrl(submission.picture).replace(/\x22/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display=\x27none\x27">` : ''}
+                            ${safeMediaUrl(submission.audio) ? `
                                 <audio controls class="mt-3 w-full">
-                                    <source src="${submission.audio}" type="audio/webm">
+                                    <source src="${safeMediaUrl(submission.audio)}" type="audio/webm">
                                 </audio>
                             ` : ''}
                             <p class="text-xs text-gray-500 mt-2">Submitted by: ${submission.submittedBy}</p>
@@ -7438,9 +7447,9 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="approveSubmission(${JSON.stringify(submission.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
-                        <button onclick="rejectSubmission(${JSON.stringify(submission.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
-                        <button onclick="suggestEdit(${JSON.stringify(submission.id)})" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">✏ Edit</button>
+                        <button onclick="approveSubmission(${escapeJsonAttr(submission.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
+                        <button onclick="rejectSubmission(${escapeJsonAttr(submission.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
+                        <button onclick="suggestEdit(${escapeJsonAttr(submission.id)})" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">✏ Edit</button>
                     </div>
                 </div>
             `).join('') + renderPaginationBar(total, currentPage, totalPages, 'pendingSubmissions');
@@ -7485,13 +7494,13 @@
                 <div class="bg-gray-50 rounded-xl p-6 border-2 border-gray-200 fade-in">
                     <h3 class="text-xl font-bold text-amber-700 mb-2" lang="dag">${escapeHtml(p.dagbani)}</h3>
                     <p class="text-lg text-gray-700 mb-2">${escapeHtml(p.english)}</p>
-                    ${p.picture ? `<img src="${(p.picture||'').replace(/"/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display='none'">` : ''}
-                    ${p.audio ? `<audio controls class="mt-2 w-full h-10"><source src="${(p.audio||'').replace(/"/g,'&quot;')}" type="audio/webm"></audio>` : ''}
+                    ${safeMediaUrl(p.picture) ? `<img src="${safeMediaUrl(p.picture).replace(/\x22/g,'&quot;')}" alt="" class="max-h-24 rounded border mt-2 object-contain" onerror="this.style.display=\x27none\x27">` : ''}
+                    ${safeMediaUrl(p.audio) ? `<audio controls class="mt-2 w-full h-10"><source src="${safeMediaUrl(p.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio>` : ''}
                     <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">${escapeHtml(PHRASE_CATEGORY_LABELS[getCanonicalPhraseCategory(p.category || 'general')] || 'Other')}</span>
                     <p class="text-xs text-gray-500 mt-2">Submitted by: ${escapeHtml(p.submittedBy)}</p>
                     <div class="flex gap-2 mt-4">
-                        <button onclick="approvePhraseSubmission(${JSON.stringify(p.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
-                        <button onclick="rejectPhraseSubmission(${JSON.stringify(p.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
+                        <button onclick="approvePhraseSubmission(${escapeJsonAttr(p.id)})" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">✓ Approve</button>
+                        <button onclick="rejectPhraseSubmission(${escapeJsonAttr(p.id)})" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">✗ Reject</button>
                     </div>
                 </div>
             `).join('') + renderPaginationBar(total, currentPage, totalPages, 'pendingPhrases');
@@ -7637,10 +7646,10 @@
             }
             const picPrev = document.getElementById('edit-word-picture-preview');
             const picImg = document.getElementById('edit-word-preview-img');
-            if (word.picture) { picImg.src = word.picture; picPrev.classList.remove('hidden'); } else { picPrev.classList.add('hidden'); }
+            if (safeMediaUrl(word.picture)) { picImg.src = safeMediaUrl(word.picture); picPrev.classList.remove('hidden'); } else { picPrev.classList.add('hidden'); }
             const audEl = document.getElementById('edit-word-audio');
             const audWrap = document.getElementById('edit-word-audio-wrap');
-            if (word.audio) { audEl.src = word.audio; audWrap.classList.remove('hidden'); } else { audEl.src = ''; audWrap.classList.add('hidden'); }
+            if (safeMediaUrl(word.audio)) { audEl.src = safeMediaUrl(word.audio); audWrap.classList.remove('hidden'); } else { audEl.src = ''; audWrap.classList.add('hidden'); }
             document.getElementById('edit-word-record-btn').classList.remove('hidden');
             document.getElementById('edit-word-recording-status').classList.add('hidden');
             document.getElementById('edit-word-modal').classList.remove('hidden');
@@ -7765,10 +7774,10 @@
                 appState.editPhraseUploadedImage = phrase.picture;
             const picPrev = document.getElementById('edit-phrase-picture-preview');
             const picImg = document.getElementById('edit-phrase-preview-img');
-            if (phrase.picture) { picImg.src = phrase.picture; picPrev.classList.remove('hidden'); } else { picPrev.classList.add('hidden'); }
+            if (safeMediaUrl(phrase.picture)) { picImg.src = safeMediaUrl(phrase.picture); picPrev.classList.remove('hidden'); } else { picPrev.classList.add('hidden'); }
             const audEl = document.getElementById('edit-phrase-audio');
             const audWrap = document.getElementById('edit-phrase-audio-wrap');
-            if (phrase.audio) { audEl.src = phrase.audio; audWrap.classList.remove('hidden'); } else { audEl.src = ''; audWrap.classList.add('hidden'); }
+            if (safeMediaUrl(phrase.audio)) { audEl.src = safeMediaUrl(phrase.audio); audWrap.classList.remove('hidden'); } else { audEl.src = ''; audWrap.classList.add('hidden'); }
             document.getElementById('edit-phrase-record-btn').classList.remove('hidden');
             document.getElementById('edit-phrase-recording-status').classList.add('hidden');
             document.getElementById('edit-phrase-modal').classList.remove('hidden');
@@ -8519,12 +8528,12 @@
                                             const pos = extractPartOfSpeech(word);
                                             const comment = buildComment(word);
                                             const wid = JSON.stringify(word.id);
-                                            const pic = (word.picture || '').replace(/"/g, '&quot;');
-                                            const imgCell = word.picture 
-                                                ? `<img src="${pic}" alt="" class="w-12 h-12 object-cover rounded-lg border border-amber-200" onerror="this.style.display='none'">`
+                                            const pic = safeMediaUrl(word.picture).replace(/\x22/g, '&quot;');
+                                            const imgCell = pic 
+                                                ? `<img src="${pic}" alt="" class="w-12 h-12 object-cover rounded-lg border border-amber-200" onerror="this.style.display=\x27none\x27">`
                                                 : '';
-                                            const audioUrl = (word.audio || '').replace(/"/g, '&quot;');
-                                            const audioCell = word.audio 
+                                            const audioUrl = safeMediaUrl(word.audio).replace(/\x22/g, '&quot;');
+                                            const audioCell = audioUrl 
                                                 ? `<audio preload="none" controls class="h-8 w-24" onclick="event.stopPropagation()"><source src="${audioUrl}" type="audio/webm"></audio>`
                                                 : '';
                                             const editCell = isContributor() ? `<td class="py-3.5 px-3 align-middle browse-td-actions" data-label=""><button type="button" class="browse-edit-btn px-3 py-2.5 min-h-[44px] min-w-[44px] text-sm font-semibold bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 active:bg-amber-300 touch-manipulation inline-flex items-center justify-center" data-word-id="${escapeHtml(String(word.id))}" title="Suggest edit" aria-label="Suggest edit">✏️ Edit</button></td>` : '';
@@ -8588,9 +8597,9 @@
                                     ${word.contributorAttribution ? `
                                         <p class="text-xs text-gray-500 mt-1">Contributor: ${escapeHtml(word.contributorAttribution)}</p>
                                     ` : ''}
-                                    ${word.audio ? `
+                                    ${safeMediaUrl(word.audio) ? `
                                         <audio controls class="w-full mt-2 h-8">
-                                            <source src="${word.audio}" type="audio/webm">
+                                            <source src="${safeMediaUrl(word.audio)}" type="audio/webm">
                                         </audio>
                                     ` : ''}
                                     <button type="button" class="browse-view-details-btn mt-2 text-xs text-amber-600 hover:text-amber-800 font-semibold touch-manipulation min-h-[44px]" data-word-id="${escapeHtml(String(word.id))}">
@@ -8737,10 +8746,10 @@
             if (word.etymology) { etymologyEl.textContent = word.etymology; etymologyWrap.classList.remove('hidden'); } else { etymologyWrap.classList.add('hidden'); etymologyEl.textContent = ''; }
             const imgWrap = document.getElementById('word-view-image');
             const imgEl = document.getElementById('word-view-img');
-            if (word.picture) { imgEl.src = word.picture; imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
+            if (safeMediaUrl(word.picture)) { imgEl.src = safeMediaUrl(word.picture); imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
             const audWrap = document.getElementById('word-view-audio-wrap');
             const audEl = document.getElementById('word-view-audio');
-            if (word.audio) { audEl.src = word.audio; audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
+            if (safeMediaUrl(word.audio)) { audEl.src = safeMediaUrl(word.audio); audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
             const editBtn = document.getElementById('word-view-edit-btn');
             if (editBtn) editBtn.classList.toggle('hidden', !isContributor());
             const favBtn = document.getElementById('word-view-favorite-btn');
@@ -8777,10 +8786,10 @@
             }
             const imgWrap = document.getElementById('phrase-view-image');
             const imgEl = document.getElementById('phrase-view-img');
-            if (phrase.picture) { imgEl.src = phrase.picture; imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
+            if (safeMediaUrl(phrase.picture)) { imgEl.src = safeMediaUrl(phrase.picture); imgWrap.classList.remove('hidden'); } else { imgWrap.classList.add('hidden'); imgEl.src = ''; }
             const audWrap = document.getElementById('phrase-view-audio-wrap');
             const audEl = document.getElementById('phrase-view-audio');
-            if (phrase.audio) { audEl.src = phrase.audio; audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
+            if (safeMediaUrl(phrase.audio)) { audEl.src = safeMediaUrl(phrase.audio); audWrap.classList.remove('hidden'); } else { audWrap.classList.add('hidden'); audEl.src = ''; }
             const editBtn = document.getElementById('phrase-view-edit-btn');
             if (editBtn) editBtn.style.display = isContributor() ? '' : 'none';
             document.getElementById('phrase-view-modal').classList.remove('hidden');
@@ -8794,6 +8803,19 @@
             div.textContent = text;
             return div.innerHTML;
         }
+        /** Use for img/audio src only: avoid literal "${...}" or code fragments (e.g. ".replace(/") from data causing 404s. */
+        function safeMediaUrl(val) {
+            if (val == null || typeof val !== 'string') return '';
+            var s = val.trim();
+            if (s.indexOf('${') !== -1 || s.indexOf(').replace(') !== -1) return '';
+            return s;
+        }
+        /** Escape for HTML double-quoted attribute (use \\x22 to avoid breaking JS-in-HTML parsers). */
+        function escDq(s) { return (s == null ? '' : String(s)).replace(/\x22/g, '&quot;'); }
+        var _dq = '&quot;';
+        var _sq = String.fromCharCode(39);
+        /** JSON for use inside onclick etc.: escape quotes so attribute does not break. */
+        function escapeJsonAttr(obj) { return escDq(JSON.stringify(obj)); }
 
         // Close nav drawer on resize to desktop (xl = 1280px)
         window.addEventListener('resize', () => {
@@ -8863,17 +8885,23 @@
         // Initialize on load: show app immediately, never block on init or network
         window.addEventListener('DOMContentLoaded', () => {
             const loadingEl = document.getElementById('global-loading');
-            const hideLoading = () => { if (loadingEl) { loadingEl.classList.add('hidden'); loadingEl.setAttribute('aria-busy', 'false'); } document.body.removeAttribute('aria-busy'); };
+            const hideLoading = () => {
+                if (loadingEl) { loadingEl.classList.add('hidden'); loadingEl.setAttribute('aria-busy', 'false'); }
+                document.body.removeAttribute('aria-busy');
+                document.documentElement.classList.remove('css-loading');
+            };
             try {
                 init();
             } catch (e) {
                 console.error('Init error:', e);
                 if (typeof showMainApp === 'function') showMainApp();
+                hideLoading();
             }
-            renderSearchHistory();
+            if (typeof renderSearchHistory === 'function') renderSearchHistory();
             hideLoading();
             setTimeout(hideLoading, 100);
             setTimeout(function() {
+                document.documentElement.classList.remove('css-loading');
                 if (loadingEl && !loadingEl.classList.contains('hidden')) {
                     hideLoading();
                     if (typeof showMainApp === 'function') showMainApp();
