@@ -2481,7 +2481,19 @@
          */
 
         // ─── 1. Config & Supabase (lazy-load SDK so CDN does not block first paint) ─
-        const SITE_URL = 'https://dagbanikorli.org';
+        const SITE_URL = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin + (function () {
+            var p = window.location.pathname.replace(/\/$/, '');
+            if (!p) return '';
+            if (/\.[^/]+$/.test(p)) p = p.replace(/\/[^/]*$/, '');
+            return p;
+        })() : 'https://dagbanikorli.org';
+        /** Base path for GitHub Pages etc. (e.g. "" or "/RepoName"). */
+        function getBasePath() {
+            var p = window.location.pathname.replace(/\/$/, '');
+            if (!p) return '';
+            if (/\.[^/]+$/.test(p)) p = p.replace(/\/[^/]*$/, '');
+            return p;
+        }
         const SUPABASE_URL = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || '';
         const SUPABASE_ANON_KEY = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.key) || '';
         let supabaseClient = null;
@@ -3970,7 +3982,7 @@
             }
             
             function fetchStaticDictionary() {
-                var base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+                var base = getBasePath();
                 var url = (base ? (window.location.origin + base + '/') : (window.location.origin + '/')) + 'dictionary_import.json';
                 return fetch(url).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
             }
@@ -6307,7 +6319,7 @@
 
         /** Returns base path for assets (same as dictionary_import.json). */
         function getAssetBase() {
-            const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+            const base = getBasePath();
             return (base ? base + '/' : './');
         }
 
@@ -8020,7 +8032,7 @@
             appState.savedCustomSets = [];
             appState.browseLetterFilter = 'all';
             ['dagbaniWords','dagbaniPending','dagbaniPhrases','dagbaniPendingPhrases','dagbaniIdioms','dagbaniPendingIdioms','dagbaniFavorites','dagbaniSearchHistory','dagbaniCommunityFeed','dagbaniComments','dagbaniWordVotes','dagbaniSavedCustomSets'].forEach(k => localStorage.removeItem(k));
-            const base = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+            const base = getBasePath();
             const origin = window.location.origin;
             const dictUrlRoot = origin + '/dictionary_import.json';
             const dictUrlSubpath = base ? (origin + base + '/dictionary_import.json') : dictUrlRoot;
