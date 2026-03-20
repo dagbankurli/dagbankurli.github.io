@@ -450,6 +450,14 @@
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label><input type="url" id="edit-pending-phrase-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL"><label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm"><span>📷 Upload</span><input type="file" id="edit-pending-phrase-picture-file" accept="image/*" class="hidden" onchange="handleEditPendingPhraseImage(event)"></label><div id="edit-pending-phrase-picture-preview" class="hidden mt-2"><img id="edit-pending-phrase-preview-img" src="" alt="" class="max-h-20 rounded border"><button type="button" onclick="clearEditPendingPhraseImage()" class="text-sm text-red-600 mt-1 block">Remove</button></div></div>
                 <div><label class="block text-sm font-semibold text-gray-700 mb-1">Audio — Replay</label><audio id="edit-pending-phrase-audio" controls class="w-full h-10"></audio></div>
             </div>
+            <div id="edit-pending-idiom-fields" class="space-y-4 hidden">
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Dagbani idiom or proverb</label><input type="text" id="edit-pending-idiom-dagbani" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">English</label><input type="text" id="edit-pending-idiom-english" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Usage (optional)</label><textarea id="edit-pending-idiom-usage" rows="2" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg" placeholder="When this idiom or proverb is used"></textarea></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Category</label><select id="edit-pending-idiom-category" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg"></select></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Image (optional) — Upload or paste URL</label><input type="url" id="edit-pending-idiom-picture" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg mb-2" placeholder="Image URL"><label class="inline-flex items-center gap-2 px-3 py-2 bg-amber-100 rounded-lg cursor-pointer text-sm"><span>📷 Upload</span><input type="file" id="edit-pending-idiom-picture-file" accept="image/*" class="hidden" onchange="handleEditPendingIdiomImage(event)"></label><div id="edit-pending-idiom-picture-preview" class="hidden mt-2"><img id="edit-pending-idiom-preview-img" src="" alt="" class="max-h-20 rounded border"><button type="button" onclick="clearEditPendingIdiomImage()" class="text-sm text-red-600 mt-1 block">Remove</button></div></div>
+                <div><label class="block text-sm font-semibold text-gray-700 mb-1">Audio — Replay</label><audio id="edit-pending-idiom-audio" controls class="w-full h-10"></audio></div>
+            </div>
             <div class="flex gap-2 mt-4">
                 <button onclick="saveEditPendingContribution()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700">Save</button>
                 <button onclick="closeEditPendingModal()" class="px-4 py-2 border border-gray-300 rounded-lg">Cancel</button>
@@ -1756,7 +1764,7 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Peer Review<span id="review-heading-count" class="hidden ml-2 text-amber-600 font-semibold">(0 pending)</span></h2>
                 <p class="text-gray-600 mb-6">Review and verify pending word and phrase submissions from the community.</p>
                 <div id="review-supabase-hint" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
-                    If you use Supabase, add your project URL and anon key in <code>config.js</code> (see Preferences &amp; Data) and reload the app to see pending submissions and users from the cloud.
+                    If you use Supabase, ensure your project URL and anon key are set (see <strong>Preferences &amp; Data</strong> — keys are normally in this page’s config) and reload to load pending submissions and users from the cloud.
                 </div>
                 <div class="flex gap-2 mb-6 border-b border-gray-200">
                     <button type="button" onclick="setReviewTab('words')" id="review-tab-words" class="px-4 py-2 font-semibold border-b-2 border-amber-500 text-amber-700 -mb-[1px]">Words</button>
@@ -2914,6 +2922,24 @@
         function isMasterAdmin() { return isAdmin() && MASTER_ADMIN_USERNAMES.includes((appState.currentUser?.username || '')); }
         function isContributor() { return getCurrentRole() === ROLES.contributor || isAdmin(); }
         function isLoggedIn() { return appState.currentUser && appState.currentUser.id !== 'guest'; }
+        /**
+         * Block contribution / suggest-edit actions when the UI is bypassed (e.g. devtools).
+         * Learners must use Profile → Become contributor (or register as Contributor).
+         */
+        function requireContributorAction() {
+            if (isContributor()) return true;
+            if (!isLoggedIn()) {
+                showToast('Sign in first. To submit or suggest edits, become a contributor from Profile.', 'error');
+            } else {
+                showToast('Contributors only — open Profile and use “Become contributor”, or register as Contributor.', 'error');
+            }
+            return false;
+        }
+        function requireLoggedInForReport() {
+            if (isLoggedIn()) return true;
+            showToast('Sign in to report an error or suggest a correction.', 'error');
+            return false;
+        }
 
         function seedAdminIfNeeded() {
             let users = JSON.parse(localStorage.getItem('users') || '[]');
@@ -5025,6 +5051,14 @@
                     if (id) viewPhraseDetails(id);
                     return;
                 }
+                const viewIdiomProfBtn = e.target.closest('.view-idiom-profile-btn');
+                if (viewIdiomProfBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const id = viewIdiomProfBtn.getAttribute('data-idiom-id');
+                    if (id && typeof viewIdiomDetails === 'function') viewIdiomDetails(id);
+                    return;
+                }
                 const editBtn = e.target.closest('.phrase-edit-btn, .idiom-edit-btn, .word-edit-btn, .pending-edit-btn');
                 if (!editBtn) return;
                 e.preventDefault();
@@ -6109,6 +6143,7 @@
         // Word Submission
         function submitWord(event) {
             event.preventDefault();
+            if (!requireContributorAction()) return;
             const english = document.getElementById('english-word').value.trim();
             const dagbani = document.getElementById('dagbani-word').value.trim();
             const dialect = document.getElementById('word-dialect').value;
@@ -6230,6 +6265,7 @@
         }
 
         function submitBulkWords() {
+            if (!requireContributorAction()) return;
             const text = (document.getElementById('bulk-words-input').value || '').trim();
             const dialect = document.getElementById('bulk-dialect').value;
             const defaultCategory = document.getElementById('bulk-category').value;
@@ -6290,6 +6326,7 @@
 
         function submitPhrase(event) {
             event.preventDefault();
+            if (!requireContributorAction()) return;
             const form = event.target;
             const dagbani = (form.querySelector('[name="phrase-dagbani"]') || form.querySelector('#phrase-dagbani'))?.value?.trim() || '';
             const english = (form.querySelector('[name="phrase-english"]') || form.querySelector('#phrase-english'))?.value?.trim() || '';
@@ -6660,6 +6697,7 @@
         function closeIdiomViewModal() { document.getElementById('idiom-view-modal').classList.add('hidden'); }
 
         function openEditIdiomModal(idiomId) {
+            if (!requireContributorAction()) return;
             const idiom = findIdiomByIdOrKey(idiomId);
             if (!idiom) { showToast('Idiom not found.', 'error'); return; }
             const id = idiom.id || ('idiom-' + (idiom.dagbani || '').toLowerCase());
@@ -6739,6 +6777,7 @@
         }
 
         function submitEditIdiom() {
+            if (!requireContributorAction()) return;
             const id = document.getElementById('edit-idiom-id').value;
             const dagbani = document.getElementById('edit-idiom-dagbani').value.trim();
             const english = document.getElementById('edit-idiom-english').value.trim();
@@ -6839,6 +6878,7 @@
 
         function submitIdiom(event) {
             event.preventDefault();
+            if (!requireContributorAction()) return;
             const form = event.target;
             const dagbani = (form.querySelector('[name="idiom-dagbani"]') || form.querySelector('#idiom-dagbani'))?.value?.trim() || '';
             const english = (form.querySelector('[name="idiom-english"]') || form.querySelector('#idiom-english'))?.value?.trim() || '';
@@ -7166,12 +7206,22 @@
             const isMe = s => (s.submittedBy && s.submittedBy === username) || (s.contributorAttribution && attribution && s.contributorAttribution === attribution);
             const pendingWords = (appState.pendingSubmissions || []).filter(isMe);
             const pendingPhrases = (appState.pendingPhrases || []).filter(isMe);
+            const pendingIdioms = (appState.pendingIdioms || []).filter(isMe);
             const exportWrap = document.getElementById('mc-export-pending-wrap');
-            if (exportWrap) exportWrap.classList.toggle('hidden', pendingWords.length + pendingPhrases.length === 0);
-            const approvedWords = (appState.words || []).filter(w => (w.submittedBy && w.submittedBy === username) || (w.contributorAttribution && attribution && w.contributorAttribution === attribution));
+            if (exportWrap) exportWrap.classList.toggle('hidden', pendingWords.length + pendingPhrases.length + pendingIdioms.length === 0);
+            const approvedWords = (appState.words || []).filter(w => w.verified !== false && ((w.submittedBy && w.submittedBy === username) || (w.contributorAttribution && attribution && w.contributorAttribution === attribution)));
             const approvedPhrases = (appState.phrases || []).filter(p => (p.submittedBy && p.submittedBy === username) || (p.contributorAttribution && attribution && p.contributorAttribution === attribution));
-            const pending = [...pendingWords.map(s => ({ ...s, status: 'pending', kind: 'word' })), ...pendingPhrases.map(s => ({ ...s, status: 'pending', kind: 'phrase' }))];
-            const approved = [...approvedWords.map(w => ({ ...w, status: 'approved', kind: 'word' })), ...approvedPhrases.map(p => ({ ...p, status: 'approved', kind: 'phrase' }))];
+            const approvedIdioms = (appState.idioms || []).filter(i => (i.submittedBy && i.submittedBy === username) || (i.contributorAttribution && attribution && i.contributorAttribution === attribution));
+            const pending = [
+                ...pendingWords.map(s => ({ ...s, status: 'pending', kind: 'word' })),
+                ...pendingPhrases.map(s => ({ ...s, status: 'pending', kind: 'phrase' })),
+                ...pendingIdioms.map(s => ({ ...s, status: 'pending', kind: 'idiom' }))
+            ];
+            const approved = [
+                ...approvedWords.map(w => ({ ...w, status: 'approved', kind: 'word' })),
+                ...approvedPhrases.map(p => ({ ...p, status: 'approved', kind: 'phrase' })),
+                ...approvedIdioms.map(i => ({ ...i, status: 'approved', kind: 'idiom' }))
+            ];
             let items = [];
             if (myContributionsFilter === 'pending') items = pending;
             else if (myContributionsFilter === 'approved') items = approved;
@@ -7186,11 +7236,16 @@
                 const picHtml = pic ? `<img src="${pic}" alt="" class="w-16 h-16 object-cover rounded-lg border border-amber-200 mt-2" onerror="this.style.display=\x27none\x27">` : '';
                 const audioHtml = safeMediaUrl(item.audio) ? `<div class="flex-1 min-w-[140px]"><p class="text-xs font-semibold text-amber-700 mb-1">▶ Replay</p><audio controls class="h-8 w-full"><source src="${safeMediaUrl(item.audio).replace(/\x22/g,'&quot;')}" type="audio/webm"></audio></div>` : '';
                 const editBtn = item.status === 'pending' ? `<button type="button" class="pending-edit-btn px-3 py-1.5 text-sm font-semibold bg-amber-200 text-amber-800 rounded-lg hover:bg-amber-300 transition" data-pending-id="${escapeHtml(String(item.id))}" data-pending-kind="${escapeHtml(String(item.kind))}">✏ Edit</button>` : '';
-                const grammarHtml = item.grammar ? `<p class="text-xs text-gray-600 mt-1"><strong>Grammar:</strong> ${escapeHtml(String(item.grammar).slice(0, 80))}${String(item.grammar).length > 80 ? '...' : ''}</p>` : '';
-                const exampleHtml = item.example ? `<p class="text-xs text-gray-600 mt-1"><strong>Example:</strong> ${escapeHtml(String(item.example).slice(0, 80))}${String(item.example).length > 80 ? '...' : ''}</p>` : '';
+                const grammarHtml = item.kind === 'word' && item.grammar ? `<p class="text-xs text-gray-600 mt-1"><strong>Grammar:</strong> ${escapeHtml(String(item.grammar).slice(0, 80))}${String(item.grammar).length > 80 ? '...' : ''}</p>` : '';
+                const exampleHtml = item.kind === 'word' && item.example ? `<p class="text-xs text-gray-600 mt-1"><strong>Example:</strong> ${escapeHtml(String(item.example).slice(0, 80))}${String(item.example).length > 80 ? '...' : ''}</p>` : '';
+                const usageHtml = (item.kind === 'phrase' || item.kind === 'idiom') && item.usage ? `<p class="text-xs text-gray-600 mt-1"><strong>Usage:</strong> ${escapeHtml(String(item.usage).slice(0, 100))}${String(item.usage).length > 100 ? '...' : ''}</p>` : '';
+                const kindLabel = item.kind === 'phrase' ? 'Phrase' : item.kind === 'idiom' ? 'Idiom / proverb' : '';
                 const viewBtn = item.status === 'approved' && item.kind === 'word' ? `<button type="button" class="view-word-btn px-3 py-1.5 text-sm font-semibold bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition" data-word-id="${escapeHtml(String(item.id))}">View</button>` : '';
                 const suggestEditBtn = item.status === 'approved' && item.kind === 'word' && isContributor() ? `<button type="button" class="word-edit-btn px-3 py-1.5 text-sm font-semibold bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition" data-word-id="${escapeHtml(String(item.id))}">Suggest edit</button>` : '';
+                const suggestPhraseEditBtn = item.status === 'approved' && item.kind === 'phrase' && isContributor() ? `<button type="button" class="phrase-edit-btn px-3 py-1.5 text-sm font-semibold bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition" data-phrase-id="${escapeHtml(String(item.id))}">Suggest edit</button>` : '';
                 const viewPhraseBtn = item.status === 'approved' && item.kind === 'phrase' ? `<button type="button" class="view-phrase-btn px-3 py-1.5 text-sm font-semibold bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition" data-phrase-id="${escapeHtml(String(item.id))}">View</button>` : '';
+                const viewIdiomBtn = item.status === 'approved' && item.kind === 'idiom' ? `<button type="button" class="view-idiom-profile-btn px-3 py-1.5 text-sm font-semibold bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition" data-idiom-id="${escapeHtml(String(item.id))}">View</button>` : '';
+                const suggestIdiomEditBtn = item.status === 'approved' && item.kind === 'idiom' && isContributor() ? `<button type="button" class="idiom-edit-btn px-3 py-1.5 text-sm font-semibold bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition" data-idiom-id="${escapeHtml(String(item.id))}">Suggest edit</button>` : '';
                 return `
                 <div class="p-4 rounded-xl border-2 ${item.status === 'pending' ? 'border-amber-200 bg-amber-50' : 'border-green-200 bg-green-50'} fade-in">
                     <div class="flex items-start justify-between gap-3">
@@ -7199,7 +7254,8 @@
                             <p class="text-base font-semibold text-gray-700">${escapeHtml(item.english)}</p>
                             ${grammarHtml}
                             ${exampleHtml}
-                            <p class="text-xs text-gray-500 mt-1">${item.dateAdded ? new Date(item.dateAdded).toLocaleDateString(undefined, { dateStyle: 'medium' }) : ''}${item.kind === 'phrase' ? ' · Phrase' : ''}</p>
+                            ${usageHtml}
+                            <p class="text-xs text-gray-500 mt-1">${item.dateAdded ? new Date(item.dateAdded).toLocaleDateString(undefined, { dateStyle: 'medium' }) : ''}${kindLabel ? ' · ' + kindLabel : ''}</p>
                             <div class="flex flex-wrap gap-2 mt-2">
                                 ${picHtml ? `<div>${picHtml}</div>` : ''}
                                 ${audioHtml}
@@ -7211,6 +7267,9 @@
                             ${viewBtn}
                             ${suggestEditBtn}
                             ${viewPhraseBtn}
+                            ${suggestPhraseEditBtn}
+                            ${viewIdiomBtn}
+                            ${suggestIdiomEditBtn}
                         </div>
                     </div>
                 </div>
@@ -7218,11 +7277,14 @@
         }
 
         function openEditPendingContribution(id, kind) {
+            if (!requireContributorAction()) return;
             const modal = document.getElementById('edit-pending-modal');
             document.getElementById('edit-pending-id').value = id;
             document.getElementById('edit-pending-kind').value = kind;
             document.getElementById('edit-pending-word-fields').classList.add('hidden');
             document.getElementById('edit-pending-phrase-fields').classList.add('hidden');
+            const idiomFields = document.getElementById('edit-pending-idiom-fields');
+            if (idiomFields) idiomFields.classList.add('hidden');
             if (kind === 'word') {
                 const item = appState.pendingSubmissions.find(s => s.id == id);
                 if (!item) { showToast('Item not found', 'error'); return; }
@@ -7241,7 +7303,7 @@
                 } else preview.classList.add('hidden');
                 const aud = document.getElementById('edit-pending-audio');
                 aud.src = safeMediaUrl(item.audio) || '';
-            } else {
+            } else if (kind === 'phrase') {
                 const item = appState.pendingPhrases.find(p => p.id == id);
                 if (!item) { showToast('Item not found', 'error'); return; }
                 document.getElementById('edit-pending-phrase-fields').classList.remove('hidden');
@@ -7261,6 +7323,29 @@
                     catSel.innerHTML = mainCats.map(k => `<option value="${k}" ${(getCanonicalPhraseCategory(item.category||'general')===k?'selected':'')}>${PHRASE_CATEGORY_LABELS[k] || k}</option>`).join('');
                 }
                 document.getElementById('edit-pending-phrase-audio').src = safeMediaUrl(item.audio) || '';
+            } else if (kind === 'idiom') {
+                const item = (appState.pendingIdioms || []).find(i => i.id == id);
+                if (!item) { showToast('Item not found', 'error'); return; }
+                if (idiomFields) idiomFields.classList.remove('hidden');
+                document.getElementById('edit-pending-idiom-dagbani').value = item.dagbani || '';
+                document.getElementById('edit-pending-idiom-english').value = item.english || '';
+                const idiomUsage = document.getElementById('edit-pending-idiom-usage');
+                if (idiomUsage) idiomUsage.value = item.usage || '';
+                const picUrlI = (typeof item.picture === 'string' && item.picture.startsWith('http')) ? item.picture : '';
+                document.getElementById('edit-pending-idiom-picture').value = picUrlI;
+                appState.editPendingIdiomImage = (typeof item.picture === 'string' && item.picture.startsWith('data:')) ? item.picture : null;
+                const picPrevI = document.getElementById('edit-pending-idiom-picture-preview');
+                const picImgI = document.getElementById('edit-pending-idiom-preview-img');
+                if (safeMediaUrl(item.picture)) { picImgI.src = safeMediaUrl(item.picture); picPrevI.classList.remove('hidden'); } else picPrevI.classList.add('hidden');
+                const catSelI = document.getElementById('edit-pending-idiom-category');
+                if (catSelI && typeof IDIOM_CATEGORY_LABELS !== 'undefined') {
+                    const mainIdiomCats = ['proverb', 'idiom', 'general'];
+                    catSelI.innerHTML = mainIdiomCats.map(k => `<option value="${k}" ${(getCanonicalIdiomCategory(item.category || 'general') === k ? 'selected' : '')}>${IDIOM_CATEGORY_LABELS[k] || k}</option>`).join('');
+                }
+                document.getElementById('edit-pending-idiom-audio').src = safeMediaUrl(item.audio) || '';
+            } else {
+                showToast('Unknown contribution type.', 'error');
+                return;
             }
             appState.editPendingWordAudioChunks = [];
             const recBtn = document.getElementById('edit-pending-record-btn');
@@ -7269,7 +7354,13 @@
             if (recStatus) recStatus.classList.add('hidden');
             modal.classList.remove('hidden');
         }
-        function closeEditPendingModal() { document.getElementById('edit-pending-modal').classList.add('hidden'); appState.editPendingUploadedImage = null; appState.editPendingPhraseImage = null; appState.editPendingWordAudioChunks = []; }
+        function closeEditPendingModal() {
+            document.getElementById('edit-pending-modal').classList.add('hidden');
+            appState.editPendingUploadedImage = null;
+            appState.editPendingPhraseImage = null;
+            appState.editPendingIdiomImage = null;
+            appState.editPendingWordAudioChunks = [];
+        }
         function handleEditPendingImageUpload(event) {
             const file = event.target?.files?.[0];
             if (!file || !file.type.startsWith('image/')) return;
@@ -7286,6 +7377,20 @@
         }
         function clearEditPendingImage() { appState.editPendingUploadedImage = null; document.getElementById('edit-pending-picture').value = ''; document.getElementById('edit-pending-picture-preview').classList.add('hidden'); document.getElementById('edit-pending-picture-file').value = ''; }
         function clearEditPendingPhraseImage() { appState.editPendingPhraseImage = null; document.getElementById('edit-pending-phrase-picture').value = ''; document.getElementById('edit-pending-phrase-picture-preview').classList.add('hidden'); const f = document.getElementById('edit-pending-phrase-picture-file'); if (f) f.value = ''; }
+        function handleEditPendingIdiomImage(event) {
+            const file = event.target?.files?.[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const r = new FileReader();
+            r.onload = () => { appState.editPendingIdiomImage = r.result; document.getElementById('edit-pending-idiom-preview-img').src = r.result; document.getElementById('edit-pending-idiom-picture-preview').classList.remove('hidden'); };
+            r.readAsDataURL(file);
+        }
+        function clearEditPendingIdiomImage() {
+            appState.editPendingIdiomImage = null;
+            document.getElementById('edit-pending-idiom-picture').value = '';
+            document.getElementById('edit-pending-idiom-picture-preview').classList.add('hidden');
+            const f = document.getElementById('edit-pending-idiom-picture-file');
+            if (f) f.value = '';
+        }
         async function startEditPendingWordRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -7313,6 +7418,7 @@
             }
         }
         function saveEditPendingContribution() {
+            if (!requireContributorAction()) return;
             const id = document.getElementById('edit-pending-id').value;
             const kind = document.getElementById('edit-pending-kind').value;
             if (kind === 'word') {
@@ -7336,7 +7442,7 @@
                     reader.readAsDataURL(blob);
                     return;
                 }
-            } else {
+            } else if (kind === 'phrase') {
                 const item = appState.pendingPhrases.find(p => p.id == id);
                 if (!item) { closeEditPendingModal(); return; }
                 item.dagbani = document.getElementById('edit-pending-phrase-dagbani').value.trim();
@@ -7344,6 +7450,14 @@
                 item.usage = (document.getElementById('edit-pending-phrase-usage')?.value?.trim()) || null;
                 item.category = document.getElementById('edit-pending-phrase-category').value || 'general';
                 item.picture = appState.editPendingPhraseImage || (document.getElementById('edit-pending-phrase-picture').value.trim() || null);
+            } else if (kind === 'idiom') {
+                const item = (appState.pendingIdioms || []).find(i => i.id == id);
+                if (!item) { closeEditPendingModal(); return; }
+                item.dagbani = document.getElementById('edit-pending-idiom-dagbani').value.trim();
+                item.english = document.getElementById('edit-pending-idiom-english').value.trim();
+                item.usage = (document.getElementById('edit-pending-idiom-usage')?.value?.trim()) || null;
+                item.category = document.getElementById('edit-pending-idiom-category')?.value || 'general';
+                item.picture = appState.editPendingIdiomImage || (document.getElementById('edit-pending-idiom-picture').value.trim() || null) || item.picture;
             }
             saveData();
             closeEditPendingModal();
@@ -7352,18 +7466,21 @@
         }
 
         function exportPendingForAdmin() {
+            if (!requireContributorAction()) return;
             const username = appState.currentUser?.username;
             const attribution = appState.currentUser?.attributionName;
             const isMe = s => (s.submittedBy && s.submittedBy === username) || (s.contributorAttribution && attribution && s.contributorAttribution === attribution);
             const pendingWords = (appState.pendingSubmissions || []).filter(isMe);
             const pendingPhrases = (appState.pendingPhrases || []).filter(isMe);
-            if (pendingWords.length + pendingPhrases.length === 0) {
+            const pendingIdioms = (appState.pendingIdioms || []).filter(isMe);
+            if (pendingWords.length + pendingPhrases.length + pendingIdioms.length === 0) {
                 showToast('No pending submissions to export.', 'error');
                 return;
             }
             const data = {
                 pendingSubmissions: pendingWords,
                 pendingPhrases,
+                pendingIdioms,
                 exportDate: new Date().toISOString(),
                 exportedBy: username || attribution
             };
@@ -7669,6 +7786,7 @@
         }
 
         function openEditWordModal(wordId) {
+            if (!requireContributorAction()) return;
             if (wordId == null || wordId === '') return;
             const word = appState.words.find(w => String(w.id) === String(wordId));
             if (!word) { showToast('Word not found.', 'error'); return; }
@@ -7745,6 +7863,7 @@
             }
         }
         function submitEditWord() {
+            if (!requireContributorAction()) return;
             const wordId = document.getElementById('edit-word-id').value;
             const word = appState.words.find(w => String(w.id) === String(wordId));
             if (!word) return;
@@ -7795,6 +7914,7 @@
             return all.find(p => (p.dagbani || '').toLowerCase() === key) || appState.phrases?.find(p => String(p.id) === String(phraseId));
         }
         function openEditPhraseModal(phraseId) {
+            if (!requireContributorAction()) return;
             const phrase = findPhraseByIdOrKey(phraseId);
             if (!phrase) { showToast('Phrase not found', 'error'); return; }
             appState.editPhraseUploadedImage = null;
@@ -7873,6 +7993,7 @@
             }
         }
         function submitEditPhrase() {
+            if (!requireContributorAction()) return;
             const phraseId = document.getElementById('edit-phrase-id').value;
             const phrase = findPhraseByIdOrKey(phraseId);
             if (!phrase) { closeEditPhraseModal(); return; }
@@ -7920,6 +8041,7 @@
         }
         function closeReportErrorModal() { document.getElementById('report-error-modal').classList.add('hidden'); }
         function submitReportError() {
+            if (!requireLoggedInForReport()) return;
             const wordId = document.getElementById('report-word-id').value;
             const word = appState.words.find(w => String(w.id) === String(wordId));
             const desc = (document.getElementById('report-description').value || '').trim();
@@ -7958,7 +8080,15 @@
         }
 
         function updatePendingCount() {
-            const count = (appState.pendingSubmissions?.length || 0) + (appState.pendingPhrases?.length || 0) + (appState.pendingIdioms?.length || 0);
+            let count;
+            if (isAdmin()) {
+                count = (appState.pendingSubmissions?.length || 0) + (appState.pendingPhrases?.length || 0) + (appState.pendingIdioms?.length || 0);
+            } else {
+                const username = appState.currentUser?.username;
+                const attribution = appState.currentUser?.attributionName;
+                const isMe = s => (s.submittedBy && s.submittedBy === username) || (s.contributorAttribution && attribution && s.contributorAttribution === attribution);
+                count = (appState.pendingSubmissions || []).filter(isMe).length + (appState.pendingPhrases || []).filter(isMe).length + (appState.pendingIdioms || []).filter(isMe).length;
+            }
             ['profile-pending-count', 'pending-count-drawer'].forEach(id => {
                 const badge = document.getElementById(id);
                 if (badge) {
