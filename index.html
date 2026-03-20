@@ -2494,6 +2494,38 @@
             if (/\.[^/]+$/.test(p)) p = p.replace(/\/[^/]*$/, '');
             return p;
         }
+        /** Load bundled dictionary JSON (GitHub Pages / same-origin). */
+        function fetchStaticDictionary() {
+            var base = getBasePath();
+            var url = (base ? (window.location.origin + base + '/') : (window.location.origin + '/')) + 'dictionary_import.json';
+            return fetch(url).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
+        }
+        /**
+         * Merge Supabase (or null) with dictionary_import.json.
+         * If the cloud has phrases/idioms but no words, we still load words from the static file — otherwise the app
+         * used to skip fetchStaticDictionary entirely when any bucket was non-empty.
+         */
+        async function mergeDictionaryWithStatic(cloud) {
+            var merged = {
+                words: (cloud && Array.isArray(cloud.words)) ? cloud.words : [],
+                phrases: (cloud && Array.isArray(cloud.phrases)) ? cloud.phrases : [],
+                idioms: (cloud && Array.isArray(cloud.idioms)) ? cloud.idioms : []
+            };
+            var staticData = await fetchStaticDictionary();
+            if (staticData) {
+                if (!merged.words.length && staticData.words && staticData.words.length) merged.words = staticData.words;
+                if (!merged.phrases.length && staticData.phrases && staticData.phrases.length) merged.phrases = staticData.phrases;
+                if (!merged.idioms.length && staticData.idioms && staticData.idioms.length) merged.idioms = staticData.idioms;
+            }
+            if (!merged.words.length && !merged.phrases.length && !merged.idioms.length && staticData) {
+                merged = {
+                    words: staticData.words || [],
+                    phrases: staticData.phrases || [],
+                    idioms: staticData.idioms || []
+                };
+            }
+            return merged;
+        }
         const SUPABASE_URL = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || '';
         const SUPABASE_ANON_KEY = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.key) || '';
         let supabaseClient = null;
@@ -2845,15 +2877,16 @@
             if (!client) return;
             try {
                 var data = await fetchDictionaryFromSupabase();
-                if (data && (data.words && data.words.length || data.phrases && data.phrases.length || data.idioms && data.idioms.length)) {
-                    if (data.words && data.words.length) {
-                        appState.words = data.words;
+                var merged = await mergeDictionaryWithStatic(data);
+                if (merged.words.length || merged.phrases.length || merged.idioms.length) {
+                    if (merged.words.length) {
+                        appState.words = merged.words;
                         if (typeof injectVocabularySchema === 'function') injectVocabularySchema();
                         if (typeof updateWordOfTheDay === 'function') updateWordOfTheDay();
                         if (typeof applyFilters === 'function') applyFilters();
                     }
-                    if (data.phrases && data.phrases.length) appState.phrases = data.phrases;
-                    if (data.idioms && data.idioms.length) appState.idioms = data.idioms;
+                    if (merged.phrases.length) appState.phrases = merged.phrases;
+                    if (merged.idioms.length) appState.idioms = merged.idioms;
                     if (typeof renderPhraseList === 'function') renderPhraseList();
                     if (typeof renderIdiomList === 'function') renderIdiomList();
                 }
@@ -3981,12 +4014,6 @@
                 saveData();
             }
             
-            function fetchStaticDictionary() {
-                var base = getBasePath();
-                var url = (base ? (window.location.origin + base + '/') : (window.location.origin + '/')) + 'dictionary_import.json';
-                return fetch(url).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
-            }
-            
             if (SUPABASE_URL && SUPABASE_ANON_KEY) {
                 (async function() {
                     var data = null;
@@ -3997,12 +4024,12 @@
                     } catch (e) {
                         console.warn('Supabase dictionary fetch failed:', e);
                     }
-                    var hasData = data && (data.words?.length > 0 || data.phrases?.length > 0 || data.idioms?.length > 0);
-                    if (!hasData) {
-                        data = await fetchStaticDictionary();
-                        if (data) console.log('Dagban Kurli: fallback loaded', (data.words && data.words.length) || 0, 'words');
+                    var merged = await mergeDictionaryWithStatic(data);
+                    var wc = merged.words && merged.words.length;
+                    if (wc) console.log('Dagban Kurli: after merge', wc, 'words');
+                    if (merged.words?.length || merged.phrases?.length || merged.idioms?.length) {
+                        applyDictionaryData(merged);
                     }
-                    if (data) applyDictionaryData(data);
                     hideLoading();
                 })();
             } else {
